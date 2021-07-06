@@ -16,7 +16,7 @@ impl Client {
         } else {
             url=format!("http://{}:{}/api",new_host,port).to_string()
         };
-        connect::conn(url.clone(),vec![]);
+        let token=connect::auth(url.clone(),new_user,new_pass);
         Client {
             url:url,
             token:None,

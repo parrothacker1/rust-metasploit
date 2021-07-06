@@ -1,8 +1,8 @@
 use reqwest::{Response,Client,header,Error};
-use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::ReadReader};
-
-pub fn conn(url:String,body:Vec<u8>) {
+mod structs;
+pub fn auth(url:String,username:String,password:String) {
+    let body:Vec<u8>=vec![];
     let mut request:Result<Response,Error>;
     let mut hd=header::HeaderMap::new();
     hd.insert(header::CONTENT_TYPE,header::HeaderValue::from_static("binary/message-pack"));
