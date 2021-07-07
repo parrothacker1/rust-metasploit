@@ -1,5 +1,4 @@
-use serde::{Deserialize as des,Serialize as ses};
-
+use serde::Deserialize as des;
 #[derive(des,Debug)]
 pub struct addmodpath {
     pub exploits:u32,
@@ -29,5 +28,27 @@ pub struct reloadmod {
 }
 #[derive(des,Debug)]
 pub struct coresave {
+    pub result:String,
+}
+#[derive(des,Debug)]
+pub struct coresetg {
+    pub result:String,
+}
+#[derive(des,Debug)]
+pub struct coreunsetg {
+    pub result:String,
+}
+#[derive(des,Debug)]
+pub struct corethreadkill {
+    pub result:String,
+}
+#[derive(des,Debug)]
+pub struct coreversion {
+    pub version:String,
+    pub ruby:String,
+    pub api:String,
+}
+#[derive(des,Debug)]
+pub struct corestop {
     pub result:String,
 }
