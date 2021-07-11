@@ -1,4 +1,5 @@
 use rust_metasploit::client::Client as client;
+use rust_metasploit::msf::auth;
 struct Test {
     host:String,
     test:String,

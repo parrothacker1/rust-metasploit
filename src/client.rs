@@ -22,7 +22,4 @@ impl Client {
             token:None,
         }
     }
-    pub fn print(&self) {
-        println!("{}",self.url);
-    }
 }

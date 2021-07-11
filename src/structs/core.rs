@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use serde::Deserialize as des;
 #[derive(des,Debug)]
 pub struct addmodpath {
@@ -27,28 +28,28 @@ pub struct reloadmod {
     pub payloads:u32,
 }
 #[derive(des,Debug)]
-pub struct coresave {
+pub struct save {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct coresetg {
+pub struct setg {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct coreunsetg {
+pub struct unsetg {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct corethreadkill {
+pub struct threadkill {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct coreversion {
+pub struct version {
     pub version:String,
     pub ruby:String,
     pub api:String,
 }
 #[derive(des,Debug)]
-pub struct corestop {
+pub struct stop {
     pub result:String,
 }

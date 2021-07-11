@@ -1,27 +1,28 @@
+#![allow(non_camel_case_types)]
 use serde::Deserialize as des;
 #[derive(des,Debug)]
-pub struct authlogin {
+pub struct login {
     pub result:String,
     pub token:String,
 }
 #[derive(des,Debug)]
-pub struct authlogout {
+pub struct logout {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct authtokenadd {
+pub struct tokenadd {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct authtokengen {
+pub struct tokengen {
     pub result:String,
     pub token:String,
 }
 #[derive(des,Debug)]
-pub struct authtokenlist {
+pub struct tokenlist {
     pub tokens:Vec<String>,
 }
 #[derive(des,Debug)]
-pub struct authtokenrem {
+pub struct tokenrem {
     pub result:String,
 }
