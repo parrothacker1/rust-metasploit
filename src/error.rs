@@ -1,4 +1,4 @@
 use std::fmt::{Result,Display,Debug};
-
-pub struct ConnectionError;
+use reqwest;
+pub type ConnectionError=reqwest::error;
 pub struct MsfError;
