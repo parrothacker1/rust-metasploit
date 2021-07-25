@@ -13,6 +13,7 @@ impl Client {
         } else {
             url=format!("http://{}:{}/api",host,port).to_string()
         };
+        connect::connect(url);
         Client {
             url:url,
             token:None,

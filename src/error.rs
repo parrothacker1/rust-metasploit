@@ -1,4 +1,9 @@
 use std::fmt::{Result,Display,Debug};
-use reqwest;
-pub type ConnectionError=reqwest::error;
-pub struct MsfError;
+use ureq;
+pub type ConnectionError=ureq::Error;
+#[derive(Debug)]
+pub struct MsfError {
+    error:bool,
+    error_class:String,
+    error_message:String,
+}
