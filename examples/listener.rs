@@ -6,5 +6,5 @@ struct Test {
 }
 fn main() {
     let tet=client::new("127.0.0.1","msf","password",55552,true);
-    tet.print();
+//    tet.print();
 }
