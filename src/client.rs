@@ -13,7 +13,7 @@ impl Client {
         } else {
             url=format!("http://{}:{}/api",host,port).to_string()
         };
-        connect::connect(url);
+        let dat=connect::connect(url.clone());
         Client {
             url:url,
             token:None,

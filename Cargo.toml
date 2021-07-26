@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 ureq={ version="*",features=["json"] }
 rmp-serde="0.13.7"
+serde_json="*"
 serde={ version="1.0.117" , features=["derive"]}
 
 [lib]

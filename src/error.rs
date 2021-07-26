@@ -7,3 +7,6 @@ pub struct MsfError {
     error_class:String,
     error_message:String,
 }
+pub fn connectionerr(socket:String) {
+	panic!("Connection to Metasploit RPC Server hosted at {} failed",socket);
+}
