@@ -1,5 +1,6 @@
 use std::fmt::{Result,Display,Debug};
 use ureq;
+use snafu::Snafu;
 pub type ConnectionError=ureq::Error;
 #[derive(Debug)]
 pub struct MsfError {
@@ -7,6 +8,10 @@ pub struct MsfError {
     error_class:String,
     error_message:String,
 }
-pub fn connectionerr(socket:String) {
-	panic!("Connection to Metasploit RPC Server hosted at {} failed",socket);
+#[derive(Debug,Snafu)]
+pub enum conerr {
+	#[snafu(display("Couldn't cannot to Metasploit RPC Server at {}",socket))]
+	ConnectionNotPossible { socket:String },
+	#[snafu(display("Connection Interrupted while communicating"))]
+	ConInterrupt,
 }
