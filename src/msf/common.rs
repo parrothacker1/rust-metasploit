@@ -1,6 +1,16 @@
-enum Return_Type {
+use serde_json::value::Value;
+#[path="../structs/mod.rs"] mod structs;
+use structs::*;
+pub struct MsfError {
+    error:bool,
+    error_class:String,
+    error_message:String,
+}
+pub enum Return_Type {
 	Bool(bool),
 	String(String),
+    Int(i32),
 	MsfErr(MsfError),
-	Vec
+	Array(Vec<Value>),
+    ConsoleCreate(console::create),
 }
