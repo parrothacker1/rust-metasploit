@@ -1,4 +1,4 @@
-#[path="../structs/mod.rs"] mod structs;
+#![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
 use std::collections::HashMap;
 use error::MsfError;

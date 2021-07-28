@@ -1,10 +1,9 @@
-#[path="../structs/mod.rs"] mod structs;
+#![allow(non_camel_case_types)]
 #[path="../connect.rs"] mod connect;
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
 use common::{MsfError,Return_Type};
 use error::conerr;
-use structs::console;
 
 pub struct Client {
     pub url:String,
@@ -16,7 +15,12 @@ pub fn create(client:Client) -> Return_Type {
     match con {
         Ok(val) => {
             if val.get("result").unwrap().as_str().unwrap()=="success" {
-                test=Return_Type::Bool(true);
+                let ret=console::create {
+                    id:val.get("id").unwrap().as_i64().unwrap(),
+                    prompt:val.get("prompt").unwrap().as_str().unwrap().to_string(),
+                    busy:val.get("busy").unwrap().as_bool().unwrap(),
+                };
+                test=Return_Type::ConsoleCreate(ret);
             } else {
                 let ret=MsfError {
                     error:val.get("error").unwrap().as_bool().unwrap(),

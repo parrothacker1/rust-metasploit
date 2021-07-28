@@ -1,9 +1,9 @@
-#[path="../structs/mod.rs"] mod structs;
+#![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
+#[path="../connect.rs"] mod connect;
 use common::{MsfError,Return_Type};
 use error::conerr;
-use structs::core;
 
 pub struct Client {
     pub url:String,
@@ -11,16 +11,33 @@ pub struct Client {
 }
 
 pub fn add_module_path(client:Client,path:String) -> Return_Type {
-    let test:core::addmodpath;
+    let test;
     let con=connect::connect(client.url);
     match con {
 		Ok(val) => {
-			
-			
+            if val.get("exploits")==None {
+                let ret=MsfError {
+                    error:val.get("error").unwrap().as_bool().unwrap(),
+                    error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
+                    error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
+                };
+                test=Return_Type::MsfErr(ret);
+            } else {
+                let ret=modules {
+                    exploits:val.get("exploits").unwrap().as_i64().unwrap(),
+                    auxiliary:val.get("auxiliary").unwrap().as_i64().unwrap(),
+                    post:val.get("post").unwrap().as_i64().unwrap(),
+                    encoders:val.get("encoders").unwrap().as_i64().unwrap(),
+                    nops:val.get("nops").unwrap().as_i64().unwrap(),
+                    payloads:val.get("payloads").unwrap().as_i64().unwrap(),
+                };
+                test=Return_Type::CoreModules(ret);
+            }
 		},
 		Err(_e) => {
 			test=Return_Type::String(conerr::ConInterrupt.to_string());
 		},
+    }
     test
 }
 pub fn module_stats(client:Client) -> Result<core::modulestat,MsfError> {

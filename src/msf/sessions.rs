@@ -1,7 +1,6 @@
-#[path="../structs/mod.rs"] mod structs;
+#![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
 use error::MsfError;
-use structs::sessions;
 pub struct Client {
     pub url:String,
     pub token:Option<String>,

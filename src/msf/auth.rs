@@ -1,9 +1,8 @@
-#[path="../structs/mod.rs"] mod structs;
+#![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
 use error::conerr;
-use structs::auth;
 use common::{MsfError,Return_Type};
 use serde_json::value::Value;
 
