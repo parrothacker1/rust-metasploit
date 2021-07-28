@@ -78,9 +78,19 @@ pub fn write(client:Client,consoleid:String,data:String) -> Return_Type {
     }
     test
 }
-pub fn read(client:Client,consoleid:String) -> Result<console::read,MsfError> {
-    let test:console::read;
-    Ok(test)
+pub fn read(client:Client,consoleid:String) -> Return_Type {
+    let test;
+    let con=connect::connect(client.url);
+    match con {
+        Ok(val) => {
+            if val.get("data")==None {
+                let ret=MsfError {
+        },
+        Err(_e) => {
+            tes=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }
 pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let test:bool=true;

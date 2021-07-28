@@ -13,4 +13,5 @@ pub enum Return_Type {
 	MsfErr(MsfError),
 	Array(Vec<Value>),
     ConsoleCreate(console::create),
+    ConsoleRead(console::read),
 }
