@@ -14,4 +14,5 @@ pub enum Return_Type {
 	Array(Vec<Value>),
     ConsoleCreate(console::create),
     ConsoleRead(console::read),
+    CoreModule(core::modules),
 }

@@ -1,6 +1,8 @@
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
-use error::MsfError;
+#[path="./common.rs"] mod common;
+use common::{MsfError,Return_Type};
+use error::conerr;
 use structs::core;
 
 pub struct Client {
@@ -8,9 +10,18 @@ pub struct Client {
     pub token:Option<String>,
 }
 
-pub fn add_module_path(client:Client,path:String) -> Result<core::addmodpath,MsfError> {
+pub fn add_module_path(client:Client,path:String) -> Return_Type {
     let test:core::addmodpath;
-    Ok(test)
+    let con=connect::connect(client.url);
+    match con {
+		Ok(val) => {
+			
+			
+		},
+		Err(_e) => {
+			test=Return_Type::String(conerr::ConInterrupt.to_string());
+		},
+    test
 }
 pub fn module_stats(client:Client) -> Result<core::modulestat,MsfError> {
     let test:core::modulestat;
