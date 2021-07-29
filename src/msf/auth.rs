@@ -4,7 +4,7 @@
 #[path="../connect.rs"] mod connect;
 use error::conerr;
 use common::{MsfError,Return_Type};
-use serde_json::value::Value;
+use serde_json::value::{from_value,Value};
 
 pub struct Client {
     pub url:String,
@@ -13,17 +13,14 @@ pub struct Client {
 
 pub fn logout(client: Client,out_tok:String) -> Return_Type {
     let tes;
-    let conn=connect::connect(client.url);
+    let body=vec![connect::Parse_Type::String("auth.login".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(out_tok)];
+    let conn=connect::connect(client.url,body);
     match conn {
 		Ok(val) => {
 			if val.get("result").unwrap().as_str().unwrap()=="success" {
 				tes=Return_Type::Bool(true);
 			} else {
-				let ret=MsfError {
-					error:val.get("error").unwrap().as_bool().unwrap(),
-					error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
-					error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
-				};
+				let ret:MsfError=from_value(val).unwrap();
 				tes=Return_Type::MsfErr(ret);
 			};
 		},
@@ -35,17 +32,14 @@ pub fn logout(client: Client,out_tok:String) -> Return_Type {
 }
 pub fn token_add(client:Client,new_tok:String) -> Return_Type {
     let tes;
-    let conn=connect::connect(client.url);
+    let body=vec![connect::Parse_Type::String("auth.token_add".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(new_tok)];
+    let conn=connect::connect(client.url,body);
     match conn {
 		Ok(val) => {
 			if val.get("result").unwrap().as_str().unwrap()=="success" {
 				tes=Return_Type::Bool(true);
 			} else {
-				let ret=MsfError {
-					error:val.get("error").unwrap().as_bool().unwrap(),
-					error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
-					error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
-				};
+				let ret:MsfError=from_value(val).unwrap();
 				tes=Return_Type::MsfErr(ret);
 			};
 		},
@@ -57,17 +51,14 @@ pub fn token_add(client:Client,new_tok:String) -> Return_Type {
 }
 pub fn token_gen(client:Client) -> Return_Type {
     let tes;
-    let conn=connect::connect(client.url);
+    let body=vec![connect::Parse_Type::String("auth.token_generate".to_string()),connect::Parse_Type::String(client.token.unwrap())];
+    let conn=connect::connect(client.url,body);
     match conn {
 		Ok(val) => {
 			if val.get("result").unwrap().as_str().unwrap()=="success" {
 				tes=Return_Type::String(val.get("token").unwrap().to_string());
 			} else {
-				let ret=MsfError {
-					error:val.get("error").unwrap().as_bool().unwrap(),
-					error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
-					error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
-				};
+				let ret:MsfError=from_value(val).unwrap();
 				tes=Return_Type::MsfErr(ret);
 			};
 		},
@@ -79,16 +70,13 @@ pub fn token_gen(client:Client) -> Return_Type {
 }
 pub fn token_list(client:Client) -> Return_Type {
     let tes;
+    let body=vec![connect::Parse_Type::String("auth.token_list".to_string()),connect::Parse_Type::String(client.token.unwrap())];
     let mut ret;
-    let con=connect::connect(client.url);
+    let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
             if val.get("token_list")==None {
-                let ret=MsfError {
-                    error:val.get("error").unwrap().as_bool().unwrap(),
-                    error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
-                    error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
-                };
+                let ret:MsfError=from_value(val).unwrap();
                 tes=Return_Type::MsfErr(ret);
             } else {
                 ret=val.get("token_list").unwrap().as_array().unwrap().to_vec(); 
@@ -103,17 +91,14 @@ pub fn token_list(client:Client) -> Return_Type {
 }
 pub fn token_remove(client:Client,token_rem:String) -> Return_Type {
     let tes;
-    let con=connect::connect(client.url);
+    let body=vec![connect::Parse_Type::String("auth.token_remove".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(token_rem)];
+    let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
             if val.get("result").unwrap().as_str().unwrap()=="success" {
                 tes=Return_Type::Bool(true);
             } else {
-                let ret=MsfError {
-                    error:val.get("error").unwrap().as_bool().unwrap(),
-                    error_class:val.get("error_class").unwrap().as_str().unwrap().to_string(),
-                    error_message:val.get("error_message").unwrap().as_str().unwrap().to_string(),
-                };
+                let ret:MsfError=from_value(val).unwrap();
                 tes=Return_Type::MsfErr(ret);
             };
         },

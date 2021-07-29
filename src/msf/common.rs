@@ -1,5 +1,9 @@
 #![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+use serde::Deserialize as des;
+
 use serde_json::value::Value;
+#[derive(des,Debug)]
 pub struct MsfError {
     error:bool,
     error_class:String,
@@ -9,26 +13,26 @@ pub enum Return_Type {
 	Bool(bool),
 	String(String),
     Int(i32),
+    IntRet(),
 	MsfErr(MsfError),
 	Array(Vec<Value>),
     ConsoleCreate(create),
     ConsoleRead(read),
     CoreModules(modules),
 }
-#![allow(non_snake_case)]
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct create {
     pub id:i64,
     pub prompt:String,
     pub busy:bool,
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct read {
     pub data:String,
     pub prompt:String,
     pub busy:bool,
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct modules {
     pub exploits:i64,
     pub auxiliary:i64,
@@ -37,13 +41,13 @@ pub struct modules {
     pub nops:i64,
     pub payloads:i64,
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct version {
     pub version:String,
     pub ruby:String,
     pub api:String,
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct Data {
     pub EnableContextEncoding:bool,
     pub DisablePayloadHandler:bool,
@@ -51,7 +55,7 @@ pub struct Data {
     pub SSLVersion:String,
     pub PAYLOAD:String, 
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct jobinfo {
     pub jid:u32,
     pub name:String,
@@ -60,7 +64,7 @@ pub struct jobinfo {
     pub datastore:Data,
 
 }
-#[derive(Debug)]
+#[derive(des,Debug)]
 pub struct info {
     pub name:String,
     pub description:String,
@@ -71,4 +75,9 @@ pub struct info {
     pub authors:Vec<String>,
     pub references:Vec<String>,
 }
-
+#[derive(des,Debug)]
+pub struct consolelist {
+    pub id:String,
+    pub prompt:String,
+    pub busy:bool,
+}
