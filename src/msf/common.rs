@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 use serde::Deserialize as des;
-
+use std::collections::HashMap;
 use serde_json::value::Value;
 #[derive(des,Debug)]
 pub struct MsfError {
@@ -13,12 +13,15 @@ pub enum Return_Type {
 	Bool(bool),
 	String(String),
     Int(i32),
-    IntRet(),
 	MsfErr(MsfError),
 	Array(Vec<Value>),
     ConsoleCreate(create),
     ConsoleRead(read),
+    ConsoleList(HashMap<String,consolelist>),
+    CoreList(HashMap<i32,corelist>),
     CoreModules(modules),
+    CoreVersion(version),
+    JobInfo(jobinfo),
 }
 #[derive(des,Debug)]
 pub struct create {
@@ -53,7 +56,7 @@ pub struct Data {
     pub DisablePayloadHandler:bool,
     pub SSL:bool,
     pub SSLVersion:String,
-    pub PAYLOAD:String, 
+    pub PAYLOAD:String,
 }
 #[derive(des,Debug)]
 pub struct jobinfo {
@@ -80,4 +83,11 @@ pub struct consolelist {
     pub id:String,
     pub prompt:String,
     pub busy:bool,
+}
+#[derive(des,Debug)]
+pub struct corelist {
+	pub status:String,
+	pub critical:bool,
+	pub name:String,
+	pub started:String,
 }

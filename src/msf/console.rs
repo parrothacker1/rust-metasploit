@@ -2,9 +2,10 @@
 #[path="../connect.rs"] mod connect;
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
-use common::{MsfError,create,read,Return_Type};
+use common::{MsfError,create,read,Return_Type,consolelist};
 use error::conerr;
-use serde_json::from_value;
+use std::collections::HashMap;
+use serde_json::{self,from_value};
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
@@ -15,15 +16,14 @@ pub fn create(client:Client) -> Return_Type {
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
-            let ret:create=from_value(val).unwrap();
+            let ret:Result<create,serde_json::Error>=from_value(val);
             match ret {
-                Ok => {
-                    let retv:create=from_value(val).unwrap();
+                Ok(retv) => {
                     test=Return_Type::ConsoleCreate(retv);
                 },
-                Err => {
-                    let retval:MsfError=from_value(val).unwrap();
-                    test=Return_Type::MsfErr(retval);
+                Err(_) => {
+					let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
                 },
             }
         },
@@ -58,10 +58,19 @@ pub fn list(client:Client) -> Return_Type {
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
-
+			let ret:Result<HashMap<String,consolelist>,serde_json::Error>=from_value(val);
+			match ret {
+				Ok(retn) => {
+					test=Return_Type::ConsoleList(retn);
+				},
+				Err(_e) => {
+					let err:MsfError=from_value(val).unwrap();
+					test=Return_Type::MsfErr(err);
+				},
+			}
         },
         Err(_e) => {
-        test=Return_Type::String(conerr::ConInterrupt.to_string());
+			test=Return_Type::String(conerr::ConInterrupt.to_string());
         },
     }
     test
