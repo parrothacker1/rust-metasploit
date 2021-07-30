@@ -42,7 +42,7 @@ pub fn module_stats(client:Client) -> Return_Type {
                 let ret:MsfError=from_value(val).unwrap();
                 test=Return_Type::MsfErr(ret);
             } else {
-                let ret:modules=from_value(val),unwrap();
+                let ret:modules=from_value(val).unwrap();
                 test=Return_Type::CoreModules(ret);
             }
         },
@@ -52,7 +52,7 @@ pub fn module_stats(client:Client) -> Return_Type {
     }
     test
 }
-pub fn reload_modules(client:Client) -> Result<bool,MsfError> {
+pub fn reload_modules(client:Client) -> Return_Type {
     let test;
     let body=vec![PType::String("core.relaod_modules".to_string()),PType::String(client.token.unwrap())];
     let con=connect::connect(client.url,body);
@@ -91,9 +91,24 @@ pub fn save(client:Client) -> Return_Type {
     }
     test
 }
-pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
-    let test:bool=true;
-    Ok(test)
+pub fn setg(client:Client,name:String,value:String) -> Return_Type {
+    let test;
+    let body=vec![PType::String("core.setg".to_string()),PType::String(client.token.unwrap()),PType::String(name),PType::String(value)];
+    let con=connect::connect(client.url,body);
+    match con {
+        Ok(val) => {
+            if val.get("result").unwrap().as_str().unwrap()=="success" {
+                test=Return_Type::Bool(true);
+            } else {
+                let ret:MsfError=from_value(val).unwrap();
+                test=Return_Type::MsfErr(ret);
+            }
+        },
+        Err(_) => {
+            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }
 pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
     let test:bool=true;

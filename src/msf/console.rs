@@ -17,11 +17,11 @@ pub fn create(client:Client) -> Return_Type {
         Ok(val) => {
             let ret:create=from_value(val).unwrap();
             match ret {
-                Ok(_) => {
-                    let retv:create=from_value(val).unwrap()
+                Ok => {
+                    let retv:create=from_value(val).unwrap();
                     test=Return_Type::ConsoleCreate(retv);
                 },
-                Err(_) => {
+                Err => {
                     let retval:MsfError=from_value(val).unwrap();
                     test=Return_Type::MsfErr(retval);
                 },
@@ -94,7 +94,7 @@ pub fn read(client:Client,consoleid:String) -> Return_Type {
     match con {
         Ok(val) => {
             if val.get("data")==None {
-                let ret:MsfError=from_value(val).unwrap()
+                let ret:MsfError=from_value(val).unwrap();
 				test=Return_Type::MsfErr(ret);
 			} else {
 				let ret:read=from_value(val).unwrap();
@@ -135,7 +135,7 @@ pub fn session_kill(client:Client,consoleid:String) -> Return_Type {
 			if val.get("result").unwrap().as_str().unwrap()=="success" {
 				test=Return_Type::Bool(true);
 			} else {
-				let ret:MsfError=from_value(val),unwrap();
+				let ret:MsfError=from_value(val).unwrap();
 				test=Return_Type::MsfErr(ret);
 			}
 		},

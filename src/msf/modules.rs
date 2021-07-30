@@ -1,8 +1,12 @@
 #![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
+#[path="./common.rs"] mod common;
+#[path="../connect.rs"] mod connect;
 use std::collections::HashMap;
-use error::MsfError;
-use structs::modules;
+use common::{MsfError,Return_Type};
+use serde_json::{from_value,Value};
+use connect::Parse_Type as PType;
+
 pub struct compactible {
     pub name:String,
     pub client:Client,
