@@ -11,6 +11,12 @@ pub struct Client {
     pub token:Option<String>,
 }
 
+pub fn list(client.Client) -> Return_Type {
+    let test;
+    let body=vec![PType::String("job.list".to_string()),PType::String(client.token.unwrap())];
+    let con=connect::connect(client.url,body);
+
+}
 pub fn info(client:Client,jobid:String) -> Return_Type {
     let test;
     let body=vec![PType::String("job.info".to_string()),PType::String(client.token.unwrap()),PType::String(jobid)];

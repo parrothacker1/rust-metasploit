@@ -13,14 +13,15 @@ pub enum Parse_Type {
 }
 
 pub fn connect(url:String,body:Vec<Parse_Type>) -> Result<Value,conerr> {
-    let body_con=to_vec(&body);
+    //let body_con=to_vec(&body);
     let agent:Agent=AgentBuilder::new()
         .timeout_read(Duration::from_secs(5))
         .timeout_write(Duration::from_secs(5))
         .build();
 	let reader=agent.post(&url)
 		.set("Content-type","binary/message-pack")
-		.send_bytes(body_con)?
+		//.send_bytes()?
+        .call()?
 		.into_reader();
     let test:Value=from_read(reader).unwrap();
     Ok(test)

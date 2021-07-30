@@ -8,4 +8,6 @@ pub enum conerr {
 	ConnectionNotPossible { socket:String },
 	#[snafu(display("Connection Interrupted while communicating"))]
 	ConInterrupt,
+    #[snafu(display("Authentication failed for user:{}",user))]
+    Authfail { user:String },
 }

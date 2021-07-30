@@ -24,19 +24,19 @@ impl Client {
 				if val.get("result").unwrap().as_str().unwrap()=="success" {
 					test=Client {
 						url:url.clone(),
-						token:val.get("token").unwrap().as_str().unwrap(),
+						token:Some(val.get("token").unwrap().as_str().unwrap().to_string()),
 					}
 				} else {
-					panic!("Auth failed");
+                    let ret=conerr::Authfail { user:new_user };
+					panic!(ret);
 				}
 			},
 			Err(_e) => {
-				panic!("Not possible");
+                let sock=String::from(format!("{}:{}",host,port));
+                let ret=conerr::ConnectionNotPossible { socket:sock };
+				panic!(ret);
 			},
 		}
         test
-    }
-    pub fn print(self) {
-        println!("{:?}",self.token)
     }
 }
