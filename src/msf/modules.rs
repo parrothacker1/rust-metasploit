@@ -4,7 +4,7 @@
 #[path="../connect.rs"] mod connect;
 use std::collections::HashMap;
 use error::conerr;
-use common::{MsfError,Return_Type,modulelist,info,moduleoption,compactiblepayload,compactiblesessions};
+use common::{MsfError,ReturnValue as Return_Type,modulelist,info,moduleoption,compactiblepayload,compactiblesessions};
 use serde_json::from_value;
 use connect::Parse_Type as PType;
 
@@ -240,7 +240,7 @@ impl compactible {
 		}
         test
     }
-    pub fn target_payload(self,targetindx:i32) -> Retu {
+    pub fn target_payload(self,targetindx:i32) -> Return_Type {
         let test;
         let body=vec![PType::String("module.target_compatible_payloads".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name),PType::Int(targetindx)];
         let con=connect::connect(self.client.url,body);
@@ -288,11 +288,50 @@ impl compactible {
     }
 
 }
-pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Result<String,MsfError> {
-    let test:String=String::new();
-    Ok(test)
+pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Return_Type {
+    let test;
+    let body=vec![PType::String("module.encode".to_string()),PType::String(client.token.unwrap()),PType::String(data),PType::String(encodermodule),PType::HashMapStr(options)];
+    let con=connect::connect(client.url,body);
+    match con {
+        Ok(val) => {
+            if val.get("encoded")==None {
+                let ret:MsfError=from_value(val).unwrap();
+                test=Return_Type::MsfErr(ret);
+            } else {
+                test=Return_Type::String(val.get("encoded").unwrap().as_str().unwrap().to_string());
+            }
+        },
+        Err(_e) => {
+            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }
-pub fn execute(client:Client,moduletype:String,modulename:String) -> Result<HashMap<String,String>,MsfError> {
-    let test:HashMap<String,String>=HashMap::new();
-    Ok(test)
+pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Return_Type {
+    let test;
+    let body=vec![PType::String("module.execute".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename),PType::HashMapStr(options)];
+    let con=connect::connect(client.url,body);
+    match con {
+        Ok(val) => {
+            if moduletype != "payload".to_string() {
+                if val.get("payload") == None {
+                    let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
+                } else {
+                    test=Return_Type::String(val.get("payload").unwrap().as_str().unwrap().to_string());
+                }
+            } else {
+                if val.get("job_id") == None {
+                    let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
+                } else {
+                    test=Return_Type::Int(val.get("job_id").unwrap().as_i64().unwrap());
+                }
+            }
+        },
+        Err(_e) => {
+            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }

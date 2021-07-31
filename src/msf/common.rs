@@ -2,17 +2,17 @@
 #![allow(non_snake_case)]
 use serde::Deserialize as des;
 use std::collections::HashMap;
-use serde_json::value::Value;
+
 #[derive(des,Debug)]
 pub struct MsfError {
     error:bool,
     error_class:String,
     error_message:String,
 }
-pub enum Return_Type {
+pub enum ReturnValue {
 	Bool(bool),
 	String(String),
-    Int(i32),
+    Int(i64),
 	MsfErr(MsfError),
 	ArrayStr(Vec<String>),
 	ArrayInt(Vec<i32>),

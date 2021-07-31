@@ -2,10 +2,10 @@
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
-use common::{corelist,version,MsfError,modules,Return_Type};
+use common::{corelist,version,MsfError,modules,ReturnValue as Return_Type};
 use error::conerr;
 use connect::Parse_Type as PType;
-use serde_json::{self,from_value,value::Value};
+use serde_json::{self,from_value};
 use std::collections::HashMap;
 pub struct Client {
     pub url:String,

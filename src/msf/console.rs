@@ -2,7 +2,7 @@
 #[path="../connect.rs"] mod connect;
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
-use common::{consoletabs,MsfError,create,read,Return_Type,consolelist};
+use common::{consoletabs,MsfError,create,read,ReturnValue as Return_Type,consolelist};
 use error::conerr;
 use std::collections::HashMap;
 use serde_json::{self,from_value};
@@ -86,7 +86,7 @@ pub fn write(client:Client,consoleid:String,data:String) -> Return_Type {
                 test=Return_Type::MsfErr(ret);
             } else {
                 let wrote_string:String=val.get("wrote").unwrap().as_str().unwrap().to_string();
-                let wrote:i32=wrote_string.parse().unwrap();
+                let wrote:i64=wrote_string.parse().unwrap();
                 test=Return_Type::Int(wrote);
             }
         },

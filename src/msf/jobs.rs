@@ -3,7 +3,7 @@
 #[path="../connect.rs"] mod connect;
 #[path="./common.rs"] mod common;
 use connect::Parse_Type as PType;
-use common::{MsfError,Return_Type,jobinfo};
+use common::{MsfError,ReturnValue as Return_Type,jobinfo};
 use error::conerr;
 use std::collections::HashMap;
 use serde_json::{self,from_value};

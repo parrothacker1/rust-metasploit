@@ -3,8 +3,8 @@
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
 use error::conerr;
-use common::{MsfError,Return_Type,tokenlist};
-use serde_json::value::{from_value,Value};
+use common::{MsfError,ReturnValue as Return_Type,tokenlist};
+use serde_json::value::{from_value};
 
 pub struct Client {
     pub url:String,
