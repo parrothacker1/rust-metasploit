@@ -1,4 +1,5 @@
-use std::fmt::{Result,Display,Debug};
+#![allow(non_camel_case_types)]
+use std::fmt::Debug;
 use ureq;
 use snafu::Snafu;
 pub type ConnectionError=ureq::Error;

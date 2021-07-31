@@ -3,8 +3,9 @@
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
 use std::collections::HashMap;
-use common::{MsfError,Return_Type};
-use serde_json::{from_value,Value};
+use error::conerr;
+use common::{MsfError,Return_Type,modulelist,info,moduleoption,compactiblepayload,compactiblesessions};
+use serde_json::from_value;
 use connect::Parse_Type as PType;
 
 pub struct compactible {
@@ -18,40 +19,196 @@ pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
-impl list{
+impl list {
     pub fn new(client:Client) -> Self {
         list {
             client:client,
         }
     }
-    pub fn exploits() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn exploits(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.exploits".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn auxiliary() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn auxiliary(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.auxiliary".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn post() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn post(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.post".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn payloads() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn payloads(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.payloads".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn encoders() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn encoders(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.encoders".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn nops() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn nops(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.nops".to_string()),PType::String(self.client.token.unwrap())];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.modules);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());	
+			},
+		}
+        test
     }
 }
-pub fn info(client:Client,moduletype:String,modulename:String) -> Result<modules::info,MsfError> {
-    let test:modules::info;
-    Ok(test)
+pub fn info(client:Client,moduletype:String,modulename:String) -> Return_Type {
+    let test;
+    let body=vec![PType::String("module.info".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename)];
+    let con=connect::connect(client.url,body);
+    match con {
+		Ok(val) => {
+			let ret:Result<info,serde_json::Error>=from_value(val);
+			match ret {
+				Ok(val) => {
+					test=Return_Type::ModuleInfo(val);
+				},
+				Err(_e) => {
+					let ret:MsfError=from_value(val).unwrap();
+					test=Return_Type::MsfErr(ret);
+				},
+			}
+		},
+		Err(_e) => {
+			test=Return_Type::String(conerr::ConInterrupt.to_string());
+		},
+	}
+    test
+}
+pub fn option(client:Client,moduletype:String,modulename:String) -> Return_Type {
+	let test;
+	let body=vec![PType::String("module.options".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename)];
+	let con=connect::connect(client.url,body);
+	match con {
+		Ok(val) => {
+			let ret:Result<HashMap<String,moduleoption>,serde_json::Error>=from_value(val);
+			match ret {
+				Ok(val) => {
+					test=Return_Type::ModuleOption(val);
+				},
+				Err(_e) => {
+					let ret:MsfError=from_value(val).unwrap();
+					test=Return_Type::MsfErr(ret);
+				},
+			}
+		},
+		Err(_e) => {
+			test=Return_Type::String(conerr::ConInterrupt.to_string());
+		},
+	}
+	test
 }
 impl compactible {
     pub fn new(modulename:String,client:Client) -> Self {
@@ -60,17 +217,74 @@ impl compactible {
             client:client,
         }
     }
-    pub fn payload() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn payload(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.compactible_payloads".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name)];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.payloads);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn target_payload(targetindx:i32) -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn target_payload(self,targetindx:i32) -> Retu {
+        let test;
+        let body=vec![PType::String("module.target_compatible_payloads".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name),PType::Int(targetindx)];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayStr(val.payloads);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
-    pub fn sessions() -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+    pub fn sessions(self) -> Return_Type {
+        let test;
+        let body=vec![PType::String("module.compatible_sessions".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name)];
+        let con=connect::connect(self.client.url,body);
+        match con {
+			Ok(val) => {
+				let ret:Result<compactiblesessions,serde_json::Error>=from_value(val);
+				match ret {
+					Ok(val) => {
+						test=Return_Type::ArrayInt(val.sessions);
+					},
+					Err(_e) => {
+						let ret:MsfError=from_value(val).unwrap();
+						test=Return_Type::MsfErr(ret);
+					},
+				}
+			},
+			Err(_e) => {
+				test=Return_Type::String(conerr::ConInterrupt.to_string());
+			},
+		}
+        test
     }
 
 }

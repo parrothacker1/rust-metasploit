@@ -5,17 +5,35 @@
 use connect::Parse_Type as PType;
 use common::{MsfError,Return_Type,jobinfo};
 use error::conerr;
+use std::collections::HashMap;
 use serde_json::{self,from_value};
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
 
-pub fn list(client.Client) -> Return_Type {
+pub fn list(client:Client) -> Return_Type {
     let test;
     let body=vec![PType::String("job.list".to_string()),PType::String(client.token.unwrap())];
     let con=connect::connect(client.url,body);
-
+    match con {
+		Ok(val) => {
+			let ret:Result<HashMap<String,String>,serde_json::Error>=from_value(val);
+			match ret {
+				Ok(ret) => {
+					test=Return_Type::JobList(ret);
+				},
+				Err(_e) => {
+					let ret:MsfError=from_value(val).unwrap();
+					test=Return_Type::MsfErr(ret);
+				},
+			}
+		},
+		Err(_e) => {
+			test=Return_Type::String(conerr::ConInterrupt.to_string());
+		},
+	}
+	test
 }
 pub fn info(client:Client,jobid:String) -> Return_Type {
     let test;

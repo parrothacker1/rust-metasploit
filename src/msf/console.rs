@@ -2,7 +2,7 @@
 #[path="../connect.rs"] mod connect;
 #[path="../error.rs"] mod error;
 #[path="./common.rs"] mod common;
-use common::{MsfError,create,read,Return_Type,consolelist};
+use common::{consoletabs,MsfError,create,read,Return_Type,consolelist};
 use error::conerr;
 use std::collections::HashMap;
 use serde_json::{self,from_value};
@@ -164,8 +164,8 @@ pub fn tabs(client:Client,consoleid:String,inputline:String) -> Return_Type {
 				let ret:MsfError=from_value(val).unwrap();
 				test=Return_Type::MsfErr(ret);
 			} else {
-				let ret=val.get("tabs").unwrap().as_array().unwrap().to_vec();
-				test=Return_Type::Array(ret);
+				let ret:consoletabs=from_value(val).unwrap();
+				test=Return_Type::ArrayStr(ret.tabs);
 			}
 		},
 		Err(_e) => {

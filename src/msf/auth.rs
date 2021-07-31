@@ -3,7 +3,7 @@
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
 use error::conerr;
-use common::{MsfError,Return_Type};
+use common::{MsfError,Return_Type,tokenlist};
 use serde_json::value::{from_value,Value};
 
 pub struct Client {
@@ -71,7 +71,6 @@ pub fn token_gen(client:Client) -> Return_Type {
 pub fn token_list(client:Client) -> Return_Type {
     let tes;
     let body=vec![connect::Parse_Type::String("auth.token_list".to_string()),connect::Parse_Type::String(client.token.unwrap())];
-    let mut ret;
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -79,8 +78,8 @@ pub fn token_list(client:Client) -> Return_Type {
                 let ret:MsfError=from_value(val).unwrap();
                 tes=Return_Type::MsfErr(ret);
             } else {
-                ret=val.get("token_list").unwrap().as_array().unwrap().to_vec(); 
-                tes=Return_Type::Array(ret);
+                let ret:tokenlist=from_value(val).unwrap();
+                tes=Return_Type::ArrayStr(ret.token_list);
             };
         },
         Err(_e) => {

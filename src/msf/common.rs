@@ -14,7 +14,8 @@ pub enum Return_Type {
 	String(String),
     Int(i32),
 	MsfErr(MsfError),
-	Array(Vec<Value>),
+	ArrayStr(Vec<String>),
+	ArrayInt(Vec<i32>),
     ConsoleCreate(create),
     ConsoleRead(read),
     ConsoleList(HashMap<String,consolelist>),
@@ -22,6 +23,38 @@ pub enum Return_Type {
     CoreModules(modules),
     CoreVersion(version),
     JobInfo(jobinfo),
+    JobList(HashMap<String,String>),
+    ModuleInfo(info),
+    ModuleOption(HashMap<String,moduleoption>),
+}
+#[derive(des,Debug)]
+pub struct modulelist {
+	pub modules:Vec<String>,
+}
+#[derive(des,Debug)]
+pub struct moduleoption {
+	pub r#type:String,
+	pub required:bool,
+	pub advanced:bool,
+	pub evasion:bool,
+	pub desc:String,
+	pub default:String,
+}
+#[derive(des,Debug)]
+pub struct compactiblepayload {
+	pub payloads:Vec<String>,
+}
+#[derive(des,Debug)]
+pub struct compactiblesessions {
+	pub sessions:Vec<i32>,
+}
+#[derive(des,Debug)]
+pub struct consoletabs {
+	pub tabs:Vec<String>,
+}
+#[derive(des,Debug)]
+pub struct tokenlist {
+	pub token_list:Vec<String>,
 }
 #[derive(des,Debug)]
 pub struct create {
