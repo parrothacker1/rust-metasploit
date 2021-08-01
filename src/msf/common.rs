@@ -28,6 +28,10 @@ pub enum ReturnValue {
     ModuleOption(HashMap<String,moduleoption>),
 }
 #[derive(des,Debug)]
+pub struct pluginloaded {
+    pub plugins:Vec<String>,
+}
+#[derive(des,Debug)]
 pub struct modulelist {
 	pub modules:Vec<String>,
 }
