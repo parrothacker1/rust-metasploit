@@ -1,5 +1,5 @@
 #![allow(non_camel_case_types)]
-use ureq::{Agent,AgentBuilder};
+use reqwest::blocking::Client;
 use std::time::Duration;
 use rmp_serde::{encode::to_vec,decode::from_read};
 use serde_json::Value;
@@ -15,12 +15,10 @@ pub enum Parse_Type {
     HashMapStr(HashMap<String,String>),
 }
 
-pub fn connect(url:String,body:Vec<Parse_Type>) -> Result<Value,conerr> {
+pub fn connect(url:String,body:Vec<u8>) -> Result<Value,conerr> {
     //let body_con=to_vec(&body);
-    let agent:Agent=AgentBuilder::new()
-        .timeout_read(Duration::from_secs(5))
-        .timeout_write(Duration::from_secs(5))
-        .build();
+    let req=Client::builder()
+        .default_header(
 	let reader=agent.post(&url)
 		.set("Content-type","binary/message-pack")
 		//.send_bytes()?
