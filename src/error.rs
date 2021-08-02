@@ -1,8 +1,8 @@
 #![allow(non_camel_case_types)]
 use std::fmt::Debug;
-use ureq;
+use reqwest;
 use snafu::Snafu;
-pub type ConnectionError=ureq::Error;
+pub type ConnectionError=reqwest::Error;
 #[derive(Debug,Snafu)]
 pub enum conerr {
 	#[snafu(display("Couldn't cannot to Metasploit RPC Server at {}",socket))]

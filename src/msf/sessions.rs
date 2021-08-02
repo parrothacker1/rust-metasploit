@@ -1,10 +1,16 @@
 #![allow(non_camel_case_types)]
 #[path="../error.rs"] mod error;
-use error::MsfError;
+#[path="./common.rs"] mod common;
+#[path="../connect.rs"] mod connect;
+use connect::connect;
+use common::{ReturnValue as Return_Type,MsfError};
+
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
+#[derive(se)]
+struct sessionstop(String,String,String);
 pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
     let test:bool=true;
     Ok(test)
@@ -72,16 +78,18 @@ pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectpo
     Ok(test)
 }
 pub trait ring {
-    fn new(sessionid:String) -> Self;
-    fn clear(&self) -> Result<bool,MsfError> {
+    pub fn new(sessionid:String) -> Self {
+		sessionid
+	}
+    pub fn clear(&self) -> Result<bool,MsfError> {
         let test:bool=true;
         Ok(test)
     }
-    fn last(&self) -> Result<i32,MsfError> {
+    pub fn last(&self) -> Result<i32,MsfError> {
         let test:i32=1;
         Ok(test)
     }
-    fn put(&self,data:String) -> Result<i32,MsfError> {
+    pub fn put(&self,data:String) -> Result<i32,MsfError> {
         let test:i32=1;
         Ok(test)
     }

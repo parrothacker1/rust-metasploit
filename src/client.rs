@@ -1,11 +1,14 @@
 #[path="./connect.rs"] mod connect;
 #[path="./error.rs"] mod error;
 use error::conerr;
-use connect::Parse_Type as PType;
+use rmp_serde::Serializer;
+use serde::Serialize;
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
+#[derive(Serialize)]
+struct authlogin(String,String,String);
 impl Client {
     pub fn new(host:&str,user:&str,password:&str,port:i32,ssl:bool) -> Self {
 		let test:Client;
@@ -17,7 +20,10 @@ impl Client {
         } else {
             url=format!("http://{}:{}/api",host,port).to_string()
         };
-        let body=vec![PType::String("auth.login".to_string()),PType::String(new_user),PType::String(new_pass)];
+        let mut body=Vec::new();
+        let mut serializer=Serializer::new(&mut body);
+        let byte=authlogin("auth.login".to_string(),new_user,new_pass);
+        byte.serialize(&mut serializer).unwrap();
         let data=connect::connect(url.clone(),body);
         match data {
 			Ok(val) => {

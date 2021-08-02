@@ -4,15 +4,22 @@
 #[path="./common.rs"] mod common;
 use common::{consoletabs,MsfError,create,read,ReturnValue as Return_Type,consolelist};
 use error::conerr;
+use rmp_serde::Serializer;
+use serde::Serialize as se;
 use std::collections::HashMap;
 use serde_json::{self,from_value};
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
+#[derive(se)]
+struct createstruct(String,String);
 pub fn create(client:Client) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.create".to_string()),connect::Parse_Type::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=createstruct("console.create".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -33,9 +40,14 @@ pub fn create(client:Client) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct consoledestroy(String,String,String);
 pub fn destroy(client:Client,consoleid:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.destroy".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consoledestroy("console.destroy".to_string(),client.token.unwrap(),consoleid);
+    byte.serialize(&mut serializer).unwrap();
     let conn=connect::connect(client.url,body);
     match conn {
         Ok(val) => {
@@ -52,9 +64,14 @@ pub fn destroy(client:Client,consoleid:String) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct consoleliststruct(String,String);
 pub fn list(client:Client) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.list".to_string()),connect::Parse_Type::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consoleliststruct("console.list".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -75,9 +92,14 @@ pub fn list(client:Client) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct consolewrite(String,String,String,String);
 pub fn write(client:Client,consoleid:String,data:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.write".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid),connect::Parse_Type::String(data)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consolewrite("console.write".to_string(),client.token.unwrap(),consoleid,data);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -96,9 +118,14 @@ pub fn write(client:Client,consoleid:String,data:String) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct consoleread(String,String,String);
 pub fn read(client:Client,consoleid:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.read".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consoleread("console.read".to_string(),client.token.unwrap(),consoleid);
+    byte.serialize(&mut serializer);
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -116,9 +143,14 @@ pub fn read(client:Client,consoleid:String) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct consolesession(String,String,String);
 pub fn session_detach(client:Client,consoleid:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.session_detach".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consolesession("console.session_detach".to_string(),client.token.unwrap(),consoleid);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -137,7 +169,10 @@ pub fn session_detach(client:Client,consoleid:String) -> Return_Type {
 }
 pub fn session_kill(client:Client,consoleid:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.session_kill".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consolesession("console.session_kill".to_string(),client.token.unwrap(),consoleid);
+    byte.serialize(&mut serializer);
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -154,9 +189,14 @@ pub fn session_kill(client:Client,consoleid:String) -> Return_Type {
 	}
     test
 }
+#[derive(se)]
+struct consoletabstruct(String,String,String,String);
 pub fn tabs(client:Client,consoleid:String,inputline:String) -> Return_Type {
     let test;
-    let body=vec![connect::Parse_Type::String("console.tabs".to_string()),connect::Parse_Type::String(client.token.unwrap()),connect::Parse_Type::String(consoleid),connect::Parse_Type::String(inputline)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=consoletabstruct("console.tabs".to_string(),client.token.unwrap(),consoleid,inputline);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {

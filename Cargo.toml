@@ -1,6 +1,6 @@
 [package]
 name = "rust-metasploit"
-version = "0.1.3"
+version = "0.1.5"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
 

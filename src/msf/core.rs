@@ -4,17 +4,24 @@
 #[path="../connect.rs"] mod connect;
 use common::{corelist,version,MsfError,modules,ReturnValue as Return_Type};
 use error::conerr;
-use connect::Parse_Type as PType;
+use serde::Serialize as se;
+use rmp_serde::Serializer;
 use serde_json::{self,from_value};
 use std::collections::HashMap;
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
-
+#[derive(se)]
+struct modulestruct(String,String);
+#[derive(se)]
+struct addmodule(String,String,String);
 pub fn add_module_path(client:Client,path:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.add_module_path".to_string()),PType::String(client.token.unwrap()),PType::String(path)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=addmodule("core.add_module_path".to_string(),client.token.unwrap(),path);
+    byte.serialize(&mut serializer);
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -37,7 +44,10 @@ pub fn add_module_path(client:Client,path:String) -> Return_Type {
 }
 pub fn module_stats(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.module_status".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulestruct("core.module_status".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -57,7 +67,10 @@ pub fn module_stats(client:Client) -> Return_Type {
 }
 pub fn reload_modules(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.relaod_modules".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulestruct("core.reload_modules".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -77,7 +90,10 @@ pub fn reload_modules(client:Client) -> Return_Type {
 }
 pub fn save(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.save".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulestruct("core.save".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -94,9 +110,14 @@ pub fn save(client:Client) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct coresetg(String,String,String,String);
 pub fn setg(client:Client,name:String,value:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.setg".to_string()),PType::String(client.token.unwrap()),PType::String(name),PType::String(value)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=coresetg("core.setg".to_string(),client.token.unwrap(),name,value);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -113,9 +134,14 @@ pub fn setg(client:Client,name:String,value:String) -> Return_Type {
     }
     test
 }
+#[derive(se)]
+struct coreunsetg(String,String,String);
 pub fn unsetg(client:Client,name:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.unsetg".to_string()),PType::String(client.token.unwrap()),PType::String(name)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=coreunsetg("core.unsetg".to_string(),client.token.unwrap(),name);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -132,9 +158,13 @@ pub fn unsetg(client:Client,name:String) -> Return_Type {
 	}
     test
 }
+
 pub fn thread_list(client:Client) -> Return_Type{
 	let test;
-	let body=vec![PType::String("core.thread_list".to_string()),PType::String(client.token.unwrap())];
+	let mut body=Vec::new();
+	let mut serializer=Serializer::new(&mut body);
+	let byte=modulestruct("core.thread_list".to_string(),client.token.unwrap());
+	byte.serialize(&mut serializer).unwrap();
 	let con=connect::connect(client.url,body);
 	match con {
 		Ok(val) => {
@@ -155,9 +185,13 @@ pub fn thread_list(client:Client) -> Return_Type{
 	}
 	test
 }
+#[derive(se)]
+struct threadkill(String,String,i32);
 pub fn thread_kill(client:Client,threadID:i32) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.thread_kill".to_string()),PType::String(client.token.unwrap()),PType::Int(threadID)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=threadkill("core.thread_kill".to_string(),client.token.unwrap(),threadID);
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -176,7 +210,10 @@ pub fn thread_kill(client:Client,threadID:i32) -> Return_Type {
 }
 pub fn version(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.version".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulestruct("core.version".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -199,7 +236,10 @@ pub fn version(client:Client) -> Return_Type {
 }
 pub fn stop(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("core.stop".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulestruct("core.stop".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {

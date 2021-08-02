@@ -5,9 +5,9 @@ use std::collections::HashMap;
 
 #[derive(des,Debug)]
 pub struct MsfError {
-    error:bool,
-    error_class:String,
-    error_message:String,
+    pub error:bool,
+    pub error_class:String,
+    pub error_message:String,
 }
 pub enum ReturnValue {
 	Bool(bool),

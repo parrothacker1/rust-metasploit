@@ -6,7 +6,8 @@ use std::collections::HashMap;
 use error::conerr;
 use common::{MsfError,ReturnValue as Return_Type,modulelist,info,moduleoption,compactiblepayload,compactiblesessions};
 use serde_json::from_value;
-use connect::Parse_Type as PType;
+use serde::Serialize as se;
+use rmp_serde::Serializer;
 
 pub struct compactible {
     pub name:String,
@@ -19,15 +20,23 @@ pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
+#[derive(se)]
+struct moduleliststruct(String,String);
 impl list {
     pub fn new(client:Client) -> Self {
         list {
             client:client,
         }
     }
+    fn serialize(self,method:&str,body:&mut Vec<u8>) {
+		let mut serializer=Serializer::new(&mut body);
+		let byte=moduleliststruct(method.to_string(),self.client.token.unwrap());
+		byte.serialize(&mut serializer).unwrap();
+	}
     pub fn exploits(self) -> Return_Type {
+        let mut body=Vec::new();
         let test;
-        let body=vec![PType::String("module.exploits".to_string()),PType::String(self.client.token.unwrap())];
+        self.serialize("module.exploits",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -50,7 +59,8 @@ impl list {
     }
     pub fn auxiliary(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.auxiliary".to_string()),PType::String(self.client.token.unwrap())];
+        let mut body=Vec::new();
+        self.serialize("module.auxiliary",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -73,7 +83,8 @@ impl list {
     }
     pub fn post(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.post".to_string()),PType::String(self.client.token.unwrap())];
+        let mut body=Vec::new();
+        self.serialize("module.post",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -96,7 +107,8 @@ impl list {
     }
     pub fn payloads(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.payloads".to_string()),PType::String(self.client.token.unwrap())];
+        let mut body=Vec::new();
+        self.serialize("module.payloads",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -119,7 +131,8 @@ impl list {
     }
     pub fn encoders(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.encoders".to_string()),PType::String(self.client.token.unwrap())];
+        let mut body=Vec::new();
+        self.serialize("module.encoders",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -142,7 +155,8 @@ impl list {
     }
     pub fn nops(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.nops".to_string()),PType::String(self.client.token.unwrap())];
+        let mut body=Vec::new();
+        self.serialize("module.nops",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -164,9 +178,14 @@ impl list {
         test
     }
 }
+#[derive(se)]
+struct moduleinfo(String,String,String,String);
 pub fn info(client:Client,moduletype:String,modulename:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("module.info".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=moduleinfo("module.info".to_string(),client.token.unwrap(),moduletype,modulename);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -189,7 +208,10 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Return_Type {
 }
 pub fn option(client:Client,moduletype:String,modulename:String) -> Return_Type {
 	let test;
-	let body=vec![PType::String("module.options".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename)];
+	let mut body=Vec::new();
+	let mut serializer=Serializer::new(&mut body);
+	let byte=moduleinfo("module.options".to_string(),client.token.unwrap(),moduletype,modulename);
+	byte.serialize(&mut serializer);
 	let con=connect::connect(client.url,body);
 	match con {
 		Ok(val) => {
@@ -210,6 +232,10 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Return_Type 
 	}
 	test
 }
+#[derive(se)]
+struct compactiblestruct(String,String,String);
+#[derive(se)]
+struct targetcompactiblestruct(String,String,String,i32);
 impl compactible {
     pub fn new(modulename:String,client:Client) -> Self {
         compactible {
@@ -217,9 +243,15 @@ impl compactible {
             client:client,
         }
     }
+    fn serialize(self,method:&str,body:&mut Vec<u8>) {
+		let mut serializer=Serializer::new(&mut body);
+		let byte=compactiblestruct(method.to_string(),self.client.token.unwrap(),self.name);
+		byte.serialize(&mut serializer).unwrap();
+	}
     pub fn payload(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.compactible_payloads".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name)];
+        let mut body=Vec::new();
+        self.serialize("module.compactible_payloads",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -242,7 +274,10 @@ impl compactible {
     }
     pub fn target_payload(self,targetindx:i32) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.target_compatible_payloads".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name),PType::Int(targetindx)];
+        let mut body=Vec::new();
+        let mut serializer=Serializer::new(&mut body);
+        let byte=targetcompactiblestruct("module.target_compactible_payloads".to_string(),self.client.token.unwrap(),self.name,targetindx);
+        byte.serialize(&mut serializer).unwrap();
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -265,7 +300,8 @@ impl compactible {
     }
     pub fn sessions(self) -> Return_Type {
         let test;
-        let body=vec![PType::String("module.compatible_sessions".to_string()),PType::String(self.client.token.unwrap()),PType::String(self.name)];
+        let mut body=Vec::new();
+        self.serialize("module.compactible_sessions",&mut body);
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
@@ -288,9 +324,14 @@ impl compactible {
     }
 
 }
+#[derive(se)]
+struct modulencode(String,String,String,String,HashMap<String,String>);
 pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Return_Type {
     let test;
-    let body=vec![PType::String("module.encode".to_string()),PType::String(client.token.unwrap()),PType::String(data),PType::String(encodermodule),PType::HashMapStr(options)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=modulencode("module.encode".to_string(),client.token.unwrap(),data,encodermodule,options);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
@@ -307,9 +348,14 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     }
     test
 }
+#[derive(se)]
+struct moduleexecute(String,String,String,String,HashMap<String,String>);
 pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Return_Type {
     let test;
-    let body=vec![PType::String("module.execute".to_string()),PType::String(client.token.unwrap()),PType::String(moduletype),PType::String(modulename),PType::HashMapStr(options)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=moduleexecute("module.execute".to_string(),client.token.unwrap(),moduletype,modulename,options);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {

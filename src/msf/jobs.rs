@@ -2,19 +2,24 @@
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
 #[path="./common.rs"] mod common;
-use connect::Parse_Type as PType;
 use common::{MsfError,ReturnValue as Return_Type,jobinfo};
 use error::conerr;
+use serde::Serialize as se;
+use rmp_serde::Serializer;
 use std::collections::HashMap;
 use serde_json::{self,from_value};
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
 }
-
+#[derive(se)]
+struct jobstruct(String,String);
 pub fn list(client:Client) -> Return_Type {
     let test;
-    let body=vec![PType::String("job.list".to_string()),PType::String(client.token.unwrap())];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=jobstruct("job.list".to_string(),client.token.unwrap());
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -35,9 +40,14 @@ pub fn list(client:Client) -> Return_Type {
 	}
 	test
 }
+#[derive(se)]
+struct jobinfostruct(String,String,String);
 pub fn info(client:Client,jobid:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("job.info".to_string()),PType::String(client.token.unwrap()),PType::String(jobid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=jobinfostruct("job.info".to_string(),client.token.unwrap(),jobid);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
@@ -60,7 +70,10 @@ pub fn info(client:Client,jobid:String) -> Return_Type {
 }
 pub fn stop(client:Client,jobid:String) -> Return_Type {
     let test;
-    let body=vec![PType::String("job.stop".to_string()),PType::String(jobid)];
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new(&mut body);
+    let byte=jobinfostruct("job.stop".to_string(),client.token.unwrap(),jobid);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(client.url,body);
     match con {
 		Ok(val) => {
