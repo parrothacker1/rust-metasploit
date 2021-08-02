@@ -3,6 +3,10 @@
 #[path="./common.rs"] mod common;
 #[path="../connect.rs"] mod connect;
 use connect::connect;
+use error::conerr;
+use serde::Serialize as se;
+use rmp_serde::Serializer;
+use serde_json::value::from_value\
 use common::{ReturnValue as Return_Type,MsfError};
 
 pub struct Client {
@@ -11,9 +15,30 @@ pub struct Client {
 }
 #[derive(se)]
 struct sessionstop(String,String,String);
-pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
-    let test:bool=true;
-    Ok(test)
+pub fn stop(client:Client,sessionid:String) -> Return_Type {
+    let test;
+    let mut body=Vec::new();
+    let mut serializer=Serializer::new();
+    let byte=sessionstop("session.stop".to_string(),client.token.unwrap(),sessionid);
+    byte.serialize(&mut serializer).unwrap();
+    let con=connect(client.url,body);
+    match con {
+        Ok(val) => {
+            if val.get("result")==None{
+                let ret:MsfError=from_value(val).unwrap();
+                test=Return_Type::MsfErr(ret);
+            } else {
+                if val.get("result").unwrap().as_str().unwrap()=="success" {
+                    test=Return_Type::Bool(true);
+                } else {
+                    test=Return_Type::Bool(false);
+                }
+        },
+        Err(_e) => {
+            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }
 pub enum shell {
     read(),
@@ -78,18 +103,18 @@ pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectpo
     Ok(test)
 }
 pub trait ring {
-    pub fn new(sessionid:String) -> Self {
+    fn new(sessionid:String) -> Self {
 		sessionid
 	}
-    pub fn clear(&self) -> Result<bool,MsfError> {
+    fn clear(&self) -> Result<bool,MsfError> {
         let test:bool=true;
         Ok(test)
     }
-    pub fn last(&self) -> Result<i32,MsfError> {
+    fn last(&self) -> Result<i32,MsfError> {
         let test:i32=1;
         Ok(test)
     }
-    pub fn put(&self,data:String) -> Result<i32,MsfError> {
+    fn put(&self,data:String) -> Result<i32,MsfError> {
         let test:i32=1;
         Ok(test)
     }
