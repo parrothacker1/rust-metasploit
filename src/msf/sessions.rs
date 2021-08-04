@@ -320,7 +320,7 @@ impl meterpreter {
         test
     }
 }
-pub fn compactible_modules(client:Client,sessionid:String) -> Result<Vec<String>,MsfError> {
+pub fn compactible_modules(client:Client,sessionid:String) -> Return_Type {
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
@@ -343,31 +343,122 @@ pub fn compactible_modules(client:Client,sessionid:String) -> Result<Vec<String>
 	}
     test
 }
-pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectport:i32) -> Result<bool,MsfError> {
-    let test:bool=true;
-    Ok(test)
+#[derive(se)]
+struct shellupgrade(String,String,String,String,i32);
+pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectport:i32) -> Return_Type {
+    let test;
+    let mut body=Vec::new();
+    let mut serailizer=Serializer::new(&mut body);
+    let byte=shellupgrade("session.shell_upgrade".to_string(),client.token.unwrap(),sessionid,connecthost,connectport);
+    byte.serialize(&mut serializer).unwrap();
+    let con=connect(client.url,body);
+    match con {
+        Ok(val) => {
+            if val.get("result")==None {
+                let ret:MsfError=from_value(val).unwrap();
+                test=Return_Type::MsfErr(ret);
+            } else {
+                if val.get("result").unwrap().as_str().unwrap()=="success" {
+                    test=Return_Type::Bool(true);
+                } else {
+                    test=Return_Type::Bool(false);
+                }
+            }
+        },
+        Err(_e) => {
+            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        },
+    }
+    test
 }
 pub struct ring {
 	sessionid:String,
 	client:Client,
 }
+#[derive(se)]
+struct shellring(String,String,String);
+#[derive(se)]
+struct shellringwitharg(String,String,String,String);
+
 impl ring {
-    fn new(sessionid:String,client:Client) -> Self {
+    pub fn new(sessionid:String,client:Client) -> Self {
 		ring {
 			sessionid:sessionid,
 			client:client,
 		}
 	}
-    fn clear(&self) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+    fn serialize_without_arg(&self,method:&str,body:&mut Vec<u8>) {
+        let serializer=Serializer::new(&mut body);
+        let byte=shellring(method.to_string(),self.client.token.unwrap(),self.sessionid);
+        byte.serialize(&mut serializer).unwrap();
     }
-    fn last(&self) -> Result<i32,MsfError> {
-        let test:i32=1;
-        Ok(test)
+    fn serialize_with_arg(&self,method:&str,arg:String,body:&mut Vec<u8>) {
+        let serializer=Serializer::new(&mut body);
+        let byte=shellringwitharg(method.to_string(),self.client.token.unwrap(),self.sessionid,arg);
+        byte.serialize(&mut serializer);
     }
-    fn put(&self,data:String) -> Result<i32,MsfError> {
-        let test:i32=1;
-        Ok(test)
+    pub fn clear(&self) -> Return_Type {
+        let test;
+        let mut body=Vec::new();
+        self.serialize_without_arg("session.ring_clear",&mut body);
+        let con=connect(self.client.url,body);
+        match con {
+            Ok(val) => {
+                if val.get("result")==None {
+                    let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
+                } else {
+                    if val.get("result").unwrap().as_str().unwrap() == "success" {
+                        test=Return_Type::Bool(true);
+                    } else {
+                        test=Return_Type::Bool(false);
+                    }
+                }
+            },
+            Err(_e) => {
+                test=Return_Type::String(conerr::ConInterrupt.to_string());
+            },
+        }
+        test
+    }
+    pub fn last(&self) -> Result<i32,MsfError> {
+        let test;
+        let mut body=Vec::new();
+        self.serialize_without_arg("session.ring_last",&mut body);
+        let con=connect(self.client.url,body);
+        match con {
+            Ok(val) => {
+                if val.get("seq") == None {
+                    let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
+                } else {
+                    test=Return_Type::Int(val.get("seq").unwrap().as_i64().unwrap());
+                }
+            },
+            Err(_e) => {
+                test=Return_Type::String(conerr::ConInterrupt.to_string());
+            },
+        }
+        test
+    }
+    pub fn put(&self,data:String) -> Return_Type {
+        let test;
+        let mut body=Vec::new();
+        self.serialize_with_arg("session.ring_put",data,&mut body);
+        let con=connect(self.client.url,body);
+        match con {
+            Ok(val) => {
+                if val.get("write_count") == None {
+                    let ret:MsfError=from_value(val).unwrap();
+                    test=Return_Type::MsfErr(ret);
+                } else {
+                    test=Return_Type::Int(val.get("write_count").unwrap().as_i64().unwrap());
+                }
+            },
+            Err(_e) => {
+                test=Return_Type::String(conerr::ConInterrupt.to_string());
+            },
+        }
+        test
     }
 }
