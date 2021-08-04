@@ -26,6 +26,8 @@ pub enum ReturnValue {
     JobList(HashMap<String,String>),
     ModuleInfo(info),
     ModuleOption(HashMap<String,moduleoption>),
+    SessionList(HashMap<String,sessionlist>),
+    SessionRead(sessionread),
 }
 #[derive(des,Debug)]
 pub struct pluginloaded {
@@ -127,4 +129,20 @@ pub struct corelist {
 	pub critical:bool,
 	pub name:String,
 	pub started:String,
+}
+#[derive(des,Debug)]
+pub struct sessionlist {
+	pub r#type:String,
+	pub desc:String,
+	pub info:String,
+	pub workspace:String,
+	pub target_host:String,
+	pub username:String,
+	pub uuid:String,
+	pub exploit_uuid:String,
+}
+#[derive(des,Debug)]
+pub struct sessionread {
+	pub seq:String,
+	pub data:String,
 }
