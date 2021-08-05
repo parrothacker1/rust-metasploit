@@ -34,13 +34,13 @@ impl Client {
 					}
 				} else {
                     let ret=conerr::Authfail { user:new_user.clone() };
-					panic!(ret);
+					panic!("\n{}",ret);
 				}
 			},
 			Err(_e) => {
                 let sock=String::from(format!("{}:{}",host,port));
                 let ret=conerr::ConnectionNotPossible { socket:sock };
-				panic!(ret);
+				panic!("\n{}",ret);
 			},
 		}
         test
