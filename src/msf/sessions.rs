@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use serde::Serialize as se;
 use rmp_serde::Serializer;
 use serde_json::value::from_value;
-use common::{ReturnValue as Return_Type,MsfError,sessionlist,sessionread};
+use common::{ReturnValue as Return_Type,MsfError,sessionlist,sessionread,compactiblesessionsstr,consoletabs};
 
 pub struct Client {
     pub url:String,
@@ -20,18 +20,18 @@ pub fn list(client:Client) -> Return_Type {
 	let test;
 	let mut body=Vec::new();
 	let mut serializer=Serializer::new(&mut body);
-	let byte=sessionstruct("session.list".to_string(),client.token.unwrap());
+	let byte=sessionstruct("session.list".to_string(),client.token.as_ref().unwrap().to_string());
 	byte.serialize(&mut serializer).unwrap();
 	let con=connect(client.url,body);
 	match con {
 		Ok(val) => {
-			let ret:Result<HashMap<String,sessionlist>,serde_json::Error>=from_value(val);
+			let ret:Result<HashMap<String,sessionlist>,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(val) => {
 					test=Return_Type::SessionList(val);
 				},
 				Err(_e) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(ret);
 				},
 			}
@@ -50,7 +50,7 @@ pub fn stop(client:Client,sessionid:String) -> Return_Type {
     let mut serializer=Serializer::new(&mut body);
     let byte=sessionstop("session.stop".to_string(),client.token.unwrap(),sessionid);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body);
+    let con=connect(client.url.clone(),body);
     match con {
         Ok(val) => {
             if val.get("result") == None {
@@ -77,29 +77,29 @@ pub enum shell {
 #[derive(se)]
 struct shellread(String,String,String);
 #[derive(se)]
-struct shellreadwithrp(String,String,Sting,String);
+struct shellreadwithrp(String,String,String,String);
 impl shell {
     pub fn read(client:Client,sessionid:String,readpointer:Option<String>) -> Return_Type {
         let test;
-        let byte;
         let mut body=Vec::new();
         let mut serializer=Serializer::new(&mut body);
         if readpointer == None {
-			byte=shellread("session.shell_read".to_string(),client.token.unwrap(),sessionid);
+			let byte=shellread("session.shell_read".to_string(),client.token.as_ref().unwrap().to_string(),sessionid);
+			byte.serialize(&mut serializer).unwrap();
 		} else {
-			byte=shellreadwithrp("session.shell_read".to_string(),client.token.unwrap(),sessionid,readpointer.unwrap());
+			let byte2=shellreadwithrp("session.shell_read".to_string(),client.token.unwrap(),sessionid,readpointer.unwrap());
+			byte2.serialize(&mut serializer).unwrap();
 		}
-        byte.serialize(&mut serializer).unwrap();
-        let con=connect(client.url,body);
+        let con=connect(client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<sessionread,serde_json::Error>=from_value(val);
+				let ret:Result<sessionread,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::SessionRead(val);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -114,9 +114,9 @@ impl shell {
         let test;
         let mut body=Vec::new();
         let mut serializer=Serializer::new(&mut body);
-        let byte=shellreadwithrp("session.shell_write".to_string(),client.token.unwrap(),sessionid,command);
+        let byte=shellreadwithrp("session.shell_write".to_string(),client.token.as_ref().unwrap().to_string(),sessionid,command);
         byte.serialize(&mut serializer).unwrap();
-        let con=connect(client.url,body);
+        let con=connect(client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("write_count")==None {
@@ -149,20 +149,20 @@ impl meterpreter {
         }
     }
     fn serialize_without_arg(&self,method:&str,body:&mut Vec<u8>) {
-		let serialize=Serializer::new(&mut body);
-		let byte=meterpreterwithoutarg(method.to_string(),self.client.token.unwrap(),self.sessionid);
+		let mut serializer=Serializer::new(body);
+		let byte=meterpreterwithoutarg(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone());
 		byte.serialize(&mut serializer).unwrap();
 	}
 	fn serialize_with_arg(&self,method:&str,arg:String,body:&mut Vec<u8>) {
-		let serializer=Serializer::new(&mut body);
-		let byte=meterpreterwitharg(method.to_string(),self.client.token.unwrap(),self.sessionid,arg);
+		let mut serializer=Serializer::new(body);
+		let byte=meterpreterwitharg(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone(),arg);
 		byte.serialize(&mut serializer).unwrap();
 	}
     pub fn write(&self,data:String) -> Return_Type {
         let test;
         let mut body=Vec::new();
         self.serialize_with_arg("session.meterpreter_write",data,&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("result").unwrap().as_str().unwrap()=="success" {
@@ -182,16 +182,16 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_without_arg("session.meterpreter_read",&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<sessionread,serde_json::Error>=from_value(val);
+				let ret:Result<sessionread,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(value) => {
 						test=Return_Type::SessionRead(value);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -206,7 +206,7 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_with_arg("session.meterpreter_run_single",command,&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("result")!=None {
@@ -230,7 +230,7 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_with_arg("session.meterpreter_script",scriptname,&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("result")==None {
@@ -254,7 +254,7 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_without_arg("session.meterpreter_session_detach",&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("result")==None {
@@ -278,7 +278,7 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_without_arg("session.meterpreter_session_kill",&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("result")==None {
@@ -302,15 +302,15 @@ impl meterpreter {
         let test;
         let mut body=Vec::new();
         self.serialize_with_arg("session.meterpreter_tabs",inputline,&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
 				if val.get("tabs")==None {
 					let ret:MsfError=from_value(val).unwrap();
 					test=Return_Type::MsfErr(ret);
 				} else {
-					let ret=val.get("tabs").unwrap().as_array().unwrap();
-					test=Return_Type::ArrayStr(ret);
+					let ret:consoletabs=from_value(val).unwrap();
+					test=Return_Type::ArrayStr(ret.tabs);
 				}
 			},
 			Err(_e)=> {
@@ -333,8 +333,8 @@ pub fn compactible_modules(client:Client,sessionid:String) -> Return_Type {
 				let ret:MsfError=from_value(val).unwrap();
 				test=Return_Type::MsfErr(ret);
 			} else {
-				let ret=val.get("modules").unwrap().as_array().unwrap();
-				test=Return_Type::ArrayStr(ret);
+				let ret:compactiblesessionsstr=from_value(val).unwrap();
+				test=Return_Type::ArrayStr(ret.modules);
 			}
 		},
 		Err(_e) => {
@@ -348,10 +348,10 @@ struct shellupgrade(String,String,String,String,i32);
 pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectport:i32) -> Return_Type {
     let test;
     let mut body=Vec::new();
-    let mut serailizer=Serializer::new(&mut body);
-    let byte=shellupgrade("session.shell_upgrade".to_string(),client.token.unwrap(),sessionid,connecthost,connectport);
+    let mut serializer=Serializer::new(&mut body);
+    let byte=shellupgrade("session.shell_upgrade".to_string(),client.token.as_ref().unwrap().to_string(),sessionid,connecthost,connectport);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body);
+    let con=connect(client.url.clone(),body);
     match con {
         Ok(val) => {
             if val.get("result")==None {
@@ -388,20 +388,20 @@ impl ring {
 		}
 	}
     fn serialize_without_arg(&self,method:&str,body:&mut Vec<u8>) {
-        let serializer=Serializer::new(&mut body);
-        let byte=shellring(method.to_string(),self.client.token.unwrap(),self.sessionid);
+        let mut serializer=Serializer::new(body);
+        let byte=shellring(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone());
         byte.serialize(&mut serializer).unwrap();
     }
     fn serialize_with_arg(&self,method:&str,arg:String,body:&mut Vec<u8>) {
-        let serializer=Serializer::new(&mut body);
-        let byte=shellringwitharg(method.to_string(),self.client.token.unwrap(),self.sessionid,arg);
+        let mut serializer=Serializer::new(body);
+        let byte=shellringwitharg(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone(),arg);
         byte.serialize(&mut serializer);
     }
     pub fn clear(&self) -> Return_Type {
         let test;
         let mut body=Vec::new();
         self.serialize_without_arg("session.ring_clear",&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
             Ok(val) => {
                 if val.get("result")==None {
@@ -421,11 +421,11 @@ impl ring {
         }
         test
     }
-    pub fn last(&self) -> Result<i32,MsfError> {
+    pub fn last(&self) -> Return_Type {
         let test;
         let mut body=Vec::new();
         self.serialize_without_arg("session.ring_last",&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
             Ok(val) => {
                 if val.get("seq") == None {
@@ -445,7 +445,7 @@ impl ring {
         let test;
         let mut body=Vec::new();
         self.serialize_with_arg("session.ring_put",data,&mut body);
-        let con=connect(self.client.url,body);
+        let con=connect(self.client.url.clone(),body);
         match con {
             Ok(val) => {
                 if val.get("write_count") == None {

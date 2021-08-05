@@ -28,25 +28,25 @@ impl list {
             client:client,
         }
     }
-    fn serialize(self,method:&str,body:&mut Vec<u8>) {
-		let mut serializer=Serializer::new(&mut body);
-		let byte=moduleliststruct(method.to_string(),self.client.token.unwrap());
+    fn serialize(&self,method:&str,body:&mut Vec<u8>) {
+		let mut serializer=Serializer::new(body);
+		let byte=moduleliststruct(method.to_string(),self.client.token.as_ref().unwrap().to_string());
 		byte.serialize(&mut serializer).unwrap();
 	}
     pub fn exploits(self) -> Return_Type {
         let mut body=Vec::new();
         let test;
         self.serialize("module.exploits",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -61,16 +61,16 @@ impl list {
         let test;
         let mut body=Vec::new();
         self.serialize("module.auxiliary",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -85,16 +85,16 @@ impl list {
         let test;
         let mut body=Vec::new();
         self.serialize("module.post",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -109,16 +109,16 @@ impl list {
         let test;
         let mut body=Vec::new();
         self.serialize("module.payloads",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -136,13 +136,13 @@ impl list {
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -157,16 +157,16 @@ impl list {
         let test;
         let mut body=Vec::new();
         self.serialize("module.nops",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<modulelist,serde_json::Error>=from_value(val);
+				let ret:Result<modulelist,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.modules);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -184,18 +184,18 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Return_Type {
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
-    let byte=moduleinfo("module.info".to_string(),client.token.unwrap(),moduletype,modulename);
+    let byte=moduleinfo("module.info".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
 		Ok(val) => {
-			let ret:Result<info,serde_json::Error>=from_value(val);
+			let ret:Result<info,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(val) => {
 					test=Return_Type::ModuleInfo(val);
 				},
 				Err(_e) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(ret);
 				},
 			}
@@ -210,18 +210,18 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Return_Type 
 	let test;
 	let mut body=Vec::new();
 	let mut serializer=Serializer::new(&mut body);
-	let byte=moduleinfo("module.options".to_string(),client.token.unwrap(),moduletype,modulename);
+	let byte=moduleinfo("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
 	byte.serialize(&mut serializer);
-	let con=connect::connect(client.url,body);
+	let con=connect::connect(client.url.clone(),body);
 	match con {
 		Ok(val) => {
-			let ret:Result<HashMap<String,moduleoption>,serde_json::Error>=from_value(val);
+			let ret:Result<HashMap<String,moduleoption>,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(val) => {
 					test=Return_Type::ModuleOption(val);
 				},
 				Err(_e) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(ret);
 				},
 			}
@@ -243,9 +243,9 @@ impl compactible {
             client:client,
         }
     }
-    fn serialize(self,method:&str,body:&mut Vec<u8>) {
-		let mut serializer=Serializer::new(&mut body);
-		let byte=compactiblestruct(method.to_string(),self.client.token.unwrap(),self.name);
+    fn serialize(&self,method:&str,body:&mut Vec<u8>) {
+		let mut serializer=Serializer::new(body);
+		let byte=compactiblestruct(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
 		byte.serialize(&mut serializer).unwrap();
 	}
     pub fn payload(self) -> Return_Type {
@@ -255,13 +255,13 @@ impl compactible {
         let con=connect::connect(self.client.url,body);
         match con {
 			Ok(val) => {
-				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val);
+				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.payloads);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -276,18 +276,18 @@ impl compactible {
         let test;
         let mut body=Vec::new();
         let mut serializer=Serializer::new(&mut body);
-        let byte=targetcompactiblestruct("module.target_compactible_payloads".to_string(),self.client.token.unwrap(),self.name,targetindx);
+        let byte=targetcompactiblestruct("module.target_compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
         byte.serialize(&mut serializer).unwrap();
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val);
+				let ret:Result<compactiblepayload,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayStr(val.payloads);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -302,16 +302,16 @@ impl compactible {
         let test;
         let mut body=Vec::new();
         self.serialize("module.compactible_sessions",&mut body);
-        let con=connect::connect(self.client.url,body);
+        let con=connect::connect(self.client.url.clone(),body);
         match con {
 			Ok(val) => {
-				let ret:Result<compactiblesessions,serde_json::Error>=from_value(val);
+				let ret:Result<compactiblesessions,serde_json::Error>=from_value(val.clone());
 				match ret {
 					Ok(val) => {
 						test=Return_Type::ArrayInt(val.sessions);
 					},
 					Err(_e) => {
-						let ret:MsfError=from_value(val).unwrap();
+						let ret:MsfError=from_value(val.clone()).unwrap();
 						test=Return_Type::MsfErr(ret);
 					},
 				}
@@ -330,9 +330,9 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
-    let byte=modulencode("module.encode".to_string(),client.token.unwrap(),data,encodermodule,options);
+    let byte=modulencode("module.encode".to_string(),client.token.as_ref().unwrap().to_string(),data,encodermodule,options);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
         Ok(val) => {
             if val.get("encoded")==None {
@@ -354,21 +354,21 @@ pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
-    let byte=moduleexecute("module.execute".to_string(),client.token.unwrap(),moduletype,modulename,options);
+    let byte=moduleexecute("module.execute".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename,options);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
         Ok(val) => {
-            if moduletype != "payload".to_string() {
+            if moduletype.clone() != "payload".to_string() {
                 if val.get("payload") == None {
-                    let ret:MsfError=from_value(val).unwrap();
+                    let ret:MsfError=from_value(val.clone()).unwrap();
                     test=Return_Type::MsfErr(ret);
                 } else {
                     test=Return_Type::String(val.get("payload").unwrap().as_str().unwrap().to_string());
                 }
             } else {
                 if val.get("job_id") == None {
-                    let ret:MsfError=from_value(val).unwrap();
+                    let ret:MsfError=from_value(val.clone()).unwrap();
                     test=Return_Type::MsfErr(ret);
                 } else {
                     test=Return_Type::Int(val.get("job_id").unwrap().as_i64().unwrap());

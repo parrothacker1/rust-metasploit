@@ -20,16 +20,16 @@ pub fn create(client:Client) -> Return_Type {
     let mut serializer=Serializer::new(&mut body);
     let byte=createstruct("console.create".to_string(),client.token.unwrap());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
         Ok(val) => {
-            let ret:Result<create,serde_json::Error>=from_value(val);
+            let ret:Result<create,serde_json::Error>=from_value(val.clone());
             match ret {
                 Ok(retv) => {
                     test=Return_Type::ConsoleCreate(retv);
                 },
                 Err(_) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
                     test=Return_Type::MsfErr(ret);
                 },
             }
@@ -75,13 +75,13 @@ pub fn list(client:Client) -> Return_Type {
     let con=connect::connect(client.url,body);
     match con {
         Ok(val) => {
-			let ret:Result<HashMap<String,consolelist>,serde_json::Error>=from_value(val);
+			let ret:Result<HashMap<String,consolelist>,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(retn) => {
 					test=Return_Type::ConsoleList(retn);
 				},
 				Err(_e) => {
-					let err:MsfError=from_value(val).unwrap();
+					let err:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(err);
 				},
 			}

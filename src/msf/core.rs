@@ -22,16 +22,16 @@ pub fn add_module_path(client:Client,path:String) -> Return_Type {
     let mut serializer=Serializer::new(&mut body);
     let byte=addmodule("core.add_module_path".to_string(),client.token.unwrap(),path);
     byte.serialize(&mut serializer);
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
 		Ok(val) => {
-			let ret:Result<modules,serde_json::Error>=from_value(val);
+			let ret:Result<modules,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(retn) => {
 					test=Return_Type::CoreModules(retn);
 				},
 				Err(_e) => {
-					let retn:MsfError=from_value(val).unwrap();
+					let retn:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(retn);
 				},
 			}
@@ -163,18 +163,18 @@ pub fn thread_list(client:Client) -> Return_Type{
 	let test;
 	let mut body=Vec::new();
 	let mut serializer=Serializer::new(&mut body);
-	let byte=modulestruct("core.thread_list".to_string(),client.token.unwrap());
+	let byte=modulestruct("core.thread_list".to_string(),client.token.as_ref().unwrap().to_string());
 	byte.serialize(&mut serializer).unwrap();
-	let con=connect::connect(client.url,body);
+	let con=connect::connect(client.url.clone(),body);
 	match con {
 		Ok(val) => {
-			let ret:Result<HashMap<i32,corelist>,serde_json::Error>=from_value(val);
+			let ret:Result<HashMap<i32,corelist>,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(retn) => {
 					test=Return_Type::CoreList(retn);
 				},
 				Err(_e) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(ret);
 				},
 			}
@@ -191,8 +191,9 @@ pub fn thread_kill(client:Client,threadID:i32) -> Return_Type {
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
-    let byte=threadkill("core.thread_kill".to_string(),client.token.unwrap(),threadID);
-    let con=connect::connect(client.url,body);
+    let byte=threadkill("core.thread_kill".to_string(),client.token.as_ref().unwrap().to_string(),threadID);
+    byte.serialize(&mut serializer).unwrap();
+    let con=connect::connect(client.url.clone(),body);
     match con {
 		Ok(val) => {
 			if val.get("result").unwrap().as_str().unwrap()=="success" {
@@ -212,18 +213,18 @@ pub fn version(client:Client) -> Return_Type {
     let test;
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
-    let byte=modulestruct("core.version".to_string(),client.token.unwrap());
+    let byte=modulestruct("core.version".to_string(),client.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(client.url,body);
+    let con=connect::connect(client.url.clone(),body);
     match con {
 		Ok(val) => {
-			let ret:Result<version,serde_json::Error>=from_value(val);
+			let ret:Result<version,serde_json::Error>=from_value(val.clone());
 			match ret {
 				Ok(ret) => {
 					test=Return_Type::CoreVersion(ret);
 				},
 				Err(_) => {
-					let ret:MsfError=from_value(val).unwrap();
+					let ret:MsfError=from_value(val.clone()).unwrap();
 					test=Return_Type::MsfErr(ret);
 				},
 			}

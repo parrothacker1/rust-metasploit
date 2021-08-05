@@ -22,7 +22,7 @@ impl Client {
         };
         let mut body=Vec::new();
         let mut serializer=Serializer::new(&mut body);
-        let byte=authlogin("auth.login".to_string(),new_user,new_pass);
+        let byte=authlogin("auth.login".to_string(),new_user.clone(),new_pass);
         byte.serialize(&mut serializer).unwrap();
         let data=connect::connect(url.clone(),body);
         match data {
@@ -33,7 +33,7 @@ impl Client {
 						token:Some(val.get("token").unwrap().as_str().unwrap().to_string()),
 					}
 				} else {
-                    let ret=conerr::Authfail { user:new_user };
+                    let ret=conerr::Authfail { user:new_user.clone() };
 					panic!(ret);
 				}
 			},
