@@ -1,17 +1,22 @@
-use std::fmt::{Result,Display,Debug};
-use ureq;
+use std::fmt::{Result,Display,Formatter,Debug};
+use reqwest;
+use serde::Deserialize as des;
 use snafu::Snafu;
-pub type ConnectionError=ureq::Error;
-#[derive(Debug)]
+pub type ConnectionError=reqwest::Error;
+#[derive(des)]
 pub struct MsfError {
     error:bool,
     error_class:String,
     error_message:String,
 }
-#[derive(Debug,Snafu)]
-pub enum conerr {
-	#[snafu(display("Couldn't cannot to Metasploit RPC Server at {}",socket))]
-	ConnectionNotPossible { socket:String },
-	#[snafu(display("Connection Interrupted while communicating"))]
-	ConInterrupt,
+impl Display for MsfError {
+	fn fmt(&self,f: &mut Formatter) -> Result {
+		write!(f,"Error Message {}",self.error_message)
+	}
 }
+impl Debug for MsfError {
+	fn fmt(&self,f:&mut Formatter) -> Result {
+		write!(f,"{:?}",self)
+	}
+}
+	
