@@ -1,6 +1,6 @@
 [package]
 name = "rust-metasploit"
-version = "0.1.5"
+version = "0.1.0"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
 
@@ -12,8 +12,6 @@ rmp-serde="0.13.7"
 serde_json="*"
 serde={ version="1.0.117" , features=["derive"]}
 snafu="0.2.0"
-reqwest = { version = "0.11", features = ["blocking", "json"] }
-
 [lib]
 name="metasploit"
 
