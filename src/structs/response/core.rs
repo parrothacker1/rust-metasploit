@@ -1,31 +1,31 @@
 #![allow(non_camel_case_types)]
 use serde::Deserialize as des;
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct addmodpath {
-    pub exploits:u32,
-    pub auxiliary:u32,
-    pub post:u32,
-    pub encoders:u32,
-    pub nops:u32,
-    pub payloads:u32,
+    pub exploits:i32,
+    pub auxiliary:i32,
+    pub post:i32,
+    pub encoders:i32,
+    pub nops:i32,
+    pub payloads:i32,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct modulestat {
-    pub exploits:u32,
-    pub auxiliary:u32,
-    pub post:u32,
-    pub encoders:u32,
-    pub nops:u32,
-    pub payloads:u32,
+    pub exploits:i32,
+    pub auxiliary:i32,
+    pub post:i32,
+    pub encoders:i32,
+    pub nops:i32,
+    pub payloads:i32,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct reloadmod {
-    pub exploits:u32,
-    pub auxiliary:u32,
-    pub post:u32,
-    pub encoders:u32,
-    pub nops:u32,
-    pub payloads:u32,
+    pub exploits:i32,
+    pub auxiliary:i32,
+    pub post:i32,
+    pub encoders:i32,
+    pub nops:i32,
+    pub payloads:i32,
 }
 #[derive(des,Debug)]
 pub struct save {
@@ -38,6 +38,13 @@ pub struct setg {
 #[derive(des,Debug)]
 pub struct unsetg {
     pub result:String,
+}
+#[derive(des,Debug)]
+pub struct threadlist {
+	pub status:String,
+	pub critical:bool,
+	pub name:String,
+	pub started:String,
 }
 #[derive(des,Debug)]
 pub struct threadkill {

@@ -10,7 +10,11 @@ use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
 
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
-    let mut test:Result<res::console::create,MsfError>;
+    let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
+        id:1,
+        prompt:"".to_string(),
+        busy:false,
+    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -23,7 +27,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 		Ok(_) => {
 			let de_ret:Result<res::console::create,derror>=Deserialize::deserialize(&mut de);
 			if let Ok(ref val) = de_ret {
-				test=Ok(*val);
+				test=Ok(val.clone());
 			};
 			if let Err(_) = de_ret {
 				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
@@ -37,7 +41,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     test
 }
 pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>;
+    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -68,7 +72,7 @@ pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError> {
-	let mut test:Result<HashMap<String,res::console::list>,MsfError>;
+	let mut test:Result<HashMap<String,res::console::list>,MsfError>=Ok(HashMap::new());
 	let mut body=Vec::new();
 	let mut buf=vec![];
 	let mut serializer=Serializer::new(&mut body);
@@ -81,7 +85,8 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 		Ok(_) => {
 			let de_ret:Result<HashMap<String,res::console::list>,derror>=Deserialize::deserialize(&mut de);
 			if let Ok(ref val) = de_ret {
-				test=Ok(*val.clone());
+                let mut new=val.clone();
+				test=Ok(new);
 			};
 			if let Err(_) = de_ret {
 				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
@@ -95,7 +100,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 	test
 }
 pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError> {
-    let mut test:Result<i32,MsfError>;
+    let mut test:Result<i32,MsfError>=Ok(1);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -122,7 +127,11 @@ pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError>
     test
 }
 pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfError> {
-    let mut test:Result<res::console::read,MsfError>;
+    let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
+        data:String::new(),
+        prompt:String::new(),
+        busy:true,
+    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -139,7 +148,7 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
 				test=Err(de_ret);
 			};
 			if let Ok(ref val) = de_ret {
-				test=Ok(*val.clone());
+				test=Ok(val.clone());
 			};
 		},
 		Err(_) => {
@@ -149,7 +158,7 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
     test
 }
 pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>;
+    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -180,7 +189,7 @@ pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>;
+    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -211,7 +220,7 @@ pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 pub fn tabs(client:Client,consoleid:String,inputline:String) -> Result<Vec<String>,MsfError> {
-    let mut test:Result<Vec<String>,MsfError>;
+    let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);

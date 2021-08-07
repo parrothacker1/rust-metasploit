@@ -1,8 +1,8 @@
 #![allow(non_camel_case_types)]
 use serde::Deserialize as des;
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct create {
-    pub id:u32,
+    pub id:i32,
     pub prompt:String,
     pub busy:bool,
 }
@@ -10,7 +10,7 @@ pub struct create {
 pub struct destroy {
     pub result:String,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct list {
 	pub id:String,
 	pub prompt:String,
@@ -20,7 +20,7 @@ pub struct list {
 pub struct write {
     pub wrote:i32,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct read {
     pub data:String,
     pub prompt:String,
