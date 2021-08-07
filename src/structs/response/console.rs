@@ -11,8 +11,14 @@ pub struct destroy {
     pub result:String,
 }
 #[derive(des,Debug)]
+pub struct list {
+	pub id:String,
+	pub prompt:String,
+	pub busy:bool,
+}
+#[derive(des,Debug)]
 pub struct write {
-    pub wrote:u32,
+    pub wrote:i32,
 }
 #[derive(des,Debug)]
 pub struct read {
@@ -21,11 +27,11 @@ pub struct read {
     pub busy:bool,
 }
 #[derive(des,Debug)]
-pub struct detach {
+pub struct session_detach {
     pub result:String,
 }
 #[derive(des,Debug)]
-pub struct kill {
+pub struct session_kill {
     pub result:String,
 }
 #[derive(des,Debug)]

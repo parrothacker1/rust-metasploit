@@ -3,6 +3,7 @@
 use structs::{request::auth::login,response::auth::login as reslogin};
 use rmp_serde::{Serializer,Deserializer,decode::Error};
 use serde::{Serialize,Deserialize};
+#[derive(Debug)]
 pub struct Client {
     pub url:String,
     pub token:Option<String>,
@@ -48,7 +49,10 @@ impl Client {
 			token:Some(token.clone()),
 		}
     }
-    pub fn print(self) {
-        println!("{:?}",self.token)
+    pub fn print(&self) {
+        println!("{:?}",&self.token)
     }
+    pub fn clone(&self) -> &Client {
+		self
+	}
 }
