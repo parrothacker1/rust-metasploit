@@ -39,7 +39,7 @@ pub struct setg {
 pub struct unsetg {
     pub result:String,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct threadlist {
 	pub status:String,
 	pub critical:bool,
@@ -50,7 +50,7 @@ pub struct threadlist {
 pub struct threadkill {
     pub result:String,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct version {
     pub version:String,
     pub ruby:String,
