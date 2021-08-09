@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../connect.rs"] mod connect;
 #[path="../error.rs"] mod error;

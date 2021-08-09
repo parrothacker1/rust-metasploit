@@ -21,7 +21,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let byte=req::console::create("console.create".to_string(),client.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer);
     let con=connect(client.url,body,&mut buf);
-    let mut new_buf=buf.clone();
+    let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
 		Ok(_) => {
@@ -85,7 +85,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 		Ok(_) => {
 			let de_ret:Result<HashMap<String,res::console::list>,derror>=Deserialize::deserialize(&mut de);
 			if let Ok(ref val) = de_ret {
-                let mut new=val.clone();
+                let new=val.clone();
 				test=Ok(new);
 			};
 			if let Err(_) = de_ret {
