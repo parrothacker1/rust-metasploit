@@ -10,3 +10,9 @@ pub struct info(pub String,pub String,pub String,pub String);
 pub struct encoder(pub String,pub String,pub String,pub String,pub HashMap<String,String>);
 #[derive(se)]
 pub struct execute(pub String,pub String,pub String,pub String,pub HashMap<String,String>);
+#[derive(se)]
+pub struct options(pub String,pub String,pub String,pub String);
+#[derive(se)]
+pub struct compactible(pub String,pub String,pub String);
+#[derive(se)]
+pub struct compactible_tp(pub String,pub String,pub String,pub i32);

@@ -190,43 +190,102 @@ impl compactible {
     }
     pub fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        let mut se=Serializer::new(&mut body);
+        let byte=req::modules::compactible("module.compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
+        byte.serialize(&mut se);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.payloads.clone());
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
         test
     }
     pub fn target_payload(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        let mut se=Serializer::new(&mut body);
+        let byte=req::modules::compactible_tp("module.target_compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
+        byte.serialize(&mut se);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.payloads.clone());
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
         test
     }
     pub fn sessions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        let mut se=Serializer::new(&mut body);
+        let byte=req::modules::compactible("module.compactible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
+        byte.serialize(&mut se);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::modules::compactible_sessions,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.sessions.clone());
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
         test
     }
 }
-/*pub fn option(client:Client,moduletype:String,modulename:String) -> Result<String,res::modules:: {
+pub fn option(client:Client,moduletype:String,modulename:String) -> Result<String,res::modules:: {
     let mut test:Result<>=Ok()
     let mut body=Vec::new();
+    let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
-    let byte=moduleinfo("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
+    let byte=req::modules::options("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
     byte.serialize(&mut serializer);
-    let con=connect::connect(client.url.clone(),body);
+    let con=connect(client.url.clone(),body,&mut buf);
     match con {
-        Ok(val) => {
-            let ret:Result<HashMap<String,moduleoption>,serde_json::Error>=from_value(val.clone());
-            match ret {
-                Ok(val) => {
-                    test=Return_Type::ModuleOption(val);
-                },
-                Err(_e) => {
-                    let ret:MsfError=from_value(val.clone()).unwrap();
-                    test=Return_Type::MsfErr(ret);
-                },
-            }
-        },
-        Err(_e) => {
-            test=Return_Type::String(conerr::ConInterrupt.to_string());
+        Ok(_) => {},
+        Err(_) => {
+            panic!("Connection closed unexpectedly");
         },
     }
     test
-}*/
+}
 pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Result<String,MsfError> {
     let mut test:Result<String,MsfError>=Ok(String::new());
     let mut body=Vec::new();
