@@ -15,10 +15,16 @@ pub struct info {
     pub authors:Vec<String>,
     pub references:Vec<String>,
 }
-/*#[derive(des,Debug,Clone)]
-pub enum options {
-    
-}*/
+#[derive(des,Debug,Clone)]
+pub struct options {
+    pub r#type:String,
+    pub required:bool,
+    pub advanced:bool,
+    pub evasion:bool,
+    pub desc:String,
+    pub default:Option<String>,
+    pub enums:Option<Vec<String>>,
+}
 #[derive(des,Debug)]
 pub struct compactible_payloads {
     pub payloads:Vec<String>,

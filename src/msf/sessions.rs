@@ -1,14 +1,16 @@
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
+#[path="../connect.rs"] mod connect;
+use connect::connect;
+use serde::{Serialize,Deserialize};
+use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use crate::client::Client;
 use error::MsfError;
-use structs::sessions;
-pub struct Client {
-    pub url:String,
-    pub token:Option<String>,
-}
+use structs::{request as req,response as res};
+
 pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
-    let test:bool=true;
-    Ok(test)
+    let test:Result<bool,MsfError>=Ok(true);
+    test
 }
 pub enum shell {
     read(),

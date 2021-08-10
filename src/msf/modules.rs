@@ -270,16 +270,27 @@ impl compactible {
         test
     }
 }
-pub fn option(client:Client,moduletype:String,modulename:String) -> Result<String,res::modules:: {
-    let mut test:Result<>=Ok()
+pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashMap<String,res::modules::options>,MsfError> {
+    let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::modules::options("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
     byte.serialize(&mut serializer);
     let con=connect(client.url.clone(),body,&mut buf);
+    let new_buf=buf.clone();
+    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-        Ok(_) => {},
+        Ok(_) => {
+            let de_ret:Result<HashMap<String,res::modules::options>,derror>=Deserialize::deserialize(&mut de);
+            if let Err(_) = de_ret {
+                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                test=Err(de_ret);
+            };
+            if let Ok(ref val) = de_ret {
+                test=Ok(val.clone());
+            };
+        },
         Err(_) => {
             panic!("Connection closed unexpectedly");
         },
