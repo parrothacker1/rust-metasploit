@@ -1,10 +1,26 @@
 #![allow(non_camel_case_types)]
 use serde::Deserialize as des;
+#[derive(des,Debug,Clone)]
+pub struct list {
+  pub r#type: String,
+  pub tunnel_local: String,
+  pub tunnel_peer: String,
+  pub via_exploit: String,
+  pub via_payload:Option<String>,
+  pub desc: String,
+  pub info: String,
+  pub workspace: String,
+  pub target_host: String,
+  pub username: String,
+  pub uuid: String,
+  pub exploit_uuid: String,
+  pub routes: Option<Vec<String>>,
+}
 #[derive(des,Debug)]
 pub struct stop {
     pub result:String,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct shell_read {
     pub seq:String,
     pub data:String,
