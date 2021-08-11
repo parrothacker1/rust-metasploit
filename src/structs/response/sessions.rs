@@ -27,9 +27,9 @@ pub struct shell_read {
 }
 #[derive(des,Debug)]
 pub struct shell_write {
-    pub write_count:String,
+    pub write_count:i32,
 }
-#[derive(des,Debug)]
+#[derive(des,Debug,Clone)]
 pub struct meterpreter_write {
     pub result:String,
 }

@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
@@ -46,7 +47,6 @@ pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
     let con = connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
-    let con=connect(client.url,body,&mut buf);
     match con {
         Ok(_) => {
             let de_ret:Result<res::sessions::stop,derror>=Deserialize::deserialize(&mut de);
@@ -112,7 +112,7 @@ impl shell {
         test
     }
     pub fn write(client:Client,sessionid:String) -> Result<i32,MsfError> {
-        let test:i32=1;
+        let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
@@ -121,7 +121,22 @@ impl shell {
         let con = connect(client.url,body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
-        Ok(test)
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::shell_write,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.write_count);
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
 }
 pub struct meterpreter {
@@ -135,55 +150,236 @@ impl meterpreter {
             client:client,
         }
     }
+    fn serialize(&self,body:&mut Vec<u8>,method:&str,param:Option<String>) {
+        let mut se=Serializer::new(body);
+        match param {
+            Some(val) => {
+                let byte=req::sessions::meterpreter_with_two(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone(),val);
+                byte.serialize(&mut se).unwrap();
+            },
+            None => {
+                let byte=req::sessions::meterpreter_with_one(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone());
+                byte.serialize(&mut se).unwrap();
+            },
+        }
+    }
     pub fn write(&self,data:String) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_write",Some(data));
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_write,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    if val.result=="success".to_string() {
+                        test=Ok(true);
+                    } else {
+                        test=Ok(false);
+                    }
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
     pub fn read(&self) -> Result<String,MsfError> {
-        let test:String=String::new();
-        Ok(test)
+        let mut test:Result<String,MsfError>=Ok(String::new());
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_read",None);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_read,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.data.clone());
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        
+        test
     }
     pub fn run_single(&self,command:String) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_run_single",Some(command));
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_run_single,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    if val.result=="success".to_string() {
+                        test=Ok(true);
+                    } else {
+                        test=Ok(false);
+                    }
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
     pub fn script(&self,scriptname:String) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_script",Some(scriptname));
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_script,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    if val.result=="success".to_string() {
+                        test=Ok(true);
+                    } else {
+                        test=Ok(false);
+                    }
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
     pub fn session_detach(&self) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_session_detach",None);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_session_detach,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    if val.result=="success".to_string() {
+                        test=Ok(true);
+                    } else {
+                        test=Ok(false);
+                    }
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
     pub fn session_kill(&self) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"session.meterpreter_session_kill",None);
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_session_kill,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    if val.result=="success".to_string() {
+                        test=Ok(true);
+                    } else {
+                        test=Ok(false);
+                    }
+                };
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
     pub fn tabs(&self,inputline:String) -> Result<Vec<String>,MsfError> {
-        let test:Vec<String>=Vec::new();
-        Ok(test)
+        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
+        let mut body=Vec::new();
+        let mut buf=vec![];
+        self.serialize(&mut body,"meterpreter_tabs",Some(inputline));
+        let con=connect(self.client.url.clone(),body,&mut buf);
+        let new_buf=buf.clone();
+        let mut de=Deserializer::new(new_buf.as_slice());
+        match con {
+            Ok(_) => {
+                let de_ret:Result<res::sessions::meterpreter_tabs,derror>=Deserialize::deserialize(&mut de);
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    test=Err(de_ret);
+                };
+                if let Ok(ref val) = de_ret {
+                    test=Ok(val.tabs.clone());
+                };  
+            },
+            Err(_) => {
+                panic!("Connection closed unexpectedly");
+            },
+        }
+        test
     }
 }
 pub fn compactible_modules(client:Client,sessionid:String) -> Result<Vec<String>,MsfError> {
-    let test:Vec<String>=Vec::new();
-    Ok(test)
+    let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
+    test
 }
 pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectport:i32) -> Result<bool,MsfError> {
-    let test:bool=true;
-    Ok(test)
+    let mut test:Result<bool,MsfError>=Ok(true);
+    test
 }
 pub trait ring {
     fn new(sessionid:String) -> Self;
     fn clear(&self) -> Result<bool,MsfError> {
-        let test:bool=true;
-        Ok(test)
+        let mut test:Result<bool,MsfError>=Ok(true);
+        test
     }
     fn last(&self) -> Result<i32,MsfError> {
-        let test:i32=1;
-        Ok(test)
+        let mut test:Result<i32,MsfError>=Ok(1);
+        test
     }
     fn put(&self,data:String) -> Result<i32,MsfError> {
-        let test:i32=1;
-        Ok(test)
+        let mut test:Result<i32,MsfError>=Ok(1);
+        test
     }
 }
