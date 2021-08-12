@@ -77,12 +77,13 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 	let mut buf=vec![];
 	let mut serializer=Serializer::new(&mut body);
 	let byte=req::console::list("console.list".to_string(),client.token.unwrap());
-	byte.serialize(&mut serializer);
+	byte.serialize(&mut serializer).unwrap();
 	let con=connect(client.url,body,&mut buf);
 	let new_buf=buf.clone();
 	let mut de=Deserializer::new(new_buf.as_slice());
 	match con {
 		Ok(_) => {
+			let new_de:HashMap<String,res::console::list>=Deserialize::deserialize(&mut de).unwrap();
 			let de_ret:Result<HashMap<String,res::console::list>,derror>=Deserialize::deserialize(&mut de);
 			if let Ok(ref val) = de_ret {
                 let new=val.clone();

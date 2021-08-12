@@ -71,7 +71,7 @@ pub struct ring_clear {
 }
 #[derive(des,Debug)]
 pub struct ring_last {
-    pub seq:String,
+    pub seq:i32,
 }
 #[derive(des,Debug)]
 pub struct ring_put {
