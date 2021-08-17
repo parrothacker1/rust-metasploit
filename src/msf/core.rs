@@ -7,7 +7,7 @@ use crate::client::Client;
 use std::collections::HashMap;
 use connect::connect;
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use structs::{request as req,response as res};
 
 pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpath,MsfError> {
@@ -23,7 +23,7 @@ pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpat
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::core::addmodpath("core.add_module_path".to_string(),client.token.unwrap(),path);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -31,7 +31,7 @@ pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpat
         Ok(_) => {
             let de_ret:Result<res::core::addmodpath,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -57,7 +57,7 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::modulestat("core.module_status".to_string(),client.token.unwrap());
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -65,7 +65,7 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
         Ok(_) => {
             let de_ret:Result<res::core::modulestat,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -92,7 +92,7 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::reloadmod("core.reload_modules".to_string(),client.token.unwrap());
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -100,7 +100,7 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
         Ok(_) => { 
             let de_ret:Result<res::core::reloadmod,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret { 
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -120,7 +120,7 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::save("core.save".to_string(),client.token.unwrap());
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -131,7 +131,7 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
         Ok(val) => {
             let de_ret:Result<res::core::save,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -151,7 +151,7 @@ pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::setg("core.setg".to_string(),client.token.unwrap(),name,value);
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -166,7 +166,7 @@ pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
 				}
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -182,7 +182,7 @@ pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::unsetg("core.unsetg".to_string(),client.token.unwrap(),name);
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -193,7 +193,7 @@ pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
 		Ok(_) => {
 			let de_ret:Result<res::core::unsetg,derror>=Deserialize::deserialize(&mut de);
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 			if let Ok(ref val) = de_ret {

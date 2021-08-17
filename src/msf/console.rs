@@ -7,7 +7,7 @@ use structs::{request as req,response as res};
 use crate::client::Client;
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
@@ -19,7 +19,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::create("console.create".to_string(),client.token.as_ref().unwrap().to_string());
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -30,7 +30,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 				test=Ok(val.clone());
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -61,7 +61,7 @@ pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
 				}
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -90,7 +90,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 				test=Ok(new);
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -106,7 +106,7 @@ pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError>
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::write("console.write".to_string(),client.token.unwrap(),consoleid,data);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -117,7 +117,7 @@ pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError>
 				test=Ok(val.wrote);
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -137,7 +137,7 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::read("console.read".to_string(),client.token.unwrap(),consoleid);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -145,7 +145,7 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
 		Ok(_) => {
 			let de_ret:Result<res::console::read,derror>=Deserialize::deserialize(&mut de);
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 			if let Ok(ref val) = de_ret {
@@ -164,7 +164,7 @@ pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::session_detach("console.session_detach".to_string(),client.token.unwrap(),consoleid);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -179,7 +179,7 @@ pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
 				}
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 		},
@@ -195,7 +195,7 @@ pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::session_kill("console.session_kill".to_string(),client.token.unwrap(),consoleid);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -203,7 +203,7 @@ pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
 		Ok(_) => {
 			let de_ret:Result<res::console::session_kill,derror>=Deserialize::deserialize(&mut de);
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 			if let Ok(ref val) = de_ret {
@@ -226,7 +226,7 @@ pub fn tabs(client:Client,consoleid:String,inputline:String) -> Result<Vec<Strin
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::tabs("console.tabs".to_string(),client.token.unwrap(),consoleid,inputline);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -234,7 +234,7 @@ pub fn tabs(client:Client,consoleid:String,inputline:String) -> Result<Vec<Strin
 		Ok(_) => {
 			let de_ret:Result<res::console::tabs,derror>=Deserialize::deserialize(&mut de);
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
 			if let Ok(ref val) = de_ret {

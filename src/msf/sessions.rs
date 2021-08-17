@@ -4,7 +4,7 @@
 #[path="../connect.rs"] mod connect;
 use connect::connect;
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use crate::client::Client;
 use error::MsfError;
 use std::collections::HashMap;
@@ -24,7 +24,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::sessions::list>,MsfErro
         Ok(_) => {
             let de_ret:Result<HashMap<String,res::sessions::list>,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -51,7 +51,7 @@ pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
         Ok(_) => {
             let de_ret:Result<res::sessions::stop,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -98,7 +98,7 @@ impl shell {
             Ok(_) => {
                 let de_ret:Result<res::sessions::shell_read,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -111,12 +111,12 @@ impl shell {
         }
         test
     }
-    pub fn write(client:Client,sessionid:String) -> Result<i32,MsfError> {
+    pub fn write(client:Client,sessionid:String,data:String) -> Result<i32,MsfError> {
         let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
-        let byte=req::sessions::list("session.list".to_string(),client.token.unwrap());
+        let byte=req::sessions::shell_write("session.shell_write".to_string(),client.token.unwrap(),sessionid,data);
         byte.serialize(&mut se).unwrap();
         let con = connect(client.url,body,&mut buf);
         let new_buf=buf.clone();
@@ -125,7 +125,7 @@ impl shell {
             Ok(_) => {
                 let de_ret:Result<res::sessions::shell_write,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -175,7 +175,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_write,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -204,7 +204,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_read,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -230,7 +230,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_run_single,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -259,7 +259,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_script,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -288,7 +288,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_session_detach,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -317,7 +317,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_session_kill,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -346,7 +346,7 @@ impl meterpreter {
             Ok(_) => {
                 let de_ret:Result<res::sessions::meterpreter_tabs,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -359,7 +359,7 @@ impl meterpreter {
         }
         test
     }
-    pub fn compactible_modules(&self,client:Client) -> Result<Vec<String>,MsfError> {
+    pub fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -374,7 +374,7 @@ impl meterpreter {
                     test=Ok(val.modules.clone());
                 };
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
             },
@@ -399,7 +399,7 @@ pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectpo
         Ok(_) => {
             let de_ret:Result<res::sessions::shell_upgrade,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -432,11 +432,11 @@ impl ring {
         match arg {
             Some(val) => {
                 let byte=req::sessions::ring_with_arg(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone(),val);
-                byte.serialize(&mut se);
+                byte.serialize(&mut se).unwrap();
             },
             None => {
                 let byte_new=req::sessions::ring_without_arg(method.to_string(),self.client.token.as_ref().unwrap().to_string(),self.sessionid.clone());
-                byte_new.serialize(&mut se);
+                byte_new.serialize(&mut se).unwrap();
             },
         }
     }
@@ -458,6 +458,10 @@ impl ring {
                         test=Ok(false);
                     }
                 };
+                if let Err(_) = de_ret {
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
+                    test=Err(de_ret);
+                };
              },
              Err(_) => {
                 panic!("Connection closed unexpectedly");
@@ -477,7 +481,7 @@ impl ring {
             Ok(_) => {
                 let de_ret:Result<res::sessions::ring_last,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -505,7 +509,7 @@ impl ring {
                     test=Ok(val.write_count.parse::<i32>().unwrap());
                 };
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
             },

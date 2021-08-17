@@ -5,7 +5,7 @@ use error::MsfError;
 use crate::client;
 use structs::{request as req,response as res};
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 
 pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -13,7 +13,7 @@ pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError>
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::logout("auth.logout".to_string(),clientdata.token.as_ref().unwrap().to_string(),out_tok);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(clientdata.url,body,&mut buf);
     let mut new_buf=buf.clone();
     match con {
@@ -28,7 +28,7 @@ pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError>
 				}
 			};
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			}
 		},
@@ -44,7 +44,7 @@ pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfErr
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenadd("auth.token_add".to_string(),clientdata.token.as_ref().unwrap().to_string(),new_tok);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let conn=connect::connect(clientdata.url,body,&mut buf);
     let mut new_buf=buf.clone();
     match conn {
@@ -59,7 +59,7 @@ pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfErr
 				}
 			}
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			}
 		},
@@ -74,7 +74,7 @@ pub fn token_gen(clientdata:client::Client) -> Result<String,MsfError> {
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokengen("auth.token_generate".to_string(),clientdata.token.as_ref().unwrap().to_string());
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let mut buf=vec![];
     let conn=connect::connect(clientdata.url,body,&mut buf);
     let new_buf=buf.clone();
@@ -90,7 +90,7 @@ pub fn token_gen(clientdata:client::Client) -> Result<String,MsfError> {
 				}
 			}
 			if let Err(e) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			}
 		},
@@ -106,7 +106,7 @@ pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenlist("auth.token_list".to_string(),clientdata.token.unwrap());
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(clientdata.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -117,7 +117,7 @@ pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
 				test=Ok(val.tokens.clone());
 			}
 			if let Err(e) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			}
 		},
@@ -133,7 +133,7 @@ pub fn token_remove(clientdata:client::Client,token_rem:String) -> Result<bool,M
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenrem("auth.token_remove".to_string(),clientdata.token.unwrap(),token_rem);
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(clientdata.url,body,&mut buf);
     let mut new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -148,7 +148,7 @@ pub fn token_remove(clientdata:client::Client,token_rem:String) -> Result<bool,M
 				}
 			}
 			if let Err(e) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			}
 		},

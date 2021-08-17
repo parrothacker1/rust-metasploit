@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types)]
+#![allow(unused_assignments)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
@@ -6,7 +7,7 @@ use crate::client::Client;
 use connect::connect;
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use error::MsfError;
 use structs::{request as req,response as res};
 
@@ -36,7 +37,7 @@ impl list {
             test=Ok(val.modules.clone());
         };
         if let Err(_) = de_ret {
-            let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+            let de_ret:MsfError=from_read(buf.as_slice()).unwrap();
             test=Err(de_ret);
         };
         test
@@ -160,7 +161,7 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::mo
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::modules::info("module.info".to_string(),client.token.unwrap(),moduletype,modulename);
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -171,7 +172,7 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::mo
                 test=Ok(val.clone());
             };
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret)
             };
         },
@@ -194,7 +195,7 @@ impl compactible {
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible("module.compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
-        byte.serialize(&mut se);
+        byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
@@ -202,7 +203,7 @@ impl compactible {
             Ok(_) => {
                 let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -221,7 +222,7 @@ impl compactible {
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible_tp("module.target_compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
-        byte.serialize(&mut se);
+        byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
@@ -229,7 +230,7 @@ impl compactible {
             Ok(_) => {
                 let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -248,7 +249,7 @@ impl compactible {
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible("module.compactible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
-        byte.serialize(&mut se);
+        byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
@@ -256,7 +257,7 @@ impl compactible {
             Ok(_) => {
                 let de_ret:Result<res::modules::compactible_sessions,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
@@ -276,7 +277,7 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashM
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::modules::options("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
-    byte.serialize(&mut serializer);
+    byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url.clone(),body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -284,7 +285,7 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashM
         Ok(_) => {
             let de_ret:Result<HashMap<String,res::modules::options>,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -303,7 +304,7 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::modules::encoder("module.encode".to_string(),client.token.unwrap(),data,encodermodule,options);
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -314,7 +315,7 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
                 test=Ok(val.encoded.clone());
             };
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
         },
@@ -339,7 +340,7 @@ pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap
                 let de_ret_p:Result<res::modules::execute_payloads,derror>=Deserialize::deserialize(&mut de);
             if moduletype.clone()=="payload".to_string() {
                 if let Err(_) = de_ret_p {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(val) = de_ret_p {
@@ -348,7 +349,7 @@ pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap
             } else {
                 let de_ret:Result<res::modules::execute_non_payloads,derror>=Deserialize::deserialize(&mut de);
                 if let Err(_) = de_ret {
-                    let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                     test=Err(de_ret);
                 };
                 if let Ok(val) = de_ret {

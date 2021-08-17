@@ -8,6 +8,7 @@ fn main() {
     println!("{:?}",test);
     let test1=core::version(tet.clone()).unwrap();
     println!("{:?}",test1);
-    let test2=console::list(tet.clone()).unwrap();
+    let test2=auth::logout(tet.clone(),test[0].clone()).unwrap();
     println!("{:?}",test2);
+    println!("{}",auth::logout(tet.clone(),test[0].clone()).unwrap());
 }

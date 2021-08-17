@@ -5,7 +5,7 @@ use crate::client::Client;
 use connect::connect;
 use error::MsfError;
 use std::collections::HashMap;
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use serde::{Serialize,Deserialize};
 use structs::{request as req,response as res};
 
@@ -26,7 +26,7 @@ pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
                 test=Ok(val.clone());
             };
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
         },
@@ -65,7 +65,7 @@ pub fn info(client:Client,jobid:String) -> Result<res::jobs::info,MsfError> {
                 test=Ok(val.clone());
             };
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
         },
@@ -96,7 +96,7 @@ pub fn stop(client:Client,jobid:String) -> Result<bool,MsfError> {
                 }
             };
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
         },

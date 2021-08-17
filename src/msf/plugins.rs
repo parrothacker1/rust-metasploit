@@ -7,7 +7,7 @@ use error::MsfError;
 use structs::{request as req,response as res};
 use crate::client::Client;
 use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::Error as derror};
+use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
 pub fn load(client:Client,pluginname:String,options:HashMap<String,String>) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(true);
@@ -23,7 +23,7 @@ pub fn load(client:Client,pluginname:String,options:HashMap<String,String>) -> R
         Ok(_) => {
             let de_ret:Result<res::plugins::load,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -54,7 +54,7 @@ pub fn unload(client:Client,pluginname:String) -> Result<bool,MsfError> {
         Ok(_) => {
             let de_ret:Result<res::plugins::unload,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {
@@ -85,7 +85,7 @@ pub fn loaded(client:Client) -> Result<Vec<String>,MsfError> {
         Ok(_) => {
             let de_ret:Result<res::plugins::loaded,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
             };
             if let Ok(ref val) = de_ret {

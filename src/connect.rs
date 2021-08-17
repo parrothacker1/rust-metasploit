@@ -1,7 +1,6 @@
 use reqwest::{header,blocking::Client};
 use std::time::Duration;
 use rmp_serde::decode::from_read;
-use serde_json::Value;
 use std::collections::HashMap;
 use std::io::Read;
 #[path="./error.rs"] mod error;
