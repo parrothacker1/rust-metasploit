@@ -5,13 +5,12 @@ use error::MsfError;
 use connect::connect;
 use structs::{request as req,response as res};
 use crate::client::Client;
-use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
-        id:1,
+        id:String::new(),
         prompt:"".to_string(),
         busy:false,
     });
@@ -22,10 +21,9 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
 		Ok(_) => {
-			let de_ret:Result<res::console::create,derror>=Deserialize::deserialize(&mut de);
+			let de_ret:Result<res::console::create,derror>=from_read(new_buf.as_slice());
 			if let Ok(ref val) = de_ret {
 				test=Ok(val.clone());
 			};
@@ -71,8 +69,10 @@ pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
 	}
     test
 }
-pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError> {
-	let mut test:Result<HashMap<String,res::console::list>,MsfError>=Ok(HashMap::new());
+pub fn list(client:Client) -> Result<res::console::list,MsfError> {
+	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
+		consoles:Vec::new(),
+	});
 	let mut body=Vec::new();
 	let mut buf=vec![];
 	let mut serializer=Serializer::new(&mut body);
@@ -83,8 +83,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::console::list>,MsfError
 	let mut de=Deserializer::new(new_buf.as_slice());
 	match con {
 		Ok(_) => {
-			let new_de:HashMap<String,res::console::list>=Deserialize::deserialize(&mut de).unwrap();
-			let de_ret:Result<HashMap<String,res::console::list>,derror>=Deserialize::deserialize(&mut de);
+			let de_ret:Result<res::console::list,derror>=Deserialize::deserialize(&mut de);
 			if let Ok(ref val) = de_ret {
                 let new=val.clone();
 				test=Ok(new);

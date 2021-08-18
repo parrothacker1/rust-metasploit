@@ -2,7 +2,7 @@
 use serde::Deserialize as des;
 #[derive(des,Debug,Clone)]
 pub struct create {
-    pub id:i32,
+    pub id:String,
     pub prompt:String,
     pub busy:bool,
 }
@@ -11,10 +11,14 @@ pub struct destroy {
     pub result:String,
 }
 #[derive(des,Debug,Clone)]
+pub struct listcomponents {
+    pub id:String,
+    pub prompt:String,
+    pub busy:bool,
+}
+#[derive(des,Debug,Clone)]
 pub struct list {
-	pub id:String,
-	pub prompt:String,
-	pub busy:bool,
+	pub consoles:Vec<listcomponents>,
 }
 #[derive(des,Debug)]
 pub struct write {

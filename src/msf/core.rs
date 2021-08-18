@@ -128,7 +128,7 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
         Err(_) => {
             panic!("Connection closed unexpectedly");
         },
-        Ok(val) => {
+        Ok(_) => {
             let de_ret:Result<res::core::save,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
                 let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
@@ -213,7 +213,7 @@ pub fn thread_list(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 	let mut buf=vec![];
 	let mut se=Serializer::new(&mut body);
 	let byte=req::core::threadlist("core.thread_list".to_string(),client.token.unwrap());
-	byte.serialize(&mut se);
+	byte.serialize(&mut se).unwrap();
 	let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -240,7 +240,7 @@ pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::threadkill("core.thread_kill".to_string(),client.token.unwrap(),threadID);
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -275,7 +275,7 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::version("core.version".to_string(),client.token.unwrap());
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
@@ -302,7 +302,7 @@ pub fn stop(client:Client) -> Result<bool,MsfError> {
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
     let byte=req::core::stop("core.stop".to_string(),client.token.unwrap());
-    byte.serialize(&mut se);
+    byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());

@@ -9,7 +9,7 @@ pub struct Client {
     pub token:Option<String>,
 }
 impl Client {
-    pub fn new(host:&str,user:&str,password:&str,port:i32,ssl:bool) -> Self {
+    pub fn new(host:&str,port:i32,user:&str,password:&str,ssl:bool) -> Self {
         let new_user=String::from(user);
         let url:String;
         let new_pass=String::from(password);
@@ -22,7 +22,7 @@ impl Client {
         let mut buf=vec![];
         let mut serializer=Serializer::new(&mut body);
         let byte=login("auth.login".to_string(),new_user.clone(),new_pass);
-        byte.serialize(&mut serializer);
+        byte.serialize(&mut serializer).unwrap();
         let con=connect::connect(url.clone(),body,&mut buf);
         let mut de=Deserializer::new(buf.as_slice());
         let mut token=String::new();
@@ -49,7 +49,10 @@ impl Client {
 			token:Some(token.clone()),
 		}
     }
-    pub fn print(&self) {
-        println!("{:?}",&self.token)
+    pub fn gettoken(&self) -> String {
+        self.token.as_ref().unwrap().to_string().clone()
+    }
+    pub fn geturl(&self) -> String {
+    	self.url.clone()
     }
 }
