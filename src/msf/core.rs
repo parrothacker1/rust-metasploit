@@ -56,7 +56,7 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
-    let byte=req::core::modulestat("core.module_status".to_string(),client.token.unwrap());
+    let byte=req::core::modulestat("core.module_stats".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
@@ -251,7 +251,7 @@ pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
 		Ok(_) => {
 			let de_ret:Result<res::core::threadkill,derror>=Deserialize::deserialize(&mut de);
 			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
+				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
 				test=Err(de_ret);
 			};
             if let Ok(ref val) = de_ret {

@@ -7,15 +7,16 @@ use serde::Deserialize as des;
 pub type ConnectionError=reqwest::Error;
 #[derive(des,Debug)]
 pub struct MsfError {
-    error:bool,
-    error_class:String,
-    error_string:String,
-    error_message:String,
+    pub error:bool,
+    pub error_class:String,
+    pub error_string:String,
+    pub error_message:String,
+    pub error_backtrace:Vec<String>,
 }
 impl Error for MsfError {}
+
 impl Display for MsfError {
 	fn fmt(&self,f: &mut Formatter) -> Result {
 		write!(f,"Error Message {}",self.error_message)
 	}
 }
-	

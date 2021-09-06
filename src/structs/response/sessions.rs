@@ -1,33 +1,22 @@
 #![allow(non_camel_case_types)]
+#![allow(dead_code)]
 use serde::Deserialize as des;
-#[derive(des,Debug,Clone)]
-pub struct list {
-  pub r#type: String,
-  pub tunnel_local: String,
-  pub tunnel_peer: String,
-  pub via_exploit: String,
-  pub via_payload:Option<String>,
-  pub desc: String,
-  pub info: String,
-  pub workspace: String,
-  pub target_host: String,
-  pub username: String,
-  pub uuid: String,
-  pub exploit_uuid: String,
-  pub routes: Option<Vec<String>>,
-}
+use crate::value::Value;
+use std::collections::HashMap;
+
+pub type list=HashMap<i32,HashMap<String,Value>>;
 #[derive(des,Debug)]
 pub struct stop {
     pub result:String,
 }
 #[derive(des,Debug,Clone)]
 pub struct shell_read {
-    pub seq:String,
+    pub seq:i32,
     pub data:String,
 }
 #[derive(des,Debug)]
 pub struct shell_write {
-    pub write_count:i32,
+    pub write_count:String,
 }
 #[derive(des,Debug,Clone)]
 pub struct meterpreter_write {

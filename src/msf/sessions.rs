@@ -10,8 +10,8 @@ use error::MsfError;
 use std::collections::HashMap;
 use structs::{request as req,response as res};
 
-pub fn list(client:Client) -> Result<HashMap<String,res::sessions::list>,MsfError> {
-    let mut test:Result<HashMap<String,res::sessions::list>,MsfError>=Ok(HashMap::new());
+pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
+    let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -22,7 +22,7 @@ pub fn list(client:Client) -> Result<HashMap<String,res::sessions::list>,MsfErro
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<HashMap<String,res::sessions::list>,derror>=Deserialize::deserialize(&mut de);
+            let de_ret:Result<res::sessions::list,derror>=Deserialize::deserialize(&mut de);
             if let Err(_) = de_ret {
                 let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
                 test=Err(de_ret);
@@ -68,14 +68,11 @@ pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
     }
     test
 }
-pub enum shell {
-    read(),
-    write(),
-}
+pub struct shell;
 impl shell {
     pub fn read(client:Client,sessionid:String,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
         let mut test:Result<res::sessions::shell_read,MsfError>=Ok(res::sessions::shell_read {
-            seq:String::new(),
+            seq:1,
             data:String::new(),
         });
         let mut body=Vec::new();
@@ -111,8 +108,8 @@ impl shell {
         }
         test
     }
-    pub fn write(client:Client,sessionid:String,data:String) -> Result<i32,MsfError> {
-        let mut test:Result<i32,MsfError>=Ok(1);
+    pub fn write(client:Client,sessionid:String,data:String) -> Result<String,MsfError> {
+        let mut test:Result<String,MsfError>=Ok(String::new());
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
@@ -129,7 +126,7 @@ impl shell {
                     test=Err(de_ret);
                 };
                 if let Ok(ref val) = de_ret {
-                    test=Ok(val.write_count);
+                    test=Ok(val.write_count.clone());
                 };
             },
             Err(_) => {
@@ -338,7 +335,7 @@ impl meterpreter {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
-        self.serialize(&mut body,"meterpreter_tabs",Some(inputline));
+        self.serialize(&mut body,"session.meterpreter_tabs",Some(inputline));
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
@@ -363,7 +360,7 @@ impl meterpreter {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
-        self.serialize(&mut body,"session.compactible_modules",None);
+        self.serialize(&mut body,"session.compatible_modules",None);
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());

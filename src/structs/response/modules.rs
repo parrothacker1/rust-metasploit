@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 use serde::Deserialize as des;
+use crate::value::Value;
 #[derive(des,Debug)]
 pub struct list {
     pub modules:Vec<String>,
@@ -8,21 +9,21 @@ pub struct list {
 pub struct info {
     pub name:String,
     pub description:String,
-    pub license:String,
+    pub license:Vec<String>,
     pub filepath:String,
-    pub version:i32,
-    pub rank:i32,
+    pub version:Option<String>,
+    pub rank:String,
     pub authors:Vec<String>,
     pub references:Vec<String>,
 }
 #[derive(des,Debug,Clone)]
-pub struct options {
+pub struct  options {
     pub r#type:String,
     pub required:bool,
     pub advanced:bool,
     pub evasion:bool,
     pub desc:String,
-    pub default:Option<String>,
+    pub default:Option<Value>,
     pub enums:Option<Vec<String>>,
 }
 #[derive(des,Debug)]
@@ -43,5 +44,5 @@ pub struct execute_non_payloads {
 }
 #[derive(des,Debug)]
 pub struct execute_payloads {
-    pub payload:String,
+    pub payload:Value,
 }

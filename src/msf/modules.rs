@@ -3,7 +3,7 @@
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
-use crate::client::Client;
+use crate::{value::Value,client::Client};
 use connect::connect;
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
@@ -147,15 +147,12 @@ impl list {
     }
 }
 pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::modules::info,MsfError> {
-    let mut test:Result<res::modules::info,MsfError>=Ok(res::modules::info {
-        name:String::new(),
-        description:String::new(),
-        license:String::new(),
-        filepath:String::new(),
-        version:0,
-        rank:0,
-        authors:Vec::new(),
-        references:Vec::new(),
+    let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
+        error:true,
+        error_class:String::new(),
+        error_string:String::new(),
+        error_message:String::new(),
+        error_backtrace:Vec::new(),
     });
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -194,7 +191,7 @@ impl compactible {
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible("module.compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
+        let byte=req::modules::compactible("module.compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
         byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
@@ -216,12 +213,12 @@ impl compactible {
         }
         test
     }
-    pub fn target_payload(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
+    pub fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible_tp("module.target_compactible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
+        let byte=req::modules::compactible_tp("module.target_compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
         byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
@@ -248,7 +245,7 @@ impl compactible {
         let mut body=Vec::new();
         let mut buf=vec![];
         let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible("module.compactible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
+        let byte=req::modules::compactible("module.compatible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
         byte.serialize(&mut se).unwrap();
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
@@ -325,8 +322,8 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     }
     test
 }
-pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Result<String,MsfError> {
-    let mut test:Result<String,MsfError>=Ok(String::new());
+pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Result<Value,MsfError> {
+    let mut test:Result<Value,MsfError>=Ok(Value::from(true));
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -353,7 +350,7 @@ pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap
                     test=Err(de_ret);
                 };
                 if let Ok(val) = de_ret {
-                    test=Ok(val.job_id.to_string());
+                    test=Ok(Value::from(val.job_id));
                 };
             }
         },
