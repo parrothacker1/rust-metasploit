@@ -19,10 +19,4 @@ jobs:
     - name: Build
       run: cargo build --verbose
     - name: Run tests
-      run: cargo b --example auth
-      run: cargo b --example console
-      run: cargo b --example core
-      run: cargo b --example jobs
-      run: cargo b --example modules
-      run: cargo b --example plugins
-      run: cargo b --example sessions
+      run: cargo b --example auth;cargo b --example console;cargo b --example core;cargo b --example jobs;cargo b --example modules;cargo b --example plugins;cargo b --example sessions
