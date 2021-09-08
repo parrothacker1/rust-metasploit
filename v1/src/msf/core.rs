@@ -1,3 +1,4 @@
+//! A module which is used to handle msfcore
 #![allow(non_snake_case)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../connect.rs"] mod connect;
@@ -10,6 +11,7 @@ use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use structs::{request as req,response as res};
 
+/// To add a new module by path
 pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpath,MsfError> {
     let mut test:Result<res::core::addmodpath,MsfError>=Ok(res::core::addmodpath {
         exploits:0,
@@ -44,6 +46,7 @@ pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpat
     }
     test
 }
+/// To get the status of modules loaded
 pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
         exploits:0,
@@ -79,6 +82,7 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     }
     test
 }
+/// To reload all the modules
 pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
         exploits:0,
@@ -114,6 +118,7 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     }
     test
 }
+/// To save in the core
 pub fn save(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -145,6 +150,7 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
     }
     test
 }
+/// To set setg with key value pair
 pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -176,6 +182,7 @@ pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To remove setg with key name
 pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -207,6 +214,7 @@ pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To list all the threads
 pub fn thread_list(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
 	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
 	let mut body=Vec::new();
@@ -234,6 +242,7 @@ pub fn thread_list(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 	}
 	test
 }
+/// To kill a thread
 pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -265,6 +274,7 @@ pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To get the version
 pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
         version:String::new(),
@@ -296,6 +306,7 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     }
     test
 }
+/// To stop the core
 pub fn stop(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

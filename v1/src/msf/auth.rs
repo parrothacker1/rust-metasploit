@@ -1,3 +1,4 @@
+//! Module whcih contain all functions for authentication
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
@@ -7,6 +8,7 @@ use structs::{request as req,response as res};
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 
+/// To logout from the RPC Server
 pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -38,6 +40,7 @@ pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError>
 	}
 	test
 }
+/// To add a new token to RPC Server 
 pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -69,6 +72,7 @@ pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfErr
 	}
     test
 }
+/// To Generate the token
 pub fn token_generate(clientdata:client::Client) -> Result<String,MsfError> {
     let mut test:Result<String,MsfError>=Ok(String::new());
     let mut body=Vec::new();
@@ -100,6 +104,7 @@ pub fn token_generate(clientdata:client::Client) -> Result<String,MsfError> {
 	}
     test
 }
+/// To list all the tokens registered with RPC Server
 pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
@@ -127,6 +132,7 @@ pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
 	}
     test
 }
+/// To remove a token from the RPC Server
 pub fn token_remove(clientdata:client::Client,token_rem:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

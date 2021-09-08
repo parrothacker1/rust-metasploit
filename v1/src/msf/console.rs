@@ -1,3 +1,4 @@
+//! A module to handle msfconsole.
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
@@ -8,6 +9,7 @@ use crate::client::Client;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
+/// To Create a new console shell
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
         id:String::new(),
@@ -38,6 +40,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 	}
     test
 }
+/// To kill the existing specified console
 pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -69,6 +72,7 @@ pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To get the list of all consoles
 pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
 		consoles:Vec::new(),
@@ -99,6 +103,9 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	}
 	test
 }
+/// To write a command into the shell.
+///
+/// It is recommended to add "\n" at the end of command.Or it may not execute
 pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError> {
     let mut test:Result<i32,MsfError>=Ok(1);
     let mut body=Vec::new();
@@ -126,6 +133,7 @@ pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError>
 	}
     test
 }
+/// To read the console
 pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfError> {
     let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
         data:String::new(),
@@ -157,6 +165,7 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
 	}
     test
 }
+/// To detach the session
 pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -188,6 +197,7 @@ pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To kill the session
 pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -219,6 +229,7 @@ pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
 	}
     test
 }
+/// To list all the possible commands which starts with a specific keyword
 pub fn tabs(client:Client,consoleid:String,inputline:String) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();

@@ -1,3 +1,4 @@
+//! A module to handle all the modules in Metasploit RPC
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
 #[path="../structs/mod.rs"] mod structs;
@@ -11,14 +12,20 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use error::MsfError;
 use structs::{request as req,response as res};
 
+/// To list the compactible payloads and sessions
 pub struct compactible {
+    /// Name of the module
     pub name:String,
+    /// Get the Client struct
     pub client:Client,
 }
+/// To list exploits,auxiliary,posts,payloads,nops,encoders
 pub struct list {
+    /// Get the client struct
     pub client:Client,
 }
 impl list {
+    /// To create a new variable with list value
     pub fn new(client:Client) -> Self {
         list {
             client:client,
@@ -42,6 +49,7 @@ impl list {
         };
         test
     }
+    /// To list all exploits
     pub fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -59,6 +67,7 @@ impl list {
         }
         test
     }
+    /// To list all auxiliaries
     pub fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -76,6 +85,7 @@ impl list {
         }
         test
     }
+    /// To list all posts
     pub fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -93,6 +103,7 @@ impl list {
         }
         test
     }
+    /// To list all payloads
     pub fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -108,9 +119,9 @@ impl list {
                 panic!("Connection closed unexpectedly");
             },
         }
-        
         test
     }
+    /// To list all encoders
     pub fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -128,6 +139,7 @@ impl list {
         }
         test
     }
+    /// To list all nops
     pub fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -146,6 +158,7 @@ impl list {
         test
     }
 }
+/// To get information about the module
 pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::modules::info,MsfError> {
     let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
         error:true,
@@ -179,13 +192,16 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::mo
     }
     test
 }
+/// To get the list of compactible payloads and sessions
 impl compactible {
+    /// To create a new instance and store the value in a variable
     pub fn new(modulename:String,client:Client) -> Self {
         compactible {
             name:modulename,
             client:client,
         }
     }
+    /// To get a list of compactible payloads
     pub fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -213,6 +229,7 @@ impl compactible {
         }
         test
     }
+    /// To get a list of compactible payloads for a specific target
     pub fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -240,6 +257,7 @@ impl compactible {
         }
         test
     }
+    /// To get a list of sessions
     pub fn sessions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -268,6 +286,7 @@ impl compactible {
         test
     }
 }
+/// To get the options of a module
 pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashMap<String,res::modules::options>,MsfError> {
     let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
@@ -295,6 +314,7 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashM
     }
     test
 }
+/// To encode a module
 pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Result<String,MsfError> {
     let mut test:Result<String,MsfError>=Ok(String::new());
     let mut body=Vec::new();
@@ -322,6 +342,7 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     }
     test
 }
+/// To execute a module
 pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Result<Value,MsfError> {
     let mut test:Result<Value,MsfError>=Ok(Value::from(true));
     let mut body=Vec::new();
