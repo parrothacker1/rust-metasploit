@@ -13,6 +13,14 @@ use metasploit::client::Client;
 let client=Client::new("127.0.0.1",55552,"user","password",true);
 print(client.gettoken());
 ```
+A practical example of this library can be found at [rust-metasploit-example](https://github.com/parrothacker1/rust-metasploit-example)
+
+## Installation
+In your Cargo.toml add the following
+```toml
+[dependencies]
+rust-metasploit="1.0.0"
+```
 
 ## How To Use
 ### How to setup metasploit RPC Server
