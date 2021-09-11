@@ -1,0 +1,16 @@
+[package]
+name = "rust-metasploit"
+version = "1.0.1"
+authors = ["h4ck3r@parrot"]
+edition = "2018"
+readme="README.md"
+description="Rust wrapper for metasploit"
+
+[dependencies]
+reqwest={ version="0.11.4",features=["blocking","json"] }
+rmp-serde="0.13.7"
+rmpv={ version = "1.0.0" , features=["with-serde"] }
+serde={ version="1.0.117" , features=["derive"]}
+
+[lib]
+name="metasploit"
