@@ -26,6 +26,10 @@ pub struct list {
 }
 impl list {
     /// To create a new variable with list value
+    ///
+    /// ## Example
+    /// ```
+    /// let list=modules::list::new(client.clone());
     pub fn new(client:Client) -> Self {
         list {
             client:client,
@@ -50,6 +54,11 @@ impl list {
         test
     }
     /// To list all exploits
+    ///
+    /// ## Example
+    /// ```
+    /// list.exploits();
+    /// ```
     pub fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -68,6 +77,11 @@ impl list {
         test
     }
     /// To list all auxiliaries
+    ///
+    /// ## Example
+    /// ```
+    /// list.auxiliary();
+    /// ```
     pub fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -86,6 +100,11 @@ impl list {
         test
     }
     /// To list all posts
+    ///
+    /// ## Example
+    /// ```
+    /// list.posts();
+    /// ```
     pub fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -104,6 +123,11 @@ impl list {
         test
     }
     /// To list all payloads
+    ///
+    /// ## Example
+    /// ```
+    /// list.payloads();
+    /// ```
     pub fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -122,6 +146,11 @@ impl list {
         test
     }
     /// To list all encoders
+    ///
+    /// ## Example
+    /// ```
+    /// list.encoders();
+    /// ```
     pub fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -140,6 +169,11 @@ impl list {
         test
     }
     /// To list all nops
+    /// 
+    /// ## Example
+    /// ```
+    /// list.nops();
+    /// ```
     pub fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
