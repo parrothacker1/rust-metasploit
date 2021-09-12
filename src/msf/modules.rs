@@ -26,6 +26,11 @@ pub struct list {
 }
 impl list {
     /// To create a new variable with list value
+    ///
+    /// ## Example
+    /// ```
+    /// let list=modules::list::new(client.clone());
+    /// ```
     pub fn new(client:Client) -> Self {
         list {
             client:client,
@@ -50,6 +55,11 @@ impl list {
         test
     }
     /// To list all exploits
+    ///
+    /// ## Example
+    /// ```
+    /// list.exploits();
+    /// ```
     pub fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -68,6 +78,11 @@ impl list {
         test
     }
     /// To list all auxiliaries
+    ///
+    /// ## Example
+    /// ```
+    /// list.auxiliary();
+    /// ```
     pub fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -86,6 +101,11 @@ impl list {
         test
     }
     /// To list all posts
+    ///
+    /// ## Example
+    /// ```
+    /// list.posts();
+    /// ```
     pub fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -104,6 +124,11 @@ impl list {
         test
     }
     /// To list all payloads
+    ///
+    /// ## Example
+    /// ```
+    /// list.payloads();
+    /// ```
     pub fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -122,6 +147,11 @@ impl list {
         test
     }
     /// To list all encoders
+    ///
+    /// ## Example
+    /// ```
+    /// list.encoders();
+    /// ```
     pub fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -140,6 +170,11 @@ impl list {
         test
     }
     /// To list all nops
+    /// 
+    /// ## Example
+    /// ```
+    /// list.nops();
+    /// ```
     pub fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -159,7 +194,14 @@ impl list {
     }
 }
 /// To get information about the module
-pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::modules::info,MsfError> {
+///
+/// ## Example
+/// ```
+/// module::info(client.clone(),"moduletype","modulename").unwrap(); // response::modules::info {}
+/// ```
+pub fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
+    let moduletype:String=moduletypestr.to_string();
+    let modulename:String=modulenamestr.to_string();
     let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
         error:true,
         error_class:String::new(),
@@ -195,6 +237,11 @@ pub fn info(client:Client,moduletype:String,modulename:String) -> Result<res::mo
 /// To get the list of compactible payloads and sessions
 impl compactible {
     /// To create a new instance and store the value in a variable
+    ///
+    /// ## Example
+    /// ```
+    /// let compactible=modules::compactible::new("modulename",client.clone());
+    /// ```
     pub fn new(modulename:String,client:Client) -> Self {
         compactible {
             name:modulename,
@@ -202,6 +249,11 @@ impl compactible {
         }
     }
     /// To get a list of compactible payloads
+    ///
+    /// ## Example
+    /// ```
+    /// compactible.payloads();
+    /// ```
     pub fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -230,6 +282,11 @@ impl compactible {
         test
     }
     /// To get a list of compactible payloads for a specific target
+    ///
+    /// ## Example
+    /// ```
+    /// compactible.target_payloads(1);
+    /// ```
     pub fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -258,6 +315,11 @@ impl compactible {
         test
     }
     /// To get a list of sessions
+    ///
+    /// ## Example
+    /// ```
+    /// compactible.sessions();
+    /// ```
     pub fn sessions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -287,7 +349,14 @@ impl compactible {
     }
 }
 /// To get the options of a module
-pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashMap<String,res::modules::options>,MsfError> {
+///
+/// ## Example
+/// ```
+/// modules::option(client.clone(),"moduletype","modulename").unwrap(); //{"key",response::modules::options {}}
+/// ```
+pub fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
+    let moduletype:String=moduletypestr.to_string();
+    let modulename:String=modulenamestr.to_string();
     let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -315,7 +384,17 @@ pub fn option(client:Client,moduletype:String,modulename:String) -> Result<HashM
     test
 }
 /// To encode a module
-pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<String,String>) -> Result<String,MsfError> {
+///
+/// ## Example
+/// ```
+/// use std::colllections::HashMap;
+/// let option=HashMap::new();
+/// option.insert("key".to_string(),"value".to_string());
+/// module::encoder(client.clone(),"data","encodermodule",option).unwrap(); // String
+/// ```
+pub fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
+    let data:String=datastr.to_string();
+let encodermodule:String=encodermodulestr.to_string();
     let mut test:Result<String,MsfError>=Ok(String::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -343,7 +422,17 @@ pub fn encoder(client:Client,data:String,encodermodule:String,options:HashMap<St
     test
 }
 /// To execute a module
-pub fn execute(client:Client,moduletype:String,modulename:String,options:HashMap<String,String>) -> Result<Value,MsfError> {
+///
+/// ## Example
+/// ```
+/// use std::collections::HashMap;
+/// let option=HashMap::new();
+/// option.insert("key".to_string(),"value".to_string());
+/// modules::execute(client.clone(),"moduletype","modulename",option).unwrap(); //value::Value
+/// ```
+pub fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
+    let moduletype:String=moduletypestr.to_string();
+    let modulename:String=modulenamestr.to_string();
     let mut test:Result<Value,MsfError>=Ok(Value::from(true));
     let mut body=Vec::new();
     let mut buf=vec![];

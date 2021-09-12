@@ -12,7 +12,13 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use structs::{request as req,response as res};
 
 /// To add a new module by path
-pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpath,MsfError> {
+///
+/// ## Example
+/// ```
+/// core::add_module(client.clone(),"path").unwrap(); // response::core::addmodpath {}
+/// ```
+pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
+    let path:String=pathstr.to_string();
     let mut test:Result<res::core::addmodpath,MsfError>=Ok(res::core::addmodpath {
         exploits:0,
         auxiliary:0,
@@ -47,6 +53,11 @@ pub fn add_module_path(client:Client,path:String) -> Result<res::core::addmodpat
     test
 }
 /// To get the status of modules loaded
+///
+/// ## Example
+/// ```
+/// core::module_status(client.clone()).unwrap(); // response::core::modulestat
+/// ```
 pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
         exploits:0,
@@ -83,6 +94,11 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     test
 }
 /// To reload all the modules
+///
+/// ## Example
+/// ```
+/// core::reload_modules(client.clone()).unwrap(); // response::core::reloadmod {}
+/// ```
 pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
         exploits:0,
@@ -119,6 +135,11 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     test
 }
 /// To save in the core
+///
+/// ## Example
+/// ```
+/// core::save(client.clone()).unwrap(); // true
+/// ```
 pub fn save(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -151,7 +172,14 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
     test
 }
 /// To set setg with key value pair
-pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// core::setg(client.clone(),"name","value").unwrap(); //true
+/// ```
+pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
+    let name:String=namestr.to_string();
+    let value:String=valuestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -183,7 +211,13 @@ pub fn setg(client:Client,name:String,value:String) -> Result<bool,MsfError> {
     test
 }
 /// To remove setg with key name
-pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// core::unsetg(client.clone(),"name").unwrap(); // true
+/// ```
+pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
+    let name:String=namestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -215,7 +249,12 @@ pub fn unsetg(client:Client,name:String) -> Result<bool,MsfError> {
     test
 }
 /// To list all the threads
-pub fn thread_list(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
+///
+/// ## Example
+/// ```
+/// core::list_thread(client.clone()).unwrap(); // {1,response::core::threadlist {}}
+/// ```
+pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
 	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
 	let mut body=Vec::new();
 	let mut buf=vec![];
@@ -243,7 +282,12 @@ pub fn thread_list(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 	test
 }
 /// To kill a thread
-pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// core::kill_thread(client.clone(),1).unwrap(); // true
+/// ```
+pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -275,6 +319,11 @@ pub fn thread_kill(client:Client,threadID:i32) -> Result<bool,MsfError> {
     test
 }
 /// To get the version
+///
+/// ## Example
+/// ```
+/// core::version(client.clone()).unwrap(); //true
+/// ```
 pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
         version:String::new(),
@@ -307,6 +356,11 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     test
 }
 /// To stop the core
+///
+/// ## Example
+/// ```
+/// core::stop(client.clone()).unwrap(); // true
+/// ```
 pub fn stop(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

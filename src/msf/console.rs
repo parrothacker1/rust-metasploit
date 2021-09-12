@@ -1,4 +1,5 @@
 //! A module to handle msfconsole.
+#![allow(non_snake_case)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
@@ -10,6 +11,11 @@ use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
 /// To Create a new console shell
+///
+/// ## Example
+/// ```
+/// console::create(client.clone()).unwrap(); // response::console::create {}
+/// ```
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
         id:String::new(),
@@ -41,7 +47,13 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     test
 }
 /// To kill the existing specified console
-pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// console::destroy(client.clone(),"1").unwrap(); // true
+/// ```
+pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+    let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -73,6 +85,11 @@ pub fn destroy(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 /// To get the list of all consoles
+///
+/// ## Example
+/// ```
+/// console::list(client.clone()).unwrap() // response::console::list {}
+/// ```
 pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
 		consoles:Vec::new(),
@@ -106,7 +123,13 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 /// To write a command into the shell.
 ///
 /// It is recommended to add "\n" at the end of command.Or it may not execute
-pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError> {
+/// ## Example
+/// ```
+/// console::write(client.clone(),"1","help\n").unwrap() // 1
+/// ```
+pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
+    let data:String=command.to_string();
+    let consoleid:String=consoleID.to_string();
     let mut test:Result<i32,MsfError>=Ok(1);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -134,7 +157,13 @@ pub fn write(client:Client,consoleid:String,data:String) -> Result<i32,MsfError>
     test
 }
 /// To read the console
-pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfError> {
+///
+/// ## Example
+/// ```
+/// console::read(client.clone(),"1").unwrap(); // response::console::read {}
+/// ```
+pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
+    let consoleid:String=consoleID.to_string();
     let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
         data:String::new(),
         prompt:String::new(),
@@ -166,7 +195,13 @@ pub fn read(client:Client,consoleid:String) -> Result<res::console::read,MsfErro
     test
 }
 /// To detach the session
-pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// console::detach_session(client.clone(),"1").unwrap(); // true
+/// ```
+pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+    let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -198,7 +233,13 @@ pub fn session_detach(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 /// To kill the session
-pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// console::kill_session(client.clone(),"1").unwrap(); // true
+/// ```
+pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+    let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -230,7 +271,14 @@ pub fn session_kill(client:Client,consoleid:String) -> Result<bool,MsfError> {
     test
 }
 /// To list all the possible commands which starts with a specific keyword
-pub fn tabs(client:Client,consoleid:String,inputline:String) -> Result<Vec<String>,MsfError> {
+///
+/// ## Example
+/// ```
+/// console::tabs(client.clone(),"1","hel").unwrap(); // ["help"]
+/// ```
+pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+    let consoleid:String=consoleID.to_string();
+    let inputline:String=inputlinestr.to_string();
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];

@@ -11,6 +11,11 @@ use serde::{Serialize,Deserialize};
 use structs::{request as req,response as res};
 
 /// To list all the currently running jobs
+///
+/// ## Example
+/// ```
+/// jobs::list(client.clone()).unwrap(); // {"1":"<jobname>"}
+/// ```
 pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
@@ -39,7 +44,13 @@ pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     test
 }
 /// To get information about the specified job
-pub fn info(client:Client,jobid:String) -> Result<res::jobs::info,MsfError> {
+///
+/// ## Example
+/// ```
+/// jobs::info(client.clone(),"1").unwrap(); // response::jobs::info {}
+/// ```
+pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+    let jobid:String=jobidstr.to_string();
     let mut test:Result<res::jobs::info,MsfError>=Ok(res::jobs::info{
         jid:0,
         start_time:0,
@@ -79,7 +90,13 @@ pub fn info(client:Client,jobid:String) -> Result<res::jobs::info,MsfError> {
     test
 }
 /// To stop a specified job
-pub fn stop(client:Client,jobid:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// jobs::stop(client.clone(),"1").unwrap(); // true
+/// ```
+pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+    let jobid:String=jobidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];

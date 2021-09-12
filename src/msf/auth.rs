@@ -9,12 +9,17 @@ use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 
 /// To logout from the RPC Server
-pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// auth::logout(client.clone()).unwrap(); // true
+/// ```
+pub fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
-    let byte=req::auth::logout("auth.logout".to_string(),clientdata.token.as_ref().unwrap().to_string(),out_tok);
+    let byte=req::auth::logout("auth.logout".to_string(),clientdata.token.as_ref().unwrap().to_string(),clientdata.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
     let con=connect::connect(clientdata.url,body,&mut buf);
     let new_buf=buf.clone();
@@ -40,8 +45,14 @@ pub fn logout(clientdata:client::Client,out_tok:String) -> Result<bool,MsfError>
 	}
 	test
 }
-/// To add a new token to RPC Server 
-pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfError> {
+/// To add a new token to RPC Server
+///
+/// ## Example
+/// ```
+/// auth::add_token(client.clone,"newtoken").unwrap() // true
+/// ```
+pub fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<bool,MsfError> {
+    let new_tok:String=newtokenstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -73,7 +84,12 @@ pub fn token_add(clientdata:client::Client,new_tok:String) -> Result<bool,MsfErr
     test
 }
 /// To Generate the token
-pub fn token_generate(clientdata:client::Client) -> Result<String,MsfError> {
+///
+/// ## Example
+/// ```
+/// auth::generate_token(client.clone()).unwrap(); //"newtoken"
+/// ```
+pub fn generate_token(clientdata:client::Client) -> Result<String,MsfError> {
     let mut test:Result<String,MsfError>=Ok(String::new());
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
@@ -105,7 +121,12 @@ pub fn token_generate(clientdata:client::Client) -> Result<String,MsfError> {
     test
 }
 /// To list all the tokens registered with RPC Server
-pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
+///
+/// ## Example
+/// ```
+/// auth::list_token(client.clone()).unwrap(); // ["newtoken","<rpctoken>"]
+/// ```
+pub fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -133,7 +154,13 @@ pub fn token_list(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
     test
 }
 /// To remove a token from the RPC Server
-pub fn token_remove(clientdata:client::Client,token_rem:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// auth::remove_token(client.clone(),"newtoken").unwrap(); // true
+/// ```
+pub fn remove_token(clientdata:client::Client,tokenremove:&str) -> Result<bool,MsfError> {
+    let token_rem:String=tokenremove.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
