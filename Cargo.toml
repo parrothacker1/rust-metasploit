@@ -3,6 +3,10 @@ name = "rust-metasploit"
 version = "1.0.1"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
+license-file="LICENSE"
+documentation="https://docs.rs/rust-metasploit/1.0.0/metasploit/"
+homepage="https://docs.rs/rust-metasploit/1.0.0/metasploit/"
+repository="https://github.com/parrothacker1/rust-metasploit"
 readme="README.md"
 description="Rust wrapper for metasploit"
 
