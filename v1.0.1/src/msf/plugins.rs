@@ -11,7 +11,16 @@ use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 
 /// To load a plugin
-pub fn load(client:Client,pluginname:String,options:HashMap<String,String>) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// use std::collections::HashMap;
+/// let option=HashMap::new();
+/// option.insert("key".to_string(),"value".to_string());
+/// plugins::load(client.clone(),"pluginname",option).unwrap(); // true
+///```
+pub fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
+    let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -43,7 +52,13 @@ pub fn load(client:Client,pluginname:String,options:HashMap<String,String>) -> R
     test
 }
 /// To unload a plugin
-pub fn unload(client:Client,pluginname:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// plugins::unload(client.clone(),"pluginname").unwrap(); // true
+/// ```
+pub fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
+    let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -75,6 +90,11 @@ pub fn unload(client:Client,pluginname:String) -> Result<bool,MsfError> {
     test
 }
 /// To list all the loaded plugins
+///
+/// ## Example
+/// ```
+/// plugins::list(client.clone()).unwrap(); // Vec<String>
+/// ```
 pub fn list(client:Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();

@@ -13,9 +13,9 @@ fn main() {
     for (k,v) in list {
         id=k;
     }
-    //println!("{:?}",sessions::shell::read(client.clone(),id.to_string(),None).unwrap());
+    println!("{:?}",sessions::shell::read(client.clone(),id.to_string(),None).unwrap());
     //panic sometimes
-    //println!("{:?}",sessions::shell::write(client.clone(),"2".to_string(),"help".to_string()).unwrap());
+    println!("{:?}",sessions::shell::write(client.clone(),"2".to_string(),"help".to_string()).unwrap());
     let mut meterpreter=sessions::meterpreter::new(client.clone(),id.to_string());
     meterpreter.write("help\n".to_string()).unwrap();
     if meterpreter.run_single("help\n".to_string()).unwrap() {

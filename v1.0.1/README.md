@@ -1,2 +1,0 @@
-# rs-metasploit
-Completed

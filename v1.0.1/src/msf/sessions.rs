@@ -12,6 +12,11 @@ use std::collections::HashMap;
 use structs::{request as req,response as res};
 
 /// To list all sessions
+///
+/// ## Example
+/// ```
+/// sessions::list(client.clone()).unwrap(); // response::sessions::list {}
+/// ```
 pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
@@ -40,7 +45,13 @@ pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     test
 }
 /// To stop a session
-pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// sessions::stop(client.clone(),"1").unwrap(); // true
+/// ```
+pub fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
+    let sessionid:String=sessionidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -75,7 +86,13 @@ pub fn stop(client:Client,sessionid:String) -> Result<bool,MsfError> {
 pub struct shell;
 impl shell {
     /// To read a shell
-    pub fn read(client:Client,sessionid:String,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
+    /// 
+    /// ## Example
+    /// ```
+    /// sessions::shell::read(client.clone(),"1",None).unwrap(); // response::sessions::shell_read {};
+    /// ```
+    pub fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
+        let sessionid:String=sessionidstr.to_string();
         let mut test:Result<res::sessions::shell_read,MsfError>=Ok(res::sessions::shell_read {
             seq:1,
             data:String::new(),
@@ -114,7 +131,14 @@ impl shell {
         test
     }
     /// To write in a shell
-    pub fn write(client:Client,sessionid:String,data:String) -> Result<String,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// sessions::shell::write(client.clone(),"1","help\n").unwrap(); //String
+    /// ```
+    pub fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
+        let sessionid:String=sessionidstr.to_string();
+        let data:String=datastr.to_string();
         let mut test:Result<String,MsfError>=Ok(String::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -151,9 +175,14 @@ pub struct meterpreter {
 }
 impl meterpreter {
     /// To create a new instance and store in a variable
-    pub fn new(client:Client,sessionid:String) -> Self {
+    ///
+    /// ## Example
+    /// ```
+    /// let meterpreter=sessions::meterpreter::new(client.clone(),"1");
+    /// ```
+    pub fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
-            sessionid:sessionid,
+            sessionid:sessionidstr.to_string(),
             client:client,
         }
     }
@@ -173,7 +202,12 @@ impl meterpreter {
     /// To write in a meterpreter shell
     ///
     /// It is recommended to add "\n" at the end of the command to execute
-    pub fn write(&self,data:String) -> Result<bool,MsfError> {
+    /// ## Example
+    /// ```
+    /// meterpreter.write("help\n").unwrap(); // true
+    /// ```
+    pub fn write(&self,datastr:&str) -> Result<bool,MsfError> {
+        let data:String=datastr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -203,6 +237,11 @@ impl meterpreter {
         test
     }
     /// To read a meterpreter shell
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.read().unwrap(); //String
+    /// ```
     pub fn read(&self) -> Result<String,MsfError> {
         let mut test:Result<String,MsfError>=Ok(String::new());
         let mut body=Vec::new();
@@ -229,7 +268,13 @@ impl meterpreter {
         test
     }
     /// To run a single command
-    pub fn run_single(&self,command:String) -> Result<bool,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.run_single("help\n").unwrap(); //true
+    /// ```
+    pub fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
+        let command:String=commandstr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -259,7 +304,13 @@ impl meterpreter {
         test
     }
     /// To execute a given script
-    pub fn script(&self,scriptname:String) -> Result<bool,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.script("name.rb").unwrap(); // true
+    /// ```
+    pub fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
+        let scriptname:String=scriptnamestr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -289,7 +340,12 @@ impl meterpreter {
         test
     }
     /// To detach the meterpreter session
-    pub fn session_detach(&self) -> Result<bool,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.detach_session().unwrap(); // true
+    /// ```
+    pub fn detach_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -319,7 +375,12 @@ impl meterpreter {
         test
     }
     /// To kill a meterpreter shell
-    pub fn session_kill(&self) -> Result<bool,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.kill_session().unwrap(); // true
+    /// ```
+    pub fn kill_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -348,8 +409,14 @@ impl meterpreter {
         }
         test
     }
-    /// To get the lost of all possible commands with a specific keyword
-    pub fn tabs(&self,inputline:String) -> Result<Vec<String>,MsfError> {
+    /// To get the list of all possible commands with a specific keyword
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.tabs("hel").unwrap(); // ["help"]
+    /// ```
+    pub fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+        let inputline=inputlinestr.to_string();
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -375,6 +442,11 @@ impl meterpreter {
         test
     }
     /// To list all the compactible modules with the session
+    ///
+    /// ## Example
+    /// ```
+    /// meterpreter.compactible_modules().unwrap(); //Vec<String>
+    /// ```
     pub fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -402,7 +474,14 @@ impl meterpreter {
     }
 }
 /// To make a new meterpreter session from an existing shell
-pub fn shell_upgrade(client:Client,sessionid:String,connecthost:String,connectport:i32) -> Result<bool,MsfError> {
+///
+/// ## Example
+/// ```
+/// sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap(); // true
+/// ```
+pub fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
+    let sessionid:String=sessionidstr.to_string();
+    let connecthost:String=connecthoststr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -442,10 +521,15 @@ pub struct ring {
 }
 impl ring {
     /// To create a instance and store in the variable
-    pub fn new(client:Client,sessionid:String) -> Self {
+    ///
+    /// ## Example
+    /// ```
+    /// let ring=sessions::ring::new(client.clone(),"1");
+    /// ```
+    pub fn new(client:Client,sessionid:&str) -> Self {
         ring {
             client:client,
-            sessionid:sessionid,
+            sessionid:sessionid.to_string(),
         }
     }
     fn serialize(&self,body:&mut Vec<u8>,method:&str,arg:Option<String>) {
@@ -462,6 +546,11 @@ impl ring {
         }
     }
     /// To clear the ring buffer
+    ///
+    /// ## Example
+    /// ```
+    /// ring.clear().unwrap(); // true
+    /// ```
     pub fn clear(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
@@ -492,6 +581,11 @@ impl ring {
         test
     }
     /// To get the last issued ReadPointer
+    /// 
+    /// ## Example
+    /// ```
+    /// ring.last().unwrap(); // 3
+    /// ```
     pub fn last(&self) -> Result<i32,MsfError> {
         let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();
@@ -518,7 +612,13 @@ impl ring {
         test
     }
     /// To write data into an active shell session
-    pub fn put(&self,data:String) -> Result<i32,MsfError> {
+    ///
+    /// ## Example
+    /// ```
+    /// ring.put("data").unwrap(); // 4 
+    /// ```
+    pub fn put(&self,datastr:&str) -> Result<i32,MsfError> {
+        let data:String=datastr.to_string();
         let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();
         let mut buf=vec![];
