@@ -24,10 +24,10 @@ fn main() {
         },
     }
     dat=HashMap::new();
-    dat.insert("LHOST","127.0.0.1");
-    dat.insert("LPORT","4040");
+    dat.insert("LHOST".to_string(),"127.0.0.1".to_string());
+    dat.insert("LPORT".to_string(),"4040".to_string());
     match modules::execute(client.clone(),"payload","android/meterpreter/reverse_tcp",dat).unwrap() {
         Value::Binary(ref val) => println!("{}",String::from_utf8_lossy(&val)),
-            _ => pass,
+            _ => println!("Another value returned"),
         }
 }

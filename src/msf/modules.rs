@@ -242,9 +242,9 @@ impl compactible {
     /// ```
     /// let compactible=modules::compactible::new("modulename",client.clone());
     /// ```
-    pub fn new(modulename:String,client:Client) -> Self {
+    pub fn new(modulename:&str,client:Client) -> Self {
         compactible {
-            name:modulename,
+            name:modulename.to_string(),
             client:client,
         }
     }
