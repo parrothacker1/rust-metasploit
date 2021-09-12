@@ -11,7 +11,7 @@ fn main() {
     println!("{:?}",comp.payload().unwrap());
     println!("{:?}",comp.sessions().unwrap());
     println!("{:?}",comp.target_payloads(1).unwrap());
-    println!("{:?}",modules::option(client.clone(),"payload","android/meterpreter/reverse_tcp"").unwrap());
+    println!("{:?}",modules::option(client.clone(),"payload","android/meterpreter/reverse_tcp").unwrap());
     let mut dat=HashMap::new();
     dat.insert("format".to_string(),"exe".to_string());
     dat.insert("arch".to_string(),"x86".to_string());
