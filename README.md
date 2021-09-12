@@ -19,7 +19,7 @@ A practical example of this library can be found at [rust-metasploit-example](ht
 In your Cargo.toml add the following
 ```toml
 [dependencies]
-rust-metasploit="1.0.0"
+rust-metasploit="1.0.1"
 ```
 
 ## How To Use
@@ -47,6 +47,10 @@ let client=Client::new("127.0.0.1",55552,"user","password",false);
 ```
 ### How to use the library
 All details about the library have been written in [docs.rs](https://docs.rs/rust-metasploit/1.0.0/metasploit/)
+
+## v1.0.1
+* Removed unwanted parameters of modules
+* Changed String parameters to str
 
 ## Thanks To
 * [reqwest](https://docs.rs/reqwest/0.11.4/reqwest/)
