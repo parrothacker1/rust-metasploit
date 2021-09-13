@@ -46,7 +46,7 @@ When you start metasploit RPC Server from console,the ssl value should be false.
 let client=Client::new("127.0.0.1",55552,"user","password",false);
 ```
 ### How to use the library
-All details about the library have been written in [docs.rs](https://docs.rs/rust-metasploit/1.0.0/metasploit/)
+All details about the library have been written in [docs.rs](https://docs.rs/rust-metasploit/1.0.1/metasploit/)
 
 ## v1.0.1
 * Removed unwanted parameters of modules
