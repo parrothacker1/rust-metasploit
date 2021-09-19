@@ -17,6 +17,10 @@ tokio={ version = "1.9.0" , features=["macros"] , optional=true}
 name="metasploit"
 
 [features]
-default=["non-async"]
+default=["sync"]
 async=["tokio"]
-non-async=[]
+sync=[]
+
+[package.metadata.docs.rs]
+all-features = true
+rustc-args = [ "--cfg" , "doc"]

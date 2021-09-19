@@ -1,8 +1,8 @@
 //! A module to handle msfconsole.
 #![allow(non_snake_case)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use error::MsfError;
 use connect::connect;
 use structs::{request as req,response as res};
@@ -16,7 +16,7 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 /// ```
 /// console::create(client.clone()).unwrap(); // response::console::create {}
 /// ```
-pub fn create(client:Client) -> Result<res::console::create,MsfError> {
+pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
         id:String::new(),
         prompt:"".to_string(),
@@ -52,7 +52,7 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 /// ```
 /// console::destroy(client.clone(),"1").unwrap(); // true
 /// ```
-pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

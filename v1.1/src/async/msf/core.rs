@@ -1,8 +1,8 @@
 //! A module which is used to handle msfcore
 #![allow(non_snake_case)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../connect.rs"] mod connect;
-#[path="../error.rs"] mod error;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
+#[path="../../error.rs"] mod error;
 use error::MsfError;
 use crate::client::Client;
 use std::collections::HashMap;

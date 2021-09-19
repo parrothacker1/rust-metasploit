@@ -1,7 +1,7 @@
 //! A module to handle plugins in Metasploit RPC
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use connect::connect;
 use std::collections::HashMap;
 use error::MsfError;

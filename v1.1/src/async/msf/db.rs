@@ -1,6 +1,6 @@
 //! A module to manage backend connectivity.
-#[path="../structs/mod.rs"] mod structs;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
 use structs::{request as req,response as res};
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};

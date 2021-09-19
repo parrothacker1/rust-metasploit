@@ -1,4 +1,4 @@
-//! The module which contain all the necessary modules to communicate with RPC Server
+//! The module which contain all the necessary async modules to communicate with RPC Server
 pub mod auth;
 pub mod console;
 pub mod core;
