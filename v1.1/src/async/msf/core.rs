@@ -15,9 +15,9 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// core::add_module(client.clone(),"path").unwrap(); // response::core::addmodpath {}
+/// core::add_module(client.clone(),"path").await.unwrap(); // response::core::addmodpath {}
 /// ```
-pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
+pub async fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
     let path:String=pathstr.to_string();
     let mut test:Result<res::core::addmodpath,MsfError>=Ok(res::core::addmodpath {
         exploits:0,
@@ -56,9 +56,9 @@ pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,Ms
 ///
 /// ## Example
 /// ```
-/// core::module_status(client.clone()).unwrap(); // response::core::modulestat
+/// core::module_status(client.clone()).await.unwrap(); // response::core::modulestat
 /// ```
-pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
+pub async fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
         exploits:0,
         auxiliary:0,
@@ -97,9 +97,9 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::reload_modules(client.clone()).unwrap(); // response::core::reloadmod {}
+/// core::reload_modules(client.clone()).await.unwrap(); // response::core::reloadmod {}
 /// ```
-pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
+pub async fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
         exploits:0,
         auxiliary:0,
@@ -138,9 +138,9 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::save(client.clone()).unwrap(); // true
+/// core::save(client.clone()).await.unwrap(); // true
 /// ```
-pub fn save(client:Client) -> Result<bool,MsfError> {
+pub async fn save(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -175,9 +175,9 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::setg(client.clone(),"name","value").unwrap(); //true
+/// core::setg(client.clone(),"name","value").await.unwrap(); //true
 /// ```
-pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
+pub async fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
     let value:String=valuestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -214,9 +214,9 @@ pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::unsetg(client.clone(),"name").unwrap(); // true
+/// core::unsetg(client.clone(),"name").await.unwrap(); // true
 /// ```
-pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
+pub async fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -252,9 +252,9 @@ pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::list_thread(client.clone()).unwrap(); // {1,response::core::threadlist {}}
+/// core::list_thread(client.clone()).await.unwrap(); // {1,response::core::threadlist {}}
 /// ```
-pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
+pub async fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
 	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
 	let mut body=Vec::new();
 	let mut buf=vec![];
@@ -285,9 +285,9 @@ pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 ///
 /// ## Example
 /// ```
-/// core::kill_thread(client.clone(),1).unwrap(); // true
+/// core::kill_thread(client.clone(),1).await.unwrap(); // true
 /// ```
-pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
+pub async fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -322,9 +322,9 @@ pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::version(client.clone()).unwrap(); //true
+/// core::version(client.clone()).await.unwrap(); //true
 /// ```
-pub fn version(client:Client) -> Result<res::core::version,MsfError> {
+pub async fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
         version:String::new(),
         api:String::new(),
@@ -359,9 +359,9 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::stop(client.clone()).unwrap(); // true
+/// core::stop(client.clone()).await.unwrap(); // true
 /// ```
-pub fn stop(client:Client) -> Result<bool,MsfError> {
+pub async fn stop(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];

@@ -9,9 +9,9 @@
 #[path="./connect.rs"] mod connect;
 #[path="./structs/mod.rs"] mod structs;
 use structs::{request::auth::login,response::auth::login as reslogin};
-use std::future::Future;
 use rmp_serde::{Serializer,Deserializer,decode::Error};
 use serde::{Serialize,Deserialize};
+use std::future::Future;
 #[derive(Debug,Clone)]
 /// Struct which is used to initialize and maintain connection.
 pub struct Client {
@@ -20,9 +20,8 @@ pub struct Client {
     /// The Metasploit auth token which will be taken at the time of connection
     pub token:Option<String>,
 }
-#[cfg_attr(docsrs, doc(cfg(feature = "sync")))]
-#[cfg(any(feature="sync",doc))]
 impl Client {
+    /// To create a new instance of Client
     pub fn new(host:&str,port:i32,user:&str,password:&str,ssl:bool) -> Self {
         let new_user=String::from(user);
         let url:String;
@@ -63,63 +62,12 @@ impl Client {
 			token:Some(token.clone()),
 		}
     }
+    /// To get the RPC Token
     pub fn gettoken(&self) -> String {
         self.token.as_ref().unwrap().to_string().clone()
     }
+    /// To get the parsed URL
     pub fn geturl(&self) -> String {
-    	self.url.clone()
-    }
-}
-#[cfg_attr(docsrs, doc(cfg(feature = "async")))]
-#[cfg(any(feature="async",doc))]
-impl Future for  Client {
-    type Output=Client;
-    fn new(host:&str,port:i32,user:&str,password:&str,ssl:bool) -> Self {
-        let new_user=String::from(user);
-        let url:String;
-        let new_pass=String::from(password);
-        if ssl {
-            url=format!("https://{}:{}/api",host,port).to_string()
-        } else {
-            url=format!("http://{}:{}/api",host,port).to_string()
-        };
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        let mut serializer=Serializer::new(&mut body);
-        let byte=login("auth.login".to_string(),new_user.clone(),new_pass);
-        byte.serialize(&mut serializer).unwrap();
-        let con=connect::connect(url.clone(),body,&mut buf);
-        let mut de=Deserializer::new(buf.as_slice());
-        let mut token=String::new();
-        match con {
-			Ok(_) => {
-				let de_ret:Result<reslogin,Error>=Deserialize::deserialize(&mut de);
-				if let Ok(ref val) = de_ret {
-					if val.result=="success".to_string() {
-						token=val.token.clone();
-					} else {
-						panic!("Not authorised.Username or password is wrong");
-					}
-				}
-				if let Err(_) = de_ret {
-					panic!("Not authorised.Username or password is wrong");
-				}
-			},
-			Err(_) => {
-				panic!("Couldn't connect to the metasploit RPC Server at {}:{}",host,port);
-			},
-		}
-		Client {
-			url:url.clone(),
-			token:Some(token.clone()),
-		}
-    }
-    async fn gettoken(&self) -> String {
-        self.Output=String;
-        self.token.as_ref().unwrap().to_string().clone()
-    }
-    async fn geturl(&self) -> String {
-        self.Output=String;
     	self.url.clone()
     }
 }

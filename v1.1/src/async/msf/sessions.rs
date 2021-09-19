@@ -15,9 +15,9 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// sessions::list(client.clone()).unwrap(); // response::sessions::list {}
+/// sessions::list(client.clone()).await.unwrap(); // response::sessions::list {}
 /// ```
-pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
+pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -48,9 +48,9 @@ pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
 ///
 /// ## Example
 /// ```
-/// sessions::stop(client.clone(),"1").unwrap(); // true
+/// sessions::stop(client.clone(),"1").await.unwrap(); // true
 /// ```
-pub fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
+pub async fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -89,9 +89,9 @@ impl shell {
     /// 
     /// ## Example
     /// ```
-    /// sessions::shell::read(client.clone(),"1",None).unwrap(); // response::sessions::shell_read {};
+    /// sessions::shell::read(client.clone(),"1",None).await.unwrap(); // response::sessions::shell_read {};
     /// ```
-    pub fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
+    pub async fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
         let sessionid:String=sessionidstr.to_string();
         let mut test:Result<res::sessions::shell_read,MsfError>=Ok(res::sessions::shell_read {
             seq:1,
@@ -134,9 +134,9 @@ impl shell {
     ///
     /// ## Example
     /// ```
-    /// sessions::shell::write(client.clone(),"1","help\n").unwrap(); //String
+    /// sessions::shell::write(client.clone(),"1","help\n").await.unwrap(); //String
     /// ```
-    pub fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
+    pub async fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
         let sessionid:String=sessionidstr.to_string();
         let data:String=datastr.to_string();
         let mut test:Result<String,MsfError>=Ok(String::new());
@@ -180,7 +180,7 @@ impl meterpreter {
     /// ```
     /// let meterpreter=sessions::meterpreter::new(client.clone(),"1");
     /// ```
-    pub fn new(client:Client,sessionidstr:&str) -> Self {
+    pub async fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
             sessionid:sessionidstr.to_string(),
             client:client,

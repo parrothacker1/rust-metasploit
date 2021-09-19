@@ -14,7 +14,7 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 ///
 /// ## Example
 /// ```
-/// console::create(client.clone()).unwrap(); // response::console::create {}
+/// console::create(client.clone()).await.unwrap(); // response::console::create {}
 /// ```
 pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
@@ -50,7 +50,7 @@ pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::destroy(client.clone(),"1").unwrap(); // true
+/// console::destroy(client.clone(),"1").await.unwrap(); // true
 /// ```
 pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
@@ -88,9 +88,9 @@ pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::list(client.clone()).unwrap() // response::console::list {}
+/// console::list(client.clone()).await.unwrap() // response::console::list {}
 /// ```
-pub fn list(client:Client) -> Result<res::console::list,MsfError> {
+pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
 		consoles:Vec::new(),
 	});
@@ -125,9 +125,9 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 /// It is recommended to add "\n" at the end of command.Or it may not execute
 /// ## Example
 /// ```
-/// console::write(client.clone(),"1","help\n").unwrap() // 1
+/// console::write(client.clone(),"1","help\n").await.unwrap() // 1
 /// ```
-pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
+pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
     let data:String=command.to_string();
     let consoleid:String=consoleID.to_string();
     let mut test:Result<i32,MsfError>=Ok(1);
@@ -160,9 +160,9 @@ pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> 
 ///
 /// ## Example
 /// ```
-/// console::read(client.clone(),"1").unwrap(); // response::console::read {}
+/// console::read(client.clone(),"1").await.unwrap(); // response::console::read {}
 /// ```
-pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
+pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
         data:String::new(),
@@ -198,9 +198,9 @@ pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError>
 ///
 /// ## Example
 /// ```
-/// console::detach_session(client.clone(),"1").unwrap(); // true
+/// console::detach_session(client.clone(),"1").await.unwrap(); // true
 /// ```
-pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -236,9 +236,9 @@ pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::kill_session(client.clone(),"1").unwrap(); // true
+/// console::kill_session(client.clone(),"1").await.unwrap(); // true
 /// ```
-pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -274,9 +274,9 @@ pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::tabs(client.clone(),"1","hel").unwrap(); // ["help"]
+/// console::tabs(client.clone(),"1","hel").await.unwrap(); // ["help"]
 /// ```
-pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+pub async fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
     let consoleid:String=consoleID.to_string();
     let inputline:String=inputlinestr.to_string();
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());

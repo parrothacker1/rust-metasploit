@@ -14,9 +14,9 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// jobs::list(client.clone()).unwrap(); // {"1":"<jobname>"}
+/// jobs::list(client.clone()).await.unwrap(); // {"1":"<jobname>"}
 /// ```
-pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
+pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -47,9 +47,9 @@ pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::info(client.clone(),"1").unwrap(); // response::jobs::info {}
+/// jobs::info(client.clone(),"1").await.unwrap(); // response::jobs::info {}
 /// ```
-pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<res::jobs::info,MsfError>=Ok(res::jobs::info{
         jid:0,
@@ -93,9 +93,9 @@ pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::stop(client.clone(),"1").unwrap(); // true
+/// jobs::stop(client.clone(),"1").await.unwrap(); // true
 /// ```
-pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

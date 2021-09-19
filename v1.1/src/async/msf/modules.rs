@@ -58,9 +58,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.exploits();
+    /// list.exploits().await.unwrap();
     /// ```
-    pub fn exploits(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -81,9 +81,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.auxiliary();
+    /// list.auxiliary().await.unwrap();
     /// ```
-    pub fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -104,9 +104,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.evasions();
+    /// list.evasions().await.unwrap();
     /// ```
-    pub fn evasions(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn evasions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -127,9 +127,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.posts();
+    /// list.posts().await.unwrap();
     /// ```
-    pub fn post(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -150,9 +150,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.payloads();
+    /// list.payloads().await.unwrap();
     /// ```
-    pub fn payloads(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -173,9 +173,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.encoders();
+    /// list.encoders().await.unwrap();
     /// ```
-    pub fn encoders(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -196,9 +196,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.encode_formats();
+    /// list.encode_formats().await.unwrap();
     /// ```
-    pub fn encode_formats(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn encode_formats(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -228,9 +228,9 @@ impl list {
     /// 
     /// ## Example
     /// ```
-    /// list.nops();
+    /// list.nops().await.unwrap();
     /// ```
-    pub fn nops(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -251,9 +251,9 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.platforms();
+    /// list.platforms().await.unwrap();
     /// ```
-    pub fn platforms(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn platforms(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -275,9 +275,9 @@ impl list {
 ///
 /// ## Example
 /// ```
-/// module::info(client.clone(),"moduletype","modulename").unwrap(); // response::modules::info {}
+/// module::info(client.clone(),"moduletype","modulename").await.unwrap(); // response::modules::info {}
 /// ```
-pub fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
+pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
@@ -320,7 +320,7 @@ impl compactible {
     /// ```
     /// let compactible=modules::compactible::new("modulename",client.clone());
     /// ```
-    pub fn new(modulename:String,client:Client) -> Self {
+    pub async fn new(modulename:String,client:Client) -> Self {
         compactible {
             name:modulename,
             client:client,
@@ -330,9 +330,9 @@ impl compactible {
     ///
     /// ## Example
     /// ```
-    /// compactible.payloads();
+    /// compactible.payloads().await.unwrap();
     /// ```
-    pub fn payload(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -430,9 +430,9 @@ impl compactible {
 ///
 /// ## Example
 /// ```
-/// modules::option(client.clone(),"moduletype","modulename").unwrap(); //{"key",response::modules::options {}}
+/// modules::option(client.clone(),"moduletype","modulename").await.unwrap(); //{"key",response::modules::options {}}
 /// ```
-pub fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
+pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
@@ -468,9 +468,9 @@ pub fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<Has
 /// use std::colllections::HashMap;
 /// let option=HashMap::new();
 /// option.insert("key".to_string(),"value".to_string());
-/// module::encoder(client.clone(),"data","encodermodule",option).unwrap(); // String
+/// module::encoder(client.clone(),"data","encodermodule",option).await.unwrap(); // String
 /// ```
-pub fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
+pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
     let data:String=datastr.to_string();
 let encodermodule:String=encodermodulestr.to_string();
     let mut test:Result<String,MsfError>=Ok(String::new());
@@ -506,9 +506,9 @@ let encodermodule:String=encodermodulestr.to_string();
 /// use std::collections::HashMap;
 /// let option=HashMap::new();
 /// option.insert("key".to_string(),"value".to_string());
-/// modules::execute(client.clone(),"moduletype","modulename",option).unwrap(); //value::Value
+/// modules::execute(client.clone(),"moduletype","modulename",option).await.unwrap(); //value::Value
 /// ```
-pub fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
+pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<Value,MsfError>=Ok(Value::from(true));
@@ -552,9 +552,9 @@ pub fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashM
 ///
 /// ## Example
 /// ```
-/// modules::search(client.clone,"searchkeyword").unwrap(); // Vec<response::modules::search {}>
+/// modules::search(client.clone,"searchkeyword").await.unwrap(); // Vec<response::modules::search {}>
 /// ```
-pub fn search(client:Client,keyword:&str) -> Result<Vec<res::modules::search>,MsfError> {
+pub async fn search(client:Client,keyword:&str) -> Result<Vec<res::modules::search>,MsfError> {
     let mut test:Result<Vec<res::modules::search>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -588,9 +588,9 @@ pub fn search(client:Client,keyword:&str) -> Result<Vec<res::modules::search>,Ms
 /// use std::collections::HashMap;
 /// let options=HashMap::new();
 /// options.insert("key".to_string(),"value".to_string());
-/// modules::check(client.clone(),"moduletype","modulename",options).unwrap(); // HashMap
+/// modules::check(client.clone(),"moduletype","modulename",options).await.unwrap(); // {"key";"val"}
 /// ```
-pub fn check(client:Client,moduletype:&str,modulename:&str,options:HashMap<String,String>) -> Result<HashMap<String,String>,MsfError> {
+pub async fn check(client:Client,moduletype:&str,modulename:&str,options:HashMap<String,String>) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
