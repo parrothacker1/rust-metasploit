@@ -4,14 +4,12 @@
 //! use metasploit::client::Client;
 //! let client=Client::new("127.0.0.1",4040,"user","password",true);
 //! ```
-#![cfg_attr(docsrs, feature(doc_cfg))]
-#![cfg_attr(docsrs, deny(rustdoc::broken_intra_doc_links))]
 #[path="./connect.rs"] mod connect;
 #[path="./structs/mod.rs"] mod structs;
 use structs::{request::auth::login,response::auth::login as reslogin};
 use rmp_serde::{Serializer,Deserializer,decode::Error};
 use serde::{Serialize,Deserialize};
-use std::future::Future;
+
 #[derive(Debug,Clone)]
 /// Struct which is used to initialize and maintain connection.
 pub struct Client {

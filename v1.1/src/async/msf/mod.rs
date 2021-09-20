@@ -7,3 +7,5 @@ pub mod modules;
 pub mod plugins;
 pub mod sessions;
 pub mod db;
+#[cfg(feature="pro")]
+pub mod pro;

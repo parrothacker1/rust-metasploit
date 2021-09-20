@@ -20,6 +20,7 @@ name="metasploit"
 default=["sync"]
 async=["tokio"]
 sync=[]
+pro=[]
 
 [package.metadata.docs.rs]
 all-features = true
