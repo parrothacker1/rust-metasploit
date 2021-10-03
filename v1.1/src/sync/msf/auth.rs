@@ -14,10 +14,6 @@ use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 /// ```
 /// auth::logout(client.clone()).unwrap(); // true
 /// ```
-// #[cfg(feature="async")]
-pub async fn test() {
-    println!("Hello");
-}
 pub fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

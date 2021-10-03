@@ -3,12 +3,19 @@
 #[path="../../connect.rs"] mod connect;
 use structs::{request as req,response as res};
 use serde::{Serialize,Deserialize};
+use connect::connect;
 use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 use crate::{error::MsfError,client::Client};
 use std::collections::HashMap;
 
-pub fn hosts(client:Client,xopts:Option<HashMap<String,String>>) -> Result<bool,MsfError> {
-	let mut test:Result<bool,MsfError>=Ok(true);
+pub fn hosts(client:Client,xopts:Option<HashMap<String,String>>) -> Result<res::db::hosts,MsfError> {
+    let mut test:Result<res::db::hosts,MsfError>=Err(MsfError {
+        error:true,
+        error_class:String::new(),
+        error_string:String::new(),
+        error_message:String::new(),
+        error_backtrace:Vec::new(),
+    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -25,14 +32,22 @@ pub fn hosts(client:Client,xopts:Option<HashMap<String,String>>) -> Result<bool,
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::>
+            let de_ret:Result<res::db::hosts,derror>=Deserialize::deserialize(&mut de);
+            if let Ok(val) = de_ret {
+                test=Ok(val);
+            }
+            if let Err(_) = de_ret {
+                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
+                test=Err(de_ret);
+            }
         },
         Err(_) => {
             panic!("Connection closed unexpectedly");
         }
     }
+    test
 }
-pub fn services(client:Client) {
+pub fn test() {
+    blahblah
+}
 
-}
-pub fn

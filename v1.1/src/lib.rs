@@ -15,10 +15,10 @@ pub mod error;
 pub mod value;
 #[path="structs/response/mod.rs"] pub mod response;
 /// Async functions are available in "async" features
-#[cfg(any(feature="async",doc))]
-#[cfg_attr(docsrs, doc(cfg(feature = "async")))]
+/*#[cfg(any(feature="async",doc))]
+#[cfg_attr(docsrs, doc(cfg(feature = "async")))]*/
 pub mod r#async;
-/// Sync functions are available im "sync" features
-#[cfg(any(features="sync",doc))]
-#[cfg_attr(docsrs, doc(cfg(feature = "sync")))]
+/// Sync functions are available in "sync" features
+/*#[cfg(any(features="sync",doc))]
+#[cfg_attr(docsrs, doc(cfg(feature = "sync")))]*/
 pub mod sync;

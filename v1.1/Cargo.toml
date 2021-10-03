@@ -16,11 +16,10 @@ tokio={ version = "1.9.0" , features=["macros"] , optional=true}
 [lib]
 name="metasploit"
 
-[features]
-default=["sync"]
-async=["tokio"]
-sync=[]
-pro=[]
+#[features]
+#default=["sync"]
+#async=["tokio"]
+#sync=[]
 
 [package.metadata.docs.rs]
 all-features = true
