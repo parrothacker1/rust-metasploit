@@ -17,3 +17,7 @@ pub struct hosts {
     pub purpose:String,
     pub info:String
 }
+#[derive(des,Debug,Clone)]
+pub struct add_workspace {
+    pub result:String,
+}
