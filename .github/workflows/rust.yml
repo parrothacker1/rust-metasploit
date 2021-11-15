@@ -12,11 +12,19 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+
+  previous-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checking previous builds
+      run: cd v1;cargo build;cd ../v1.0.1;cargo build
+      
   build:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
+    - name: Building latest
+      run: cd v1.1;cargo build --verbose
