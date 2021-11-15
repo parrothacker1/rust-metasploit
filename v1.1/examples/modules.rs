@@ -5,7 +5,7 @@ use metasploit::value::Value;
 fn main() {
     let client=Client::new("127.0.0.1",55552,"user","password",true);
     let list=modules::list::new(client.clone());
-    println!("{:?}",list.encode_formats().unwrap());
+    //println!("{:?}",list.payloads().unwrap());
     println!("{:?}",modules::info(client.clone(),"payload".to_string(),"android/meterpreter/reverse_tcp".to_string()).unwrap());
     let comp=modules::compactible::new("multi/handler".to_string(),client.clone());
     //println!("{:?}",comp.payload().unwrap());

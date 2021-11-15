@@ -6,22 +6,6 @@ pub struct list {
     pub modules:Vec<String>,
 }
 #[derive(des,Debug,Clone)]
-pub struct list_encode_formats(pub Vec<String>);
-
-#[derive(des,Debug,Clone)]
-pub struct search {
-    pub r#type:String,
-    pub name:String,
-    pub fullname:String,
-    pub disclosuredate:String,
-}
-
-#[derive(des,Debug,Clone)]
-pub struct check {
-    pub job_id:String,
-}
-
-#[derive(des,Debug,Clone)]
 pub struct info {
     pub name:String,
     pub description:String,

@@ -1,10 +1,8 @@
 use metasploit::client::Client;
 use metasploit::msf::auth;
-use tokio;
 
-#[tokio::main]
-async fn main() {
-	/*let client=Client::new("127.0.0.1",55552,"user","password",true);
+fn main() {
+	let client=Client::new("127.0.0.1",55552,"user","password",true);
 	if auth::add_token(client.clone(),"newtoken").unwrap() {
 		println!("New token added");
 	} else {
@@ -19,6 +17,5 @@ async fn main() {
 		println!("Failed to remove token");
 	}
 	auth::logout(client.clone()).unwrap();
-	println!("logged out of the RPC Server ");*/
-	auth::test().await;
+	println!("logged out of the RPC Server ");
 }

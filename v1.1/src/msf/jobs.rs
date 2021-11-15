@@ -1,7 +1,7 @@
 //! A module to handle the jobs in Metasploit
-#[path="../../structs/mod.rs"] mod structs;
-#[path="../../error.rs"] mod error;
-#[path="../../connect.rs"] mod connect;
+#[path="../structs/mod.rs"] mod structs;
+#[path="../error.rs"] mod error;
+#[path="../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
 use error::MsfError;
@@ -14,9 +14,9 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// jobs::list(client.clone()).await.unwrap(); // {"1":"<jobname>"}
+/// jobs::list(client.clone()).unwrap(); // {"1":"<jobname>"}
 /// ```
-pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
+pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -47,9 +47,9 @@ pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::info(client.clone(),"1").await.unwrap(); // response::jobs::info {}
+/// jobs::info(client.clone(),"1").unwrap(); // response::jobs::info {}
 /// ```
-pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<res::jobs::info,MsfError>=Ok(res::jobs::info{
         jid:0,
@@ -93,9 +93,9 @@ pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfErro
 ///
 /// ## Example
 /// ```
-/// jobs::stop(client.clone(),"1").await.unwrap(); // true
+/// jobs::stop(client.clone(),"1").unwrap(); // true
 /// ```
-pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

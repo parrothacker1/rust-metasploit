@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use reqwest::{header,blocking::Client};
 #[path="./error.rs"] mod error;
 use error::{ConnectionError as conerr};

@@ -1,7 +1,7 @@
 //! Module whcih contain all functions for authentication
-#[path="../../structs/mod.rs"] mod structs;
-#[path="../../error.rs"] mod error;
-#[path="../../connect.rs"] mod connect;
+#[path="../structs/mod.rs"] mod structs;
+#[path="../error.rs"] mod error;
+#[path="../connect.rs"] mod connect;
 use error::MsfError;
 use crate::client;
 use structs::{request as req,response as res};

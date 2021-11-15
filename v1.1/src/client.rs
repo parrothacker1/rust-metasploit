@@ -9,7 +9,6 @@
 use structs::{request::auth::login,response::auth::login as reslogin};
 use rmp_serde::{Serializer,Deserializer,decode::Error};
 use serde::{Serialize,Deserialize};
-
 #[derive(Debug,Clone)]
 /// Struct which is used to initialize and maintain connection.
 pub struct Client {
@@ -19,7 +18,6 @@ pub struct Client {
     pub token:Option<String>,
 }
 impl Client {
-    /// To create a new instance of Client
     pub fn new(host:&str,port:i32,user:&str,password:&str,ssl:bool) -> Self {
         let new_user=String::from(user);
         let url:String;
@@ -60,11 +58,9 @@ impl Client {
 			token:Some(token.clone()),
 		}
     }
-    /// To get the RPC Token
     pub fn gettoken(&self) -> String {
         self.token.as_ref().unwrap().to_string().clone()
     }
-    /// To get the parsed URL
     pub fn geturl(&self) -> String {
     	self.url.clone()
     }

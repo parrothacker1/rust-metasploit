@@ -1,9 +1,9 @@
 //! A module to handle all the modules in Metasploit RPC
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
-#[path="../../structs/mod.rs"] mod structs;
-#[path="../../error.rs"] mod error;
-#[path="../../connect.rs"] mod connect;
+#[path="../structs/mod.rs"] mod structs;
+#[path="../error.rs"] mod error;
+#[path="../connect.rs"] mod connect;
 use crate::{value::Value,client::Client};
 use connect::connect;
 use std::collections::HashMap;
@@ -100,29 +100,6 @@ impl list {
         }
         test
     }
-    /// To list all evasions
-    ///
-    /// ## Example
-    /// ```
-    /// list.evasions();
-    /// ```
-    pub fn evasions(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.evasion",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                test=self.deserialize(new_buf);
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
-    }
     /// To list all posts
     ///
     /// ## Example
@@ -192,38 +169,6 @@ impl list {
         }
         test
     }
-    /// To list encode formats
-    ///
-    /// ## Example
-    /// ```
-    /// list.encode_formats();
-    /// ```
-    pub fn encode_formats(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.encode_formats",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                let mut de=Deserializer::new(new_buf.as_slice());
-                let de_ret:Result<res::modules::list_encode_formats,derror>=Deserialize::deserialize(&mut de);
-                if let Ok(ref val) = de_ret {
-                    let res::modules::list_encode_formats(de_ret)=val;
-                    test=Ok(de_ret.to_vec().clone());
-                };
-                if let Err(_) = de_ret {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                }
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
-    }
     /// To list all nops
     /// 
     /// ## Example
@@ -235,29 +180,6 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.nops",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                test=self.deserialize(new_buf);
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
-    }
-    /// To list all platforms
-    ///
-    /// ## Example
-    /// ```
-    /// list.platforms();
-    /// ```
-    pub fn platforms(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.platforms",&mut body);
         let con=connect(self.client.url.clone(),body,&mut buf);
         let new_buf=buf.clone();
         match con {
@@ -544,78 +466,6 @@ pub fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashM
         },
         Err(_) => {
             panic!("Connection closed unexpectedly");
-        },
-    }
-    test
-}
-/// To search about a module
-///
-/// ## Example
-/// ```
-/// modules::search(client.clone,"searchkeyword").unwrap(); // Vec<response::modules::search {}>
-/// ```
-pub fn search(client:Client,keyword:&str) -> Result<Vec<res::modules::search>,MsfError> {
-    let mut test:Result<Vec<res::modules::search>,MsfError>=Ok(Vec::new());
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut se=Serializer::new(&mut body);
-    let byte=req::modules::search("module.search".to_string(),client.token.unwrap(),keyword.to_string());
-    byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-            let de_ret:Result<Vec<res::modules::search>,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.to_vec().clone());
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-        },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
-    }
-    test
-}
-/// To check a module
-///
-/// ## Example
-/// ```
-/// use std::collections::HashMap;
-/// let options=HashMap::new();
-/// options.insert("key".to_string(),"value".to_string());
-/// modules::check(client.clone(),"moduletype","modulename",options).unwrap(); // HashMap
-/// ```
-pub fn check(client:Client,moduletype:&str,modulename:&str,options:HashMap<String,String>) -> Result<HashMap<String,String>,MsfError> {
-    let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut se=Serializer::new(&mut body);
-    let byte=req::modules::check("module.check".to_string(),client.token.unwrap(),moduletype.to_string(),modulename.to_string(),options);
-    byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-            let de_ret:Result<res::modules::check,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                let mut res=HashMap::new();
-                res.insert("result".to_string(),"success".to_string());
-                res.insert("job_id".to_string(),val.job_id.clone());
-                test=Ok(res);
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-        },
-        Err(_) => {
-
         },
     }
     test

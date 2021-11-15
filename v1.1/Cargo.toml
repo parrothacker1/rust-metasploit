@@ -1,6 +1,6 @@
 [package]
 name = "rust-metasploit"
-version = "1.1.0"
+version = "1.0.1"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
 readme="README.md"
@@ -11,16 +11,6 @@ reqwest={ version="0.11.4",features=["blocking","json"] }
 rmp-serde="0.13.7"
 rmpv={ version = "1.0.0" , features=["with-serde"] }
 serde={ version="1.0.117" , features=["derive"]}
-tokio={ version = "1.9.0" , features=["macros"] , optional=true}
 
 [lib]
 name="metasploit"
-
-#[features]
-#default=["sync"]
-#async=["tokio"]
-#sync=[]
-
-[package.metadata.docs.rs]
-all-features = true
-rustc-args = [ "--cfg" , "doc"]
