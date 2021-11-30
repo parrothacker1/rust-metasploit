@@ -1,8 +1,8 @@
 //! To handle the sessions in Metasploit RPC
 #![allow(non_camel_case_types)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use connect::connect;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
@@ -17,7 +17,7 @@ use structs::{request as req,response as res};
 /// ```
 /// sessions::list(client.clone()).unwrap(); // response::sessions::list {}
 /// ```
-pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
+pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -50,7 +50,7 @@ pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
 /// ```
 /// sessions::stop(client.clone(),"1").unwrap(); // true
 /// ```
-pub async fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
+pub fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -91,7 +91,7 @@ impl shell {
     /// ```
     /// sessions::shell::read(client.clone(),"1",None).unwrap(); // response::sessions::shell_read {};
     /// ```
-    pub async fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
+    pub fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
         let sessionid:String=sessionidstr.to_string();
         let mut test:Result<res::sessions::shell_read,MsfError>=Ok(res::sessions::shell_read {
             seq:1,
@@ -136,7 +136,7 @@ impl shell {
     /// ```
     /// sessions::shell::write(client.clone(),"1","help\n").unwrap(); //String
     /// ```
-    pub async fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
+    pub fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
         let sessionid:String=sessionidstr.to_string();
         let data:String=datastr.to_string();
         let mut test:Result<String,MsfError>=Ok(String::new());
@@ -180,7 +180,7 @@ impl meterpreter {
     /// ```
     /// let meterpreter=sessions::meterpreter::new(client.clone(),"1");
     /// ```
-    pub async fn new(client:Client,sessionidstr:&str) -> Self {
+    pub fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
             sessionid:sessionidstr.to_string(),
             client:client,
@@ -206,7 +206,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.write("help\n").unwrap(); // true
     /// ```
-    pub async fn write(&self,datastr:&str) -> Result<bool,MsfError> {
+    pub fn write(&self,datastr:&str) -> Result<bool,MsfError> {
         let data:String=datastr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
@@ -242,7 +242,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.read().unwrap(); //String
     /// ```
-    pub async fn read(&self) -> Result<String,MsfError> {
+    pub fn read(&self) -> Result<String,MsfError> {
         let mut test:Result<String,MsfError>=Ok(String::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -273,7 +273,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.run_single("help\n").unwrap(); //true
     /// ```
-    pub async fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
+    pub fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
         let command:String=commandstr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
@@ -309,7 +309,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.script("name.rb").unwrap(); // true
     /// ```
-    pub async fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
+    pub fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
         let scriptname:String=scriptnamestr.to_string();
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
@@ -345,7 +345,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.detach_session().unwrap(); // true
     /// ```
-    pub async fn detach_session(&self) -> Result<bool,MsfError> {
+    pub fn detach_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -380,7 +380,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.kill_session().unwrap(); // true
     /// ```
-    pub async fn kill_session(&self) -> Result<bool,MsfError> {
+    pub fn kill_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -415,7 +415,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.tabs("hel").unwrap(); // ["help"]
     /// ```
-    pub async fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+    pub fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
         let inputline=inputlinestr.to_string();
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
@@ -447,7 +447,7 @@ impl meterpreter {
     /// ```
     /// meterpreter.compactible_modules().unwrap(); //Vec<String>
     /// ```
-    pub async fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
+    pub fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -479,7 +479,7 @@ impl meterpreter {
 /// ```
 /// sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap(); // true
 /// ```
-pub async fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
+pub fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
     let connecthost:String=connecthoststr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
@@ -526,7 +526,7 @@ impl ring {
     /// ```
     /// let ring=sessions::ring::new(client.clone(),"1");
     /// ```
-    pub async fn new(client:Client,sessionid:&str) -> Self {
+    pub fn new(client:Client,sessionid:&str) -> Self {
         ring {
             client:client,
             sessionid:sessionid.to_string(),
@@ -551,7 +551,7 @@ impl ring {
     /// ```
     /// ring.clear().unwrap(); // true
     /// ```
-    pub async fn clear(&self) -> Result<bool,MsfError> {
+    pub fn clear(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -586,7 +586,7 @@ impl ring {
     /// ```
     /// ring.last().unwrap(); // 3
     /// ```
-    pub async fn last(&self) -> Result<i32,MsfError> {
+    pub fn last(&self) -> Result<i32,MsfError> {
         let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -617,7 +617,7 @@ impl ring {
     /// ```
     /// ring.put("data").unwrap(); // 4 
     /// ```
-    pub async fn put(&self,datastr:&str) -> Result<i32,MsfError> {
+    pub fn put(&self,datastr:&str) -> Result<i32,MsfError> {
         let data:String=datastr.to_string();
         let mut test:Result<i32,MsfError>=Ok(1);
         let mut body=Vec::new();

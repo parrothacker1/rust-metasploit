@@ -2,7 +2,9 @@
 //! ## Example
 //! ```
 //! use metasploit::client::Client;
-//! let client=Client::new("127.0.0.1",4040,"user","password",true);
+//! fn main() {
+//!     let client=Client::new("127.0.0.1",4040,"user","password",true);
+//! }
 //! ```
 #[path="./connect.rs"] mod connect;
 #[path="./structs/mod.rs"] mod structs;

@@ -1,9 +1,9 @@
 //! A module to handle all the modules in Metasploit RPC
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use crate::{value::Value,client::Client};
 use connect::connect;
 use std::collections::HashMap;
@@ -31,7 +31,7 @@ impl list {
     /// ```
     /// let list=modules::list::new(client.clone());
     /// ```
-    pub async fn new(client:Client) -> Self {
+    pub fn new(client:Client) -> Self {
         list {
             client:client,
         }
@@ -60,7 +60,7 @@ impl list {
     /// ```
     /// list.exploits();
     /// ```
-    pub async fn exploits(&self) -> Result<Vec<String>,MsfError> {
+    pub fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -83,7 +83,7 @@ impl list {
     /// ```
     /// list.auxiliary();
     /// ```
-    pub async fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
+    pub fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -106,7 +106,7 @@ impl list {
     /// ```
     /// list.posts();
     /// ```
-    pub async fn post(&self) -> Result<Vec<String>,MsfError> {
+    pub fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -129,7 +129,7 @@ impl list {
     /// ```
     /// list.payloads();
     /// ```
-    pub async fn payloads(&self) -> Result<Vec<String>,MsfError> {
+    pub fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -152,7 +152,7 @@ impl list {
     /// ```
     /// list.encoders();
     /// ```
-    pub async fn encoders(&self) -> Result<Vec<String>,MsfError> {
+    pub fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -175,7 +175,7 @@ impl list {
     /// ```
     /// list.nops();
     /// ```
-    pub async fn nops(&self) -> Result<Vec<String>,MsfError> {
+    pub fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -199,7 +199,7 @@ impl list {
 /// ```
 /// module::info(client.clone(),"moduletype","modulename").unwrap(); // response::modules::info {}
 /// ```
-pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
+pub fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
@@ -242,7 +242,7 @@ impl compactible {
     /// ```
     /// let compactible=modules::compactible::new("modulename",client.clone());
     /// ```
-    pub async fn new(modulename:String,client:Client) -> Self {
+    pub fn new(modulename:String,client:Client) -> Self {
         compactible {
             name:modulename,
             client:client,
@@ -254,7 +254,7 @@ impl compactible {
     /// ```
     /// compactible.payloads();
     /// ```
-    pub async fn payload(&self) -> Result<Vec<String>,MsfError> {
+    pub fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -287,7 +287,7 @@ impl compactible {
     /// ```
     /// compactible.target_payloads(1);
     /// ```
-    pub async fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
+    pub fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -320,7 +320,7 @@ impl compactible {
     /// ```
     /// compactible.sessions();
     /// ```
-    pub async fn sessions(&self) -> Result<Vec<String>,MsfError> {
+    pub fn sessions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -354,7 +354,7 @@ impl compactible {
 /// ```
 /// modules::option(client.clone(),"moduletype","modulename").unwrap(); //{"key",response::modules::options {}}
 /// ```
-pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
+pub fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
@@ -392,7 +392,7 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
 /// option.insert("key".to_string(),"value".to_string());
 /// module::encoder(client.clone(),"data","encodermodule",option).unwrap(); // String
 /// ```
-pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
+pub fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
     let data:String=datastr.to_string();
 let encodermodule:String=encodermodulestr.to_string();
     let mut test:Result<String,MsfError>=Ok(String::new());
@@ -430,7 +430,7 @@ let encodermodule:String=encodermodulestr.to_string();
 /// option.insert("key".to_string(),"value".to_string());
 /// modules::execute(client.clone(),"moduletype","modulename",option).unwrap(); //value::Value
 /// ```
-pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
+pub fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
     let moduletype:String=moduletypestr.to_string();
     let modulename:String=modulenamestr.to_string();
     let mut test:Result<Value,MsfError>=Ok(Value::from(true));

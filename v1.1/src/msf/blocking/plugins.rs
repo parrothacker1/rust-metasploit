@@ -1,7 +1,7 @@
 //! A module to handle plugins in Metasploit RPC
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use connect::connect;
 use std::collections::HashMap;
 use error::MsfError;
@@ -19,7 +19,7 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 /// option.insert("key".to_string(),"value".to_string());
 /// plugins::load(client.clone(),"pluginname",option).unwrap(); // true
 ///```
-pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
+pub fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -57,7 +57,7 @@ pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String
 /// ```
 /// plugins::unload(client.clone(),"pluginname").unwrap(); // true
 /// ```
-pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
+pub fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -95,7 +95,7 @@ pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
 /// ```
 /// plugins::list(client.clone()).unwrap(); // Vec<String>
 /// ```
-pub async fn list(client:Client) -> Result<Vec<String>,MsfError> {
+pub fn list(client:Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];
