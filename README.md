@@ -19,7 +19,7 @@ A practical example of this library can be found at [rust-metasploit-example](ht
 In your Cargo.toml add the following
 ```toml
 [dependencies]
-rust-metasploit="1.0.1"
+rust-metasploit="1.1.0"
 ```
 
 ## How To Use
@@ -46,13 +46,16 @@ When you start metasploit RPC Server from console,the ssl value should be false.
 let client=Client::new("127.0.0.1",55552,"user","password",false);
 ```
 ### How to use the library
-All details about the library have been written in [docs.rs](https://docs.rs/rust-metasploit/1.0.1/metasploit/)
+All details about the library have been written in [docs.rs](https://docs.rs/rust-metasploit/1.1.0/metasploit/)
 
 ## v1.0.1
 * Removed unwanted parameters of modules
 * Changed String parameters to str
 
+# v1.1.0
+* Added async functions.
+
 ## Thanks To
-* [reqwest](https://docs.rs/reqwest/0.11.4/reqwest/)
+* [reqwest](https://docs.rs/reqwest/0.11.6/reqwest/)
 * [serde](https://docs.rs/serde/1.0.130/serde/)
 * [rmp](https://docs.rs/rmp/0.8.10/rmp/)
