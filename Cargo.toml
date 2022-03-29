@@ -3,6 +3,7 @@ name = "rust-metasploit"
 version = "1.1.0"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
+license="LICENSE"
 readme="README.md"
 description="Rust wrapper for metasploit"
 keywords=["metasploit","hacking","msf","penetration"]
