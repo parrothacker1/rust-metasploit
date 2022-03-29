@@ -14,7 +14,16 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 ///
 /// ## Example
 /// ```
-/// console::create(client.clone()).unwrap(); // response::console::create {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{console,auth};
+/// use metasploit::response::console as resp;
+///
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let newconsole:resp::create=console::create(client.clone()).unwrap();
+///     println!("{:?}",newconsole);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
@@ -50,7 +59,14 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::destroy(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,console::destroy(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
@@ -88,7 +104,16 @@ pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::list(client.clone()).unwrap() // response::console::list {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// use metasploit::response::console as resp;
+///
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::list=console::list(client.clone()).unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
@@ -125,7 +150,14 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 /// It is recommended to add "\n" at the end of command.Or it may not execute
 /// ## Example
 /// ```
-/// console::write(client.clone(),"1","help\n").unwrap() // 1
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(1,console::write(client.clone(),"1","help\n").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
     let data:String=command.to_string();
@@ -160,7 +192,16 @@ pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> 
 ///
 /// ## Example
 /// ```
-/// console::read(client.clone(),"1").unwrap(); // response::console::read {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// use metasploit::response::console as resp;
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::read=console::read(client.clone(),"1").unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
     let consoleid:String=consoleID.to_string();
@@ -198,7 +239,14 @@ pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError>
 ///
 /// ## Example
 /// ```
-/// console::detach_session(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,console::detach_session(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
@@ -236,7 +284,14 @@ pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::kill_session(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,console::kill_session(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
@@ -274,7 +329,14 @@ pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// console::tabs(client.clone(),"1","hel").unwrap(); // ["help"]
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     println!("{:?}",console::tabs(client.clone(),"1","hel").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
     let consoleid:String=consoleID.to_string();

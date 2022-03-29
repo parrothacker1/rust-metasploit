@@ -14,7 +14,16 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// jobs::list(client.clone()).unwrap(); // {"1":"<jobname>"}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,job};
+/// use std::collections::HashMap;
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:HashMap<String,String>=jobs::list(client.clone()).unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
@@ -47,7 +56,16 @@ pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::info(client.clone(),"1").unwrap(); // response::jobs::info {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,jobs};
+/// use metasploit::response::jobs as resp;
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::info=jobs::info(client.clone(),"1").unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     let jobid:String=jobidstr.to_string();
@@ -93,7 +111,14 @@ pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::stop(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,jobs};
+/// 
+/// fn main() {
+///     let client=Client::mew("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,jobs::stop(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let jobid:String=jobidstr.to_string();

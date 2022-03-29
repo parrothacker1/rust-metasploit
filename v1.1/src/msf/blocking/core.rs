@@ -15,7 +15,16 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// core::add_module(client.clone(),"path").unwrap(); // response::core::addmodpath {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// use metasploit::response::core as resp;
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::addmodpath=core::add_module(client.clone(),"path").unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
     let path:String=pathstr.to_string();
@@ -56,7 +65,16 @@ pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,Ms
 ///
 /// ## Example
 /// ```
-/// core::module_status(client.clone()).unwrap(); // response::core::modulestat
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// use metasploit::response::core as resp;
+///
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::modulestat=core::module_status(client.clone()).unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
@@ -97,7 +115,16 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::reload_modules(client.clone()).unwrap(); // response::core::reloadmod {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// use metasploit::response::core as resp;
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::reloadmod=core::reload_modules(client.clone()).unwrap();
+///     println!("{:?}",response)
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
@@ -138,7 +165,14 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::save(client.clone()).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,core::save(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn save(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -175,7 +209,14 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::setg(client.clone(),"name","value").unwrap(); //true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,core::setg(client.clone(),"name","value").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
@@ -214,7 +255,14 @@ pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::unsetg(client.clone(),"name").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,core::unsetg(client.clone(),"name").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
@@ -252,7 +300,17 @@ pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::list_thread(client.clone()).unwrap(); // {1,response::core::threadlist {}}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// use metasploit::response::core as resp;
+/// use std::collections::HashMap;
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:HashMap<i32,resp::threadlist>=core::list_thread(client.clone()).unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
 	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
@@ -285,7 +343,14 @@ pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 ///
 /// ## Example
 /// ```
-/// core::kill_thread(client.clone(),1).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,core::kill_thread(client.clone(),1).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -322,7 +387,14 @@ pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::version(client.clone()).unwrap(); //true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,core::version(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
@@ -359,7 +431,14 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
 ///
 /// ## Example
 /// ```
-/// core::stop(client.clone()).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,,"msf","password",true);
+///     assert_eq!(true,core::stop(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn stop(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);

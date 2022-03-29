@@ -15,7 +15,16 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// sessions::list(client.clone()).unwrap(); // response::sessions::list {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,sessions};
+/// use metasploit::response::sessions as resp;
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::list=sessions::list(client.clone()).unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
@@ -48,7 +57,14 @@ pub fn list(client:Client) -> Result<res::sessions::list,MsfError> {
 ///
 /// ## Example
 /// ```
-/// sessions::stop(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,sessions};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,sessions::stop(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
@@ -89,7 +105,17 @@ impl shell {
     /// 
     /// ## Example
     /// ```
-    /// sessions::shell::read(client.clone(),"1",None).unwrap(); // response::sessions::shell_read {};
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::blocking::{auth,sessions};
+    /// use metasploit::response::sessions as resp;
+    ///
+    /// fn main() {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let response:resp::shell_read=sessions::shell::read(client.clone(),"1",None).unwrap();
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).unwrap();
+    ///     Ok(())
+    /// }
     /// ```
     pub fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
         let sessionid:String=sessionidstr.to_string();
@@ -134,7 +160,15 @@ impl shell {
     ///
     /// ## Example
     /// ```
-    /// sessions::shell::write(client.clone(),"1","help\n").unwrap(); //String
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::blcoking::{auth,sessions};
+    /// 
+    /// fn main() {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let response:String=sessions::shell::write(client.clone(),"1","help\n").unwrap();
+    ///     println!("{}",response);
+    ///     auth::logout(client.clone()).unwrap();
+    /// }
     /// ```
     pub fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
         let sessionid:String=sessionidstr.to_string();
@@ -178,7 +212,16 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// let meterpreter=sessions::meterpreter::new(client.clone(),"1");
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::blocking::{auth,sessions};
+    /// 
+    /// fn main() {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let meterpreter=sessions::meterpreter::new(client.clone(),"1");
+    ///     let response= // Replace the variable with following examples
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).unwrap();
+    /// }
     /// ```
     pub fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
@@ -204,7 +247,7 @@ impl meterpreter {
     /// It is recommended to add "\n" at the end of the command to execute
     /// ## Example
     /// ```
-    /// meterpreter.write("help\n").unwrap(); // true
+    /// let response=meterpreter.write("help\n").unwrap();
     /// ```
     pub fn write(&self,datastr:&str) -> Result<bool,MsfError> {
         let data:String=datastr.to_string();
@@ -240,7 +283,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.read().unwrap(); //String
+    /// let response=meterpreter.read().unwrap();
     /// ```
     pub fn read(&self) -> Result<String,MsfError> {
         let mut test:Result<String,MsfError>=Ok(String::new());
@@ -271,7 +314,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.run_single("help\n").unwrap(); //true
+    /// let response=meterpreter.run_single("help\n").unwrap();
     /// ```
     pub fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
         let command:String=commandstr.to_string();
@@ -307,7 +350,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.script("name.rb").unwrap(); // true
+    /// let response=meterpreter.script("name.rb").unwrap();
     /// ```
     pub fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
         let scriptname:String=scriptnamestr.to_string();
@@ -343,7 +386,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.detach_session().unwrap(); // true
+    /// let response=meterpreter.detach_session().unwrap();
     /// ```
     pub fn detach_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -378,7 +421,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.kill_session().unwrap(); // true
+    /// let response=meterpreter.kill_session().unwrap();
     /// ```
     pub fn kill_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -413,7 +456,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.tabs("hel").unwrap(); // ["help"]
+    /// let response=meterpreter.tabs("hel").unwrap();
     /// ```
     pub fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
         let inputline=inputlinestr.to_string();
@@ -445,7 +488,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.compactible_modules().unwrap(); //Vec<String>
+    /// let response=meterpreter.compactible_modules().unwrap();
     /// ```
     pub fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -477,7 +520,14 @@ impl meterpreter {
 ///
 /// ## Example
 /// ```
-/// sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::{auth,sessions};
+/// 
+/// fn main() {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
@@ -524,7 +574,16 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// let ring=sessions::ring::new(client.clone(),"1");
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::blocking::{auth,sessions};
+    /// 
+    /// fn main() {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let ring=sessions::ring::new(client.clone(),"1");
+    ///     let response= // Replace this variable with following examples
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).unwrap();
+    /// }
     /// ```
     pub fn new(client:Client,sessionid:&str) -> Self {
         ring {
@@ -549,7 +608,7 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// ring.clear().unwrap(); // true
+    /// let response=ring.clear().unwrap();
     /// ```
     pub fn clear(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -584,7 +643,7 @@ impl ring {
     /// 
     /// ## Example
     /// ```
-    /// ring.last().unwrap(); // 3
+    /// let response=ring.last().unwrap();
     /// ```
     pub fn last(&self) -> Result<i32,MsfError> {
         let mut test:Result<i32,MsfError>=Ok(1);
@@ -615,7 +674,7 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// ring.put("data").unwrap(); // 4 
+    /// let response=ring.put("data").unwrap(); 
     /// ```
     pub fn put(&self,datastr:&str) -> Result<i32,MsfError> {
         let data:String=datastr.to_string();

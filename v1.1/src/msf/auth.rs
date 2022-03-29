@@ -19,7 +19,7 @@ use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 /// #[tokio::main]
 /// async fn main() -> Result<(),Error> {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,auth::logout(client.clone()).unwrap());
+///     assert_eq!(true,auth::logout(client.clone()).await.unwrap());
 ///     Ok(())
 /// }
 /// ```

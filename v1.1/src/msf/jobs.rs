@@ -14,7 +14,18 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// jobs::list(client.clone()).unwrap(); // {"1":"<jobname>"}
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,job};
+/// use std::collections::HashMap;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:HashMap<String,String>=jobs::list(client.clone()).await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
@@ -47,7 +58,18 @@ pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 ///
 /// ## Example
 /// ```
-/// jobs::info(client.clone(),"1").unwrap(); // response::jobs::info {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,jobs};
+/// use metasploit::response::jobs as resp;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::info=jobs::info(client.clone(),"1").await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     let jobid:String=jobidstr.to_string();
@@ -93,7 +115,16 @@ pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfErro
 ///
 /// ## Example
 /// ```
-/// jobs::stop(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,jobs};
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Cluent::mew("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,jobs::stop(client.clone(),"1").await.unwrap());
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let jobid:String=jobidstr.to_string();

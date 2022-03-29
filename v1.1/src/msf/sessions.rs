@@ -15,7 +15,19 @@ use structs::{request as req,response as res};
 ///
 /// ## Example
 /// ```
-/// sessions::list(client.clone()).unwrap(); // response::sessions::list {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,sessions};
+/// use metasploit::response::sessions as resp;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:resp::list=sessions::list(client.clone()).await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+///     Ok(())
+/// }
 /// ```
 pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut test:Result<res::sessions::list,MsfError>=Ok(HashMap::new());
@@ -48,7 +60,16 @@ pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
 ///
 /// ## Example
 /// ```
-/// sessions::stop(client.clone(),"1").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,sessions};
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,sessions::stop(client.clone(),"1").await.unwrap());
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
@@ -89,7 +110,19 @@ impl shell {
     /// 
     /// ## Example
     /// ```
-    /// sessions::shell::read(client.clone(),"1",None).unwrap(); // response::sessions::shell_read {};
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::{auth,sessions};
+    /// use metasploit::response::sessions as resp;
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let response:resp::shell_read=sessions::shell::read(client.clone(),"1",None).await.unwrap();
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).await.unwrap();
+    ///     Ok(())
+    /// }
     /// ```
     pub async fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
         let sessionid:String=sessionidstr.to_string();
@@ -134,7 +167,18 @@ impl shell {
     ///
     /// ## Example
     /// ```
-    /// sessions::shell::write(client.clone(),"1","help\n").unwrap(); //String
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::{auth,sessions};
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let response:String=sessions::shell::write(client.clone(),"1","help\n").await.unwrap();
+    ///     println!("{}",response);
+    ///     auth::logout(client.clone()).await.unwrap();
+    ///     Ok(())
+    /// }
     /// ```
     pub async fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
         let sessionid:String=sessionidstr.to_string();
@@ -178,9 +222,21 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// let meterpreter=sessions::meterpreter::new(client.clone(),"1");
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::{auth,sessions};
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let meterpreter=sessions::meterpreter::new(client.clone(),"1");
+    ///     let response= // Replace the variable with following examples
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).await.unwrap();
+    ///     Ok(())
+    /// }
     /// ```
-    pub async fn new(client:Client,sessionidstr:&str) -> Self {
+    pub fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
             sessionid:sessionidstr.to_string(),
             client:client,
@@ -204,7 +260,7 @@ impl meterpreter {
     /// It is recommended to add "\n" at the end of the command to execute
     /// ## Example
     /// ```
-    /// meterpreter.write("help\n").unwrap(); // true
+    /// let response=meterpreter.write("help\n").await.unwrap();
     /// ```
     pub async fn write(&self,datastr:&str) -> Result<bool,MsfError> {
         let data:String=datastr.to_string();
@@ -240,7 +296,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.read().unwrap(); //String
+    /// let response=meterpreter.read().await.unwrap();
     /// ```
     pub async fn read(&self) -> Result<String,MsfError> {
         let mut test:Result<String,MsfError>=Ok(String::new());
@@ -271,7 +327,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.run_single("help\n").unwrap(); //true
+    /// let response=meterpreter.run_single("help\n").await.unwrap();
     /// ```
     pub async fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
         let command:String=commandstr.to_string();
@@ -307,7 +363,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.script("name.rb").unwrap(); // true
+    /// let response=meterpreter.script("name.rb").await.unwrap();
     /// ```
     pub async fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
         let scriptname:String=scriptnamestr.to_string();
@@ -343,7 +399,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.detach_session().unwrap(); // true
+    /// let response=meterpreter.detach_session().await.unwrap();
     /// ```
     pub async fn detach_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -378,7 +434,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.kill_session().unwrap(); // true
+    /// let response=meterpreter.kill_session().await.unwrap();
     /// ```
     pub async fn kill_session(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -413,7 +469,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.tabs("hel").unwrap(); // ["help"]
+    /// let response=meterpreter.tabs("hel").await.unwrap();
     /// ```
     pub async fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
         let inputline=inputlinestr.to_string();
@@ -445,7 +501,7 @@ impl meterpreter {
     ///
     /// ## Example
     /// ```
-    /// meterpreter.compactible_modules().unwrap(); //Vec<String>
+    /// let response=meterpreter.compactible_modules().await.unwrap();
     /// ```
     pub async fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -477,7 +533,17 @@ impl meterpreter {
 ///
 /// ## Example
 /// ```
-/// sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,sessions};
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).await.unwrap());
+///     auth::logout(client.clone()).await.unwrap();
+///     Ok(())
+/// }
 /// ```
 pub async fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
     let sessionid:String=sessionidstr.to_string();
@@ -524,9 +590,20 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// let ring=sessions::ring::new(client.clone(),"1");
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::{auth,sessions};
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let ring=sessions::ring::new(client.clone(),"1");
+    ///     let response= // Replace this variable with following examples
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).await.unwrap();
+    /// }
     /// ```
-    pub async fn new(client:Client,sessionid:&str) -> Self {
+    pub fn new(client:Client,sessionid:&str) -> Self {
         ring {
             client:client,
             sessionid:sessionid.to_string(),
@@ -549,7 +626,7 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// ring.clear().unwrap(); // true
+    /// let response=ring.clear().await.unwrap();
     /// ```
     pub async fn clear(&self) -> Result<bool,MsfError> {
         let mut test:Result<bool,MsfError>=Ok(true);
@@ -584,7 +661,7 @@ impl ring {
     /// 
     /// ## Example
     /// ```
-    /// ring.last().unwrap(); // 3
+    /// let response=ring.last().await.unwrap();
     /// ```
     pub async fn last(&self) -> Result<i32,MsfError> {
         let mut test:Result<i32,MsfError>=Ok(1);
@@ -615,7 +692,7 @@ impl ring {
     ///
     /// ## Example
     /// ```
-    /// ring.put("data").unwrap(); // 4 
+    /// let response=ring.put("data").await.unwrap(); 
     /// ```
     pub async fn put(&self,datastr:&str) -> Result<i32,MsfError> {
         let data:String=datastr.to_string();

@@ -14,11 +14,21 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 ///
 /// ## Example
 /// ```
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,plugins};
 /// use std::collections::HashMap;
-/// let option=HashMap::new();
-/// option.insert("key".to_string(),"value".to_string());
-/// plugins::load(client.clone(),"pluginname",option).unwrap(); // true
-///```
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let option=HashMap::new();
+///     option.insert("key".to_string(),"value".to_string());
+///     assert_eq!(true,plugins::load(client.clone(),"pluginname",option).await.unwrap());
+///     auth::logout(client.clone()).await.unwrap();
+///     Ok(())
+/// }
+/// ```
 pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
@@ -55,7 +65,17 @@ pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String
 ///
 /// ## Example
 /// ```
-/// plugins::unload(client.clone(),"pluginname").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,plugins};
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,plugins::unload(client.clone(),"pluginname").await.unwrap());
+///     auth::logout(client.clone()).await.unwrap();
+///     Ok(())
+/// }
 /// ```
 pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
@@ -93,7 +113,18 @@ pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// plugins::list(client.clone()).unwrap(); // Vec<String>
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,plugins};
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:Vec<String>=plugins::list(client.clone()).await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+///     Ok(())
+/// }
 /// ```
 pub async fn list(client:Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());

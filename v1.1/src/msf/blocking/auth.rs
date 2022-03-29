@@ -12,7 +12,13 @@ use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 ///
 /// ## Example
 /// ```
-/// auth::logout(client.clone()).unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::auth;
+/// 
+/// fn main()  {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,auth::logout(client.clone()).unwrap());
+/// }
 /// ```
 pub fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -49,7 +55,14 @@ pub fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
 ///
 /// ## Example
 /// ```
-/// auth::add_token(client.clone,"newtoken").unwrap() // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::auth;
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,auth::add_token(client.clone(),"newtoken").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<bool,MsfError> {
     let new_tok:String=newtokenstr.to_string();
@@ -87,7 +100,15 @@ pub fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<bool,MsfE
 ///
 /// ## Example
 /// ```
-/// auth::generate_token(client.clone()).unwrap(); //"newtoken"
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::auth;
+///
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     auth::add_token(client.clone(),"newtoken").unwrap();
+///     assert_eq!("newtoken",auth::generate_token(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn generate_token(clientdata:client::Client) -> Result<String,MsfError> {
     let mut test:Result<String,MsfError>=Ok(String::new());
@@ -124,7 +145,15 @@ pub fn generate_token(clientdata:client::Client) -> Result<String,MsfError> {
 ///
 /// ## Example
 /// ```
-/// auth::list_token(client.clone()).unwrap(); // ["newtoken","<rpctoken>"]
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::auth;
+///
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     auth::add_token(client.clone(),"newtoken").unwrap();
+///     println!("{:?}",auth::list_token(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -157,7 +186,15 @@ pub fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
 ///
 /// ## Example
 /// ```
-/// auth::remove_token(client.clone(),"newtoken").unwrap(); // true
+/// use metasploit::client::Client;
+/// use metasploit::msf::blocking::auth;
+/// 
+/// fn main() {
+///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     auth::add_token(client.clone(),"newtoken").unwrap();
+///     assert_eq!(true,auth::remove_token(client.clone(),"newtoken").unwrap());
+///     auth::logout(client.clone()).unwrap();
+/// }
 /// ```
 pub fn remove_token(clientdata:client::Client,tokenremove:&str) -> Result<bool,MsfError> {
     let token_rem:String=tokenremove.to_string();

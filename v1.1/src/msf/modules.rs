@@ -29,9 +29,20 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// let list=modules::list::new(client.clone());
+    /// use metasploit::client::Client;
+    /// use metasploit::msf::{auth,modules};
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let list=modules::list::new(client.clone());
+    ///     let resp= // Replace the variable with the following
+    ///     println!("{:?}",resp);
+    ///     auth::logout(client.clone()).await.unwrap();
+    /// }
     /// ```
-    pub async fn new(client:Client) -> Self {
+    pub fn new(client:Client) -> Self {
         list {
             client:client,
         }
@@ -58,7 +69,7 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.exploits();
+    /// let resp=list.exploits().await.unwrap();
     /// ```
     pub async fn exploits(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -81,7 +92,7 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.auxiliary();
+    /// let resp=list.auxiliary().await.unwrap();
     /// ```
     pub async fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -104,7 +115,7 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.posts();
+    /// let resp=list.posts().await.unwrap();
     /// ```
     pub async fn post(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -127,7 +138,7 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.payloads();
+    /// let resp=list.payloads().await.unwrap();
     /// ```
     pub async fn payloads(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -150,7 +161,7 @@ impl list {
     ///
     /// ## Example
     /// ```
-    /// list.encoders();
+    /// let resp=list.encoders().await.unwrap();
     /// ```
     pub async fn encoders(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -173,7 +184,7 @@ impl list {
     /// 
     /// ## Example
     /// ```
-    /// list.nops();
+    /// let resp=list.nops().await.unwrap();
     /// ```
     pub async fn nops(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -197,7 +208,18 @@ impl list {
 ///
 /// ## Example
 /// ```
-/// module::info(client.clone(),"moduletype","modulename").unwrap(); // response::modules::info {}
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,modules};
+/// use metasploit::response::modules as resp;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55553,"msf","password",true);
+///     let response:resp::info=module::info(client.clone(),"moduletype","modulename").await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
     let moduletype:String=moduletypestr.to_string();
@@ -240,9 +262,20 @@ impl compactible {
     ///
     /// ## Example
     /// ```
-    /// let compactible=modules::compactible::new("modulename",client.clone());
+    /// use meetasploit::client::Client;
+    /// use metasploit::msf::{auth,modules};
+    /// use tokio;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(),Error> {
+    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+    ///     let compactible=modules::compactible::new("modulename",client.clone());
+    ///     let response= // Replace the variable with following example ones
+    ///     println!("{:?}",response);
+    ///     auth::logout(client.clone()).await.unwrap();
+    /// }
     /// ```
-    pub async fn new(modulename:String,client:Client) -> Self {
+    pub fn new(modulename:String,client:Client) -> Self {
         compactible {
             name:modulename,
             client:client,
@@ -252,7 +285,7 @@ impl compactible {
     ///
     /// ## Example
     /// ```
-    /// compactible.payloads();
+    /// let response=compactible.payloads().await.unwrap();
     /// ```
     pub async fn payload(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -285,7 +318,7 @@ impl compactible {
     ///
     /// ## Example
     /// ```
-    /// compactible.target_payloads(1);
+    /// let response=compactible.target_payloads(1).await.unwrap();
     /// ```
     pub async fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -318,7 +351,7 @@ impl compactible {
     ///
     /// ## Example
     /// ```
-    /// compactible.sessions();
+    /// let response=compactible.sessions().await.unwrap();
     /// ```
     pub async fn sessions(&self) -> Result<Vec<String>,MsfError> {
         let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
@@ -352,7 +385,19 @@ impl compactible {
 ///
 /// ## Example
 /// ```
-/// modules::option(client.clone(),"moduletype","modulename").unwrap(); //{"key",response::modules::options {}}
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,modules};
+/// use metasploit::response::modules as resp;
+/// use std::collections::HashMap;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let response:HashMap<String,resp::options>=modules::option(client.clone(),"moduletype","modulename").await.unwrap();
+///     println!("{:?}",response);
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
     let moduletype:String=moduletypestr.to_string();
@@ -387,10 +432,20 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
 ///
 /// ## Example
 /// ```
-/// use std::colllections::HashMap;
-/// let option=HashMap::new();
-/// option.insert("key".to_string(),"value".to_string());
-/// module::encoder(client.clone(),"data","encodermodule",option).unwrap(); // String
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,modules};
+/// use std::collections::HashMap;
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let option=HashMap::new();
+///     option.insert("key".to_string(),"value".to_string());
+///     let response:String=module::encoder(client.clone(),"data","encodermodule",option).await.unwrap();
+///     println!("{}",response);
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
     let data:String=datastr.to_string();
@@ -425,10 +480,20 @@ let encodermodule:String=encodermodulestr.to_string();
 ///
 /// ## Example
 /// ```
+/// use metasploit::client::Client;
+/// use metasploit::msf::{auth,modules};
+/// use metasploit::value::Value;
 /// use std::collections::HashMap;
-/// let option=HashMap::new();
-/// option.insert("key".to_string(),"value".to_string());
-/// modules::execute(client.clone(),"moduletype","modulename",option).unwrap(); //value::Value
+/// use tokio;
+///
+/// #[tokio::main]
+/// async fn main() -> Result<(),Error> {
+///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+///     let option=HashMap::new();
+///     option.insert("key".to_string(),"value".to_string());
+///     let response:Value=modules::execute(client.clone(),"moduletype","modulename",option).await.unwrap();
+///     auth::logout(client.clone()).await.unwrap();
+/// }
 /// ```
 pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
     let moduletype:String=moduletypestr.to_string();
