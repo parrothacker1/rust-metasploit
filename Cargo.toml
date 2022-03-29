@@ -3,9 +3,12 @@ name = "rust-metasploit"
 version = "1.1.0"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
-license="LICENSE"
+license-file="LICENSE"
 readme="README.md"
 description="Rust wrapper for metasploit"
+homepage="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
+repository="https://github.com/parrothacker1/rust-metasploit"
+documentation="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
 keywords=["metasploit","hacking","msf","penetration"]
 
 [dependencies]
