@@ -1,7 +1,7 @@
 //! A module to handle plugins in Metasploit RPC
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use connect::connect;
 use std::collections::HashMap;
 use error::MsfError;
@@ -15,21 +15,18 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,plugins};
+/// use metasploit::msf::blcoking::{auth,plugins};
 /// use std::collections::HashMap;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
 ///     let option=HashMap::new();
 ///     option.insert("key".to_string(),"value".to_string());
-///     assert_eq!(true,plugins::load(client.clone(),"pluginname",option).await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(true,plugins::load(client.clone(),"pluginname",option).unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
+pub fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -66,18 +63,15 @@ pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,plugins};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,plugins};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,plugins::unload(client.clone(),"pluginname").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(true,plugins::unload(client.clone(),"pluginname").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
+pub fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
     let pluginname:String=pluginnamestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -114,19 +108,16 @@ pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,plugins};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,plugins};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:Vec<String>=plugins::list(client.clone()).await.unwrap();
+///     let response:Vec<String>=plugins::list(client.clone()).unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<Vec<String>,MsfError> {
+pub fn list(client:Client) -> Result<Vec<String>,MsfError> {
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];

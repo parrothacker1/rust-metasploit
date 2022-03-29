@@ -1,8 +1,8 @@
 //! A module which is used to handle msfcore
 #![allow(non_snake_case)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../connect.rs"] mod connect;
-#[path="../error.rs"] mod error;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
+#[path="../../error.rs"] mod error;
 use error::MsfError;
 use crate::client::Client;
 use std::collections::HashMap;
@@ -16,20 +16,17 @@ use structs::{request as req,response as res};
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
+/// use metasploit::msf::blocking::{auth,core};
 /// use metasploit::response::core as resp;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::addmodpath=core::add_module(client.clone(),"path").await.unwrap();
+///     let response:resp::addmodpath=core::add_module(client.clone(),"path").unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
+pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
     let path:String=pathstr.to_string();
     let mut test:Result<res::core::addmodpath,MsfError>=Ok(res::core::addmodpath {
         exploits:0,
@@ -69,19 +66,17 @@ pub async fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodp
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
+/// use metasploit::msf::blocking::{auth,core};
 /// use metasploit::response::core as resp;
-/// use tokio;
 ///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::modulestat=core::module_status(client.clone()).await.unwrap();
+///     let response:resp::modulestat=core::module_status(client.clone()).unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
+pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
         exploits:0,
         auxiliary:0,
@@ -121,19 +116,17 @@ pub async fn module_status(client:Client) -> Result<res::core::modulestat,MsfErr
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
+/// use metasploit::msf::blocking::{auth,core};
 /// use metasploit::response::core as resp;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::reloadmod=core::reload_modules(client.clone()).await.unwrap();
+///     let response:resp::reloadmod=core::reload_modules(client.clone()).unwrap();
 ///     println!("{:?}",response)
-///     auth::logout(client.clone()).await.unwrap();
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
+pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
         exploits:0,
         auxiliary:0,
@@ -173,17 +166,15 @@ pub async fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfErro
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::save(client.clone()).await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::save(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn save(client:Client) -> Result<bool,MsfError> {
+pub fn save(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -219,17 +210,15 @@ pub async fn save(client:Client) -> Result<bool,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::setg(client.clone(),"name","value").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::setg(client.clone(),"name","value").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
+pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
     let value:String=valuestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
@@ -267,17 +256,15 @@ pub async fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfEr
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::unsetg(client.clone(),"name").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::unsetg(client.clone(),"name").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
+pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
     let name:String=namestr.to_string();
     let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
@@ -314,20 +301,18 @@ pub async fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
+/// use metasploit::msf::blocking::{auth,core};
 /// use metasploit::response::core as resp;
 /// use std::collections::HashMap;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:HashMap<i32,resp::threadlist>=core::list_thread(client.clone()).await.unwrap();
+///     let response:HashMap<i32,resp::threadlist>=core::list_thread(client.clone()).unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
+pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
 	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
 	let mut body=Vec::new();
 	let mut buf=vec![];
@@ -359,17 +344,15 @@ pub async fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadl
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::kill_thread(client.clone(),1).await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::kill_thread(client.clone(),1).unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
+pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -405,17 +388,15 @@ pub async fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::version(client.clone()).await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::version(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn version(client:Client) -> Result<res::core::version,MsfError> {
+pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
         version:String::new(),
         api:String::new(),
@@ -451,17 +432,15 @@ pub async fn version(client:Client) -> Result<res::core::version,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,core};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,core};
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,,"msf","password",true);
-///     assert_eq!(true,core::stop(client.clone()).await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+///     assert_eq!(true,core::stop(client.clone()).unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn stop(client:Client) -> Result<bool,MsfError> {
+pub fn stop(client:Client) -> Result<bool,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];

@@ -1,8 +1,8 @@
 //! A module to handle msfconsole.
 #![allow(non_snake_case)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use error::MsfError;
 use connect::connect;
 use structs::{request as req,response as res};
@@ -15,20 +15,17 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{console,auth};
+/// use metasploit::msf::blocking::{console,auth};
 /// use metasploit::response::console as resp;
-/// use tokio;
 ///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error>{
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let newconsole:resp::create=console::create(client.clone()).await.unwrap();
+///     let newconsole:resp::create=console::create(client.clone()).unwrap();
 ///     println!("{:?}",newconsole);
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
+pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
         id:String::new(),
         prompt:"".to_string(),
@@ -63,18 +60,15 @@ pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,console::destroy(client.clone(),"1").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(true,console::destroy(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -111,20 +105,17 @@ pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
+/// use metasploit::msf::blocking::{auth,console};
 /// use metasploit::response::console as resp;
-/// use tokio;
 ///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::list=console::list(client.clone()).await.unwrap();
+///     let response:resp::list=console::list(client.clone()).unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
+pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
 		consoles:Vec::new(),
 	});
@@ -160,18 +151,15 @@ pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(1,console::write(client.clone(),"1","help\n").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(1,console::write(client.clone(),"1","help\n").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
+pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
     let data:String=command.to_string();
     let consoleid:String=consoleID.to_string();
     let mut test:Result<i32,MsfError>=Ok(1);
@@ -205,20 +193,17 @@ pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfE
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
+/// use metasploit::msf::blocking::{auth,console};
 /// use metasploit::response::console as resp;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::read=console::read(client.clone(),"1").await.unwrap();
+///     let response:resp::read=console::read(client.clone(),"1").unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
+pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
         data:String::new(),
@@ -255,18 +240,15 @@ pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,Msf
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,console::detach_session(client.clone(),"1").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(true,console::detach_session(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -303,18 +285,15 @@ pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfErro
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,console::kill_session(client.clone(),"1").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     assert_eq!(true,console::kill_session(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     let consoleid:String=consoleID.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
@@ -351,18 +330,15 @@ pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError>
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,console};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// use metasploit::msf::blocking::{auth,console};
+/// 
+/// fn main() {
 ///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     println!("{:?}",console::tabs(client.clone(),"1","hel").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
-///     Ok(())
+///     println!("{:?}",console::tabs(client.clone(),"1","hel").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
     let consoleid:String=consoleID.to_string();
     let inputline:String=inputlinestr.to_string();
     let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());

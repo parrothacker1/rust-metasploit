@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 use std::fmt::{Result,Display,Formatter,Debug};
 use reqwest;
+use std::env::var;
 use std::error::Error;
 use serde::Deserialize as des;
 
@@ -23,13 +24,28 @@ pub struct MsfError {
     pub error_string:String,
     /// Error Message
     pub error_message:String,
-    /// Error Backrrace
+    /// Error Backtrace
     pub error_backtrace:Vec<String>,
 }
 impl Error for MsfError {}
 
 impl Display for MsfError {
 	fn fmt(&self,f: &mut Formatter) -> Result {
-		write!(f,"Error Message {}",self.error_message)
+        let err:String;
+        match var("RUST_BACKTRACE") {
+            Ok(val) => {
+                if val=="1".to_string() {
+                    err=format!("({},{})",self.error_message,self.error_class).to_string()
+                } else if val=="full".to_string() {
+                    err=format!("{:?}",self).to_string();
+                } else {
+                    err=format!("{}",self.error_message).to_string();
+                }
+            },
+            Err(_) => {
+                err=format!("{}",self.error_message);
+            },
+        }
+		write!(f,"{}",err)
 	}
 }

@@ -1,7 +1,7 @@
 //! A module to handle the jobs in Metasploit
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../error.rs"] mod error;
+#[path="../../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
 use error::MsfError;
@@ -15,19 +15,17 @@ use structs::{request as req,response as res};
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,job};
+/// use metasploit::msf::blocking::{auth,job};
 /// use std::collections::HashMap;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:HashMap<String,String>=jobs::list(client.clone()).await.unwrap();
+///     let response:HashMap<String,String>=jobs::list(client.clone()).unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
+pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -59,19 +57,17 @@ pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,jobs};
+/// use metasploit::msf::blocking::{auth,jobs};
 /// use metasploit::response::jobs as resp;
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
+/// 
+/// fn main() {
 ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::info=jobs::info(client.clone(),"1").await.unwrap();
+///     let response:resp::info=jobs::info(client.clone(),"1").unwrap();
 ///     println!("{:?}",response);
-///     auth::logout(client.clone()).await.unwrap();
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<res::jobs::info,MsfError>=Ok(res::jobs::info{
         jid:0,
@@ -116,17 +112,15 @@ pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfErro
 /// ## Example
 /// ```
 /// use metasploit::client::Client;
-/// use metasploit::msf::{auth,jobs};
-/// use tokio;
-///
-/// #[tokio::main]
-/// async fn main() -> Result<(),Error> {
-///     let client=Cluent::mew("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,jobs::stop(client.clone(),"1").await.unwrap());
-///     auth::logout(client.clone()).await.unwrap();
+/// use metasploit::msf::blocking::{auth,jobs};
+/// 
+/// fn main() {
+///     let client=Client::mew("127.0.0.1",55552,"msf","password",true);
+///     assert_eq!(true,jobs::stop(client.clone(),"1").unwrap());
+///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let jobid:String=jobidstr.to_string();
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();

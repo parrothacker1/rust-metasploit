@@ -3,8 +3,10 @@
 //! ## Example
 //! ```
 //! use metasploit::client::Client;
-//! let client=Client::new("127.0.0.1",55552,"msf","password",true);
-//! println!("{}",client.gettoken());
+//! fn main() {
+//!     let client=Client::new("127.0.0.1",55552,"msf","password",true);
+//!     println!("{}",client.gettoken());
+//! }
 //! ```
 //! The above one is a simple example code where an connection is made with RPC Server and the token is printed
 //!
