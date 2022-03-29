@@ -1,7 +1,7 @@
 # rs-metasploit
 [![Metasploit Rust](https://github.com/parrothacker1/rust-metasploit/actions/workflows/rust.yml/badge.svg)](https://github.com/parrothacker1/rust-metasploit/actions/workflows/rust.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![crates.io](https://img.shields.io/badge/crates-1.0.0-blue)
+![crates.io](https://img.shields.io/badge/crates-1.1.0-blue)
 
 ## Overview
 Rust Metasploit is a rust library used to make communication with Metasploit RPC Server.This module uses [reqwest](https://docs.rs/reqwest/0.11.4/reqwest/) and [rmp](https://docs.rs/rmp/0.8.10/rmp/) dependencies for communication.
