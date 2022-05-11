@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Checking previous builds
-      run: cd v1;cargo build;cd ../v1.0.1;cargo build
+      run: cd v1;cargo build;cd ../v1.0.1;cargo build;cd ../v1.1;cargo build
       
   build:
 
@@ -27,4 +27,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Building latest
-      run: cd v1.1;cargo build --verbose
+      run: cd v1.2;cargo build --verbose
