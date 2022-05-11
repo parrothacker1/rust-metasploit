@@ -80,21 +80,8 @@ impl list {
     /// let resp=list.payloads().await.unwrap();
     /// ```
     pub async fn payloads(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.payloads",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                test=self.deserialize(new_buf);
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::list::new(self.client.clone());
+        list.payloads()
     }
     /// To list all encoders
     ///
@@ -103,21 +90,8 @@ impl list {
     /// let resp=list.encoders().await.unwrap();
     /// ```
     pub async fn encoders(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.encoders",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                test=self.deserialize(new_buf);
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::list::new(self.client.clone());
+        list.encoders()
     }
     /// To list all nops
     /// 
@@ -126,21 +100,8 @@ impl list {
     /// let resp=list.nops().await.unwrap();
     /// ```
     pub async fn nops(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        self.serialize("module.nops",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        match con {
-            Ok(_) => {
-                test=self.deserialize(new_buf);
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::list::new(self.client.clone());
+        list.nops()
     }
 }
 /// To get information about the module
@@ -161,39 +122,7 @@ impl list {
 /// }
 /// ```
 pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
-    let moduletype:String=moduletypestr.to_string();
-    let modulename:String=modulenamestr.to_string();
-    let mut test:Result<res::modules::info,MsfError>=Err(MsfError {
-        error:true,
-        error_class:String::new(),
-        error_string:String::new(),
-        error_message:String::new(),
-        error_backtrace:Vec::new(),
-    });
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut se=Serializer::new(&mut body);
-    let byte=req::modules::info("module.info".to_string(),client.token.unwrap(),moduletype,modulename);
-    byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-            let de_ret:Result<res::modules::info,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret)
-            };
-        },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
-    }
-    test
+    modules::info(client.clone(),moduletypestr,modulenamestr)
 }
 /// To get the list of compactible payloads and sessions
 impl compactible {
@@ -227,31 +156,8 @@ impl compactible {
     /// let response=compactible.payloads().await.unwrap();
     /// ```
     pub async fn payload(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible("module.compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
-        byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        let mut de=Deserializer::new(new_buf.as_slice());
-        match con {
-            Ok(_) => {
-                let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
-                if let Err(_) = de_ret {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                };
-                if let Ok(ref val) = de_ret {
-                    test=Ok(val.payloads.clone());
-                };
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::compactible::new(self.name.clone(),self.client.clone());
+        list.payload()
     }
     /// To get a list of compactible payloads for a specific target
     ///
@@ -260,31 +166,8 @@ impl compactible {
     /// let response=compactible.target_payloads(1).await.unwrap();
     /// ```
     pub async fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible_tp("module.target_compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
-        byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        let mut de=Deserializer::new(new_buf.as_slice());
-        match con {
-            Ok(_) => {
-                let de_ret:Result<res::modules::compactible_payloads,derror>=Deserialize::deserialize(&mut de);
-                if let Err(_) = de_ret {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                };
-                if let Ok(ref val) = de_ret {
-                    test=Ok(val.payloads.clone());
-                };
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::compactible::new(self.name.clone(),self.client.clone());
+        list.target_payloads(targetindx)
     }
     /// To get a list of sessions
     ///
@@ -293,31 +176,8 @@ impl compactible {
     /// let response=compactible.sessions().await.unwrap();
     /// ```
     pub async fn sessions(&self) -> Result<Vec<String>,MsfError> {
-        let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
-        let mut body=Vec::new();
-        let mut buf=vec![];
-        let mut se=Serializer::new(&mut body);
-        let byte=req::modules::compactible("module.compatible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
-        byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
-        let new_buf=buf.clone();
-        let mut de=Deserializer::new(new_buf.as_slice());
-        match con {
-            Ok(_) => {
-                let de_ret:Result<res::modules::compactible_sessions,derror>=Deserialize::deserialize(&mut de);
-                if let Err(_) = de_ret {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                };
-                if let Ok(ref val) = de_ret {
-                    test=Ok(val.sessions.clone());
-                };
-            },
-            Err(_) => {
-                panic!("Connection closed unexpectedly");
-            },
-        }
-        test
+        let list=modules::compactible::new(self.name.clone(),self.client.clone());
+        list.sessions()
     }
 }
 /// To get the options of a module
@@ -339,33 +199,7 @@ impl compactible {
 /// }
 /// ```
 pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
-    let moduletype:String=moduletypestr.to_string();
-    let modulename:String=modulenamestr.to_string();
-    let mut test:Result<HashMap<String,res::modules::options>,MsfError>=Ok(HashMap::new());
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut serializer=Serializer::new(&mut body);
-    let byte=req::modules::options("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
-    byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url.clone(),body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-            let de_ret:Result<HashMap<String,res::modules::options>,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
-        },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
-    }
-    test
+    module::option(client.clone(),moduletypestr,modulenamestr)
 }
 /// To encode a module
 ///
@@ -387,33 +221,7 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
 /// }
 /// ```
 pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
-    let data:String=datastr.to_string();
-let encodermodule:String=encodermodulestr.to_string();
-    let mut test:Result<String,MsfError>=Ok(String::new());
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut se=Serializer::new(&mut body);
-    let byte=req::modules::encoder("module.encode".to_string(),client.token.unwrap(),data,encodermodule,options);
-    byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-            let de_ret:Result<res::modules::encode,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.encoded.clone());
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-        },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
-    }
-    test
+    module::encoder(client.clone(),datastr,encodermodulestr,options)
 }
 /// To execute a module
 ///
@@ -435,42 +243,5 @@ let encodermodule:String=encodermodulestr.to_string();
 /// }
 /// ```
 pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
-    let moduletype:String=moduletypestr.to_string();
-    let modulename:String=modulenamestr.to_string();
-    let mut test:Result<Value,MsfError>=Ok(Value::from(true));
-    let mut body=Vec::new();
-    let mut buf=vec![];
-    let mut se=Serializer::new(&mut body);
-    let byte=req::modules::execute("module.execute".to_string(),client.token.unwrap(),moduletype.clone(),modulename,options);
-    byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
-    let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-    match con {
-        Ok(_) => {
-                let de_ret_p:Result<res::modules::execute_payloads,derror>=Deserialize::deserialize(&mut de);
-            if moduletype.clone()=="payload".to_string() {
-                if let Err(_) = de_ret_p {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                };
-                if let Ok(val) = de_ret_p {
-                    test=Ok(val.payload);
-                };
-            } else {
-                let de_ret:Result<res::modules::execute_non_payloads,derror>=Deserialize::deserialize(&mut de);
-                if let Err(_) = de_ret {
-                    let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                    test=Err(de_ret);
-                };
-                if let Ok(val) = de_ret {
-                    test=Ok(Value::from(val.job_id));
-                };
-            }
-        },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
-    }
-    test
+    module::execute(client.clone(),moduletypestr,modulenamestr,options)
 }
