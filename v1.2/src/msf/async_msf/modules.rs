@@ -2,7 +2,6 @@
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
 use crate::{value::Value,client::Client};
-use connect::connect;
 use std::collections::HashMap;
 use crate::error::MsfError;
 use crate::response as res;
