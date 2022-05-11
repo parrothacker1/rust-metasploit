@@ -1,7 +1,4 @@
 //! A module to handle plugins in Metasploit RPC
-#[path="../../structs/mod.rs"] mod structs;
-#[path="../../error.rs"] mod error;
-#[path="../../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
 use std::collections::HashMap;
