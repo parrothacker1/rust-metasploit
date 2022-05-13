@@ -4,8 +4,9 @@
 #[path="../connect.rs"] mod connect;
 use connect::connect;
 use std::collections::HashMap;
-use error::MsfError;
-use structs::{request as req,response as res};
+use crate::error::MsfError;
+use structs::request as req;
+use crate::response as res;
 use crate::client::Client;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};

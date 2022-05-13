@@ -2,7 +2,6 @@
 #![allow(non_camel_case_types)]
 use crate::client::Client;
 use crate::error::MsfError;
-use std::collections::HashMap;
 use crate::response as res;
 use crate::msf::sessions;
 
@@ -67,7 +66,7 @@ impl shell {
     /// }
     /// ```
     pub async fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
-        sessions::shell::read(client.clone,sessionidstr,readpointer)
+        sessions::shell::read(client.clone(),sessionidstr,readpointer)
     }
     /// To write in a shell
     ///
@@ -130,7 +129,7 @@ impl meterpreter {
     /// let response=meterpreter.write("help\n").await.unwrap();
     /// ```
     pub async fn write(&self,datastr:&str) -> Result<bool,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.write(datastr)
     }
     /// To read a meterpreter shell
@@ -140,7 +139,7 @@ impl meterpreter {
     /// let response=meterpreter.read().await.unwrap();
     /// ```
     pub async fn read(&self) -> Result<String,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.read()
     }
     /// To run a single command
@@ -150,7 +149,7 @@ impl meterpreter {
     /// let response=meterpreter.run_single("help\n").await.unwrap();
     /// ```
     pub async fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.run_single(commandstr)
     }
     /// To execute a given script
@@ -160,7 +159,7 @@ impl meterpreter {
     /// let response=meterpreter.script("name.rb").await.unwrap();
     /// ```
     pub async fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.script(scriptnamestr)
     }
     /// To detach the meterpreter session
@@ -170,7 +169,7 @@ impl meterpreter {
     /// let response=meterpreter.detach_session().await.unwrap();
     /// ```
     pub async fn detach_session(&self) -> Result<bool,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.detach_session()
     }
     /// To kill a meterpreter shell
@@ -180,7 +179,7 @@ impl meterpreter {
     /// let response=meterpreter.kill_session().await.unwrap();
     /// ```
     pub async fn kill_session(&self) -> Result<bool,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.kill_session()
     }
     /// To get the list of all possible commands with a specific keyword
@@ -190,7 +189,7 @@ impl meterpreter {
     /// let response=meterpreter.tabs("hel").await.unwrap();
     /// ```
     pub async fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.tabs(inputlinestr)
     }
     /// To list all the compactible modules with the session
@@ -200,7 +199,7 @@ impl meterpreter {
     /// let response=meterpreter.compactible_modules().await.unwrap();
     /// ```
     pub async fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
-        let mtpr=sessions::meterpreter::new(self.client.clone(),self.sessionidstr);
+        let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.compactible_modules()
     }
 }
@@ -261,7 +260,7 @@ impl ring {
     /// let response=ring.clear().await.unwrap();
     /// ```
     pub async fn clear(&self) -> Result<bool,MsfError> {
-        let rng=sessions::ring::new(self.client.clone(),self.sessionid);
+        let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.clear()
     }
     /// To get the last issued ReadPointer
@@ -271,7 +270,7 @@ impl ring {
     /// let response=ring.last().await.unwrap();
     /// ```
     pub async fn last(&self) -> Result<i32,MsfError> {
-        let rng=sessions::ring::new(self.client.clone(),self.sessionid);
+        let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.last()
     }
     /// To write data into an active shell session
@@ -281,7 +280,7 @@ impl ring {
     /// let response=ring.put("data").await.unwrap(); 
     /// ```
     pub async fn put(&self,datastr:&str) -> Result<i32,MsfError> {
-        let rng=sessions::ring::new(self.client.clone(),self.sessionid);
+        let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.put(datastr)
     }
 }

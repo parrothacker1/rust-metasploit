@@ -1,6 +1,5 @@
 //! A module to handle plugins in Metasploit RPC
 use crate::client::Client;
-use connect::connect;
 use std::collections::HashMap;
 use crate::error::MsfError;
 use crate::msf::plugins;

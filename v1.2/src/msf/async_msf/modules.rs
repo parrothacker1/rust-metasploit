@@ -198,7 +198,7 @@ impl compactible {
 /// }
 /// ```
 pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
-    module::option(client.clone(),moduletypestr,modulenamestr)
+    modules::option(client.clone(),moduletypestr,modulenamestr)
 }
 /// To encode a module
 ///
@@ -220,7 +220,7 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
 /// }
 /// ```
 pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
-    module::encoder(client.clone(),datastr,encodermodulestr,options)
+    modules::encoder(client.clone(),datastr,encodermodulestr,options)
 }
 /// To execute a module
 ///
@@ -242,5 +242,5 @@ pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:Ha
 /// }
 /// ```
 pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
-    module::execute(client.clone(),moduletypestr,modulenamestr,options)
+    modules::execute(client.clone(),moduletypestr,modulenamestr,options)
 }

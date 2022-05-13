@@ -7,9 +7,10 @@ use connect::connect;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use crate::client::Client;
-use error::MsfError;
+use crate::error::MsfError;
 use std::collections::HashMap;
-use structs::{request as req,response as res};
+use structs::request as req;
+use crate::response as res;
 
 /// To list all sessions
 ///
