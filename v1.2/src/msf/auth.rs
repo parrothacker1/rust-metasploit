@@ -3,7 +3,7 @@
 #[path="../connect.rs"] mod connect;
 use crate::error::MsfError;
 use crate::client;
-use structs::{request as req,response as res};
+use structs::request as req;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 
@@ -19,7 +19,7 @@ use rmp_serde::{Serializer,Deserializer,{decode::Error as derror,from_read}};
 ///     assert_eq!(true,auth::logout(client.clone()).unwrap());
 /// }
 /// ```
-pub fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
+pub fn logout<T>(clientdata:client::Client) -> Result<T,MsfError> {
     let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
