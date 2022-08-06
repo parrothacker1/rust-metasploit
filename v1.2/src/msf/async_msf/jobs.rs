@@ -1,9 +1,8 @@
 //! A module to handle the jobs in Metasploit
 use crate::client::Client;
-use crate::error::MsfError;
-use std::collections::HashMap;
-use crate::response as res;
+use crate::error::Error as E;
 use crate::msf::jobs;
+use serde::de::DeserializeOwned as DOwned;
 
 /// To list all the currently running jobs
 ///
@@ -22,7 +21,7 @@ use crate::msf::jobs;
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
+pub async fn list<T:DOwned>(client:Client) -> Result<T,E> {
     jobs::list(client.clone())
 }
 /// To get information about the specified job
@@ -42,7 +41,7 @@ pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+pub async fn info<T:DOwned>(client:Client,jobidstr:&str) -> Result<T,E> {
     jobs::info(client.clone(),jobidstr)
 }
 /// To stop a specified job
@@ -60,6 +59,6 @@ pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfErro
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+pub async fn stop<T:DOwned>(client:Client,jobidstr:&str) -> Result<T,E> {
     jobs::stop(client.clone(),jobidstr)
 }

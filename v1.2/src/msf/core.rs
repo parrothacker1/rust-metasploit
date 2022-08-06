@@ -2,14 +2,12 @@
 #![allow(non_snake_case)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../connect.rs"] mod connect;
-use crate::error::MsfError;
+use crate::error::{MsfError,Error as E};
 use crate::client::Client;
-use std::collections::HashMap;
 use connect::connect;
-use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
+use serde::{Serialize,de::DeserializeOwned as DOwned};
+use rmp_serde::{Serializer,decode::Error as derror,from_read};
 use structs::request as req;
-use crate::response as res;
 
 /// To add a new module by path
 ///
@@ -26,16 +24,8 @@ use crate::response as res;
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,MsfError> {
+pub fn add_module<T:DOwned>(client:Client,pathstr:&str) -> Result<T,E> {
     let path:String=pathstr.to_string();
-    let mut test:Result<res::core::addmodpath,MsfError>=Ok(res::core::addmodpath {
-        exploits:0,
-        auxiliary:0,
-        post:0,
-        encoders:0,
-        nops:0,
-        payloads:0,
-    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -43,23 +33,30 @@ pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,Ms
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::core::addmodpath,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
 /// To get the status of modules loaded
 ///
@@ -76,15 +73,7 @@ pub fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodpath,Ms
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
-    let mut test:Result<res::core::modulestat,MsfError>=Ok(res::core::modulestat{
-        exploits:0,
-        auxiliary:0,
-        post:0,
-        encoders:0,
-        nops:0,
-        payloads:0,
-    });
+pub fn module_status<T:DOwned>(client:Client) -> Result<T,E> { 
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -92,24 +81,30 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::core::modulestat,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                let new=val.clone();
-                test=Ok(new);
-            };
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
 /// To reload all the modules
 ///
@@ -126,15 +121,7 @@ pub fn module_status(client:Client) -> Result<res::core::modulestat,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
-    let mut test:Result<res::core::reloadmod,MsfError>=Ok(res::core::reloadmod {
-        exploits:0,
-        auxiliary:0,
-        post:0,
-        encoders:0,
-        nops:0,
-        payloads:0,
-    });
+pub fn reload_module<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -142,24 +129,30 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-        Ok(_) => { 
-            let de_ret:Result<res::core::reloadmod,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret { 
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                let new=val.clone();
-                test=Ok(new);
-            };
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
 /// To save in the core
 ///
@@ -174,8 +167,7 @@ pub fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn save(client:Client) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>=Ok(false);
+pub fn save<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -183,27 +175,30 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        },
         Ok(_) => {
-            let de_ret:Result<res::core::save,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                if val.result=="success".to_string() {
-                    test=Ok(true);
-                } else {
-                    test=Ok(false);
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
                 }
-            };
-        }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
     }
-    test
 }
 /// To set setg with key value pair
 ///
@@ -218,10 +213,9 @@ pub fn save(client:Client) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
+pub fn setg<T:DOwned>(client:Client,namestr:&str,valuestr:&str) -> Result<T,E> {
     let name:String=namestr.to_string();
     let value:String=valuestr.to_string();
-    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -229,27 +223,30 @@ pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::core::setg,derror>=Deserialize::deserialize(&mut de);
-			if let Ok(ref val) = de_ret {
-				if val.result=="success".to_string() {
-					test=Ok(true);
-				} else {
-					test=Ok(false);
-				}
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To remove setg with key name
 ///
@@ -264,9 +261,8 @@ pub fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
+pub fn unsetg<T:DOwned>(client:Client,namestr:&str) -> Result<T,E> {
     let name:String=namestr.to_string();
-    let mut test:Result<bool,MsfError>=Ok(true);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -274,27 +270,30 @@ pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-		Ok(_) => {
-			let de_ret:Result<res::core::unsetg,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-			if let Ok(ref val) = de_ret {
-				if val.result=="success".to_string() {
-					test=Ok(true);
-				} else {
-					test=Ok(false);
-				}
-			};
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To list all the threads
 ///
@@ -312,8 +311,7 @@ pub fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,MsfError> {
-	let mut test:Result<HashMap<i32,res::core::threadlist>,MsfError>=Ok(HashMap::new());
+pub fn list_thread<T:DOwned>(client:Client) -> Result<T,E> {
 	let mut body=Vec::new();
 	let mut buf=vec![];
 	let mut se=Serializer::new(&mut body);
@@ -321,23 +319,30 @@ pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 	byte.serialize(&mut se).unwrap();
 	let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
-	match con {
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-		Ok(_) => {
-			let de_ret:Result<HashMap<i32,res::core::threadlist>,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
-				test=Err(de_ret);
-			};
-			if let Ok(ref val) = de_ret {
-				test=Ok(val.clone());
-			};
-		},
-	}
-	test
+    match con {
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To kill a thread
 ///
@@ -352,8 +357,7 @@ pub fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadlist>,M
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>=Ok(false);
+pub fn kill_thread<T:DOwned>(client:Client,threadID:i32) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -361,27 +365,30 @@ pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-		Ok(_) => {
-			let de_ret:Result<res::core::threadkill,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-            if let Ok(ref val) = de_ret {
-                if val.result=="success".to_string() {
-                    test=Ok(true);
-                } else {
-                    test=Ok(false);
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
                 }
-            };
-		},
-	}
-    test
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To get the version
 ///
@@ -396,12 +403,7 @@ pub fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn version(client:Client) -> Result<res::core::version,MsfError> {
-    let mut test:Result<res::core::version,MsfError>=Ok(res::core::version {
-        version:String::new(),
-        api:String::new(),
-        ruby:String::new(),
-    });
+pub fn version<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -409,23 +411,30 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::core::version,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
 /// To stop the core
 ///
@@ -440,8 +449,7 @@ pub fn version(client:Client) -> Result<res::core::version,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn stop(client:Client) -> Result<bool,MsfError> {
-    let mut test:Result<bool,MsfError>=Ok(false);
+pub fn stop<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -449,25 +457,28 @@ pub fn stop(client:Client) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::core::stop,derror>=Deserialize::deserialize(&mut de);
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=Deserialize::deserialize(&mut de).unwrap();
-                test=Err(de_ret);
-            };
-            if let Ok(val) = de_ret {
-                if val.result=="success".to_string() {
-                    test=Ok(true);
-                } else {
-                    test=Ok(false);
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
                 }
-            };
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
-        }
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
     }
-    test
 }

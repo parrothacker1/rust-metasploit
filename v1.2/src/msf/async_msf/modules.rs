@@ -1,10 +1,10 @@
 //! A module to handle all the modules in Metasploit RPC
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
-use crate::{value::Value,client::Client};
+use crate::client::Client;
 use std::collections::HashMap;
-use crate::error::MsfError;
-use crate::response as res;
+use crate::error::Error as E;
+use serde::de::DeserializeOwned as DOwned;
 use crate::msf::modules;
 
 /// To list the compactible payloads and sessions
@@ -48,7 +48,7 @@ impl list {
     /// ```
     /// let resp=list.exploits().await.unwrap();
     /// ```
-    pub async fn exploits(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn exploits<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.exploits()
     }
@@ -58,7 +58,7 @@ impl list {
     /// ```
     /// let resp=list.auxiliary().await.unwrap();
     /// ```
-    pub async fn auxiliary(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn auxiliary<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.auxiliary()
     }
@@ -68,7 +68,7 @@ impl list {
     /// ```
     /// let resp=list.posts().await.unwrap();
     /// ```
-    pub async fn post(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn post<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.post()
     }
@@ -78,7 +78,7 @@ impl list {
     /// ```
     /// let resp=list.payloads().await.unwrap();
     /// ```
-    pub async fn payloads(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn payloads<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.payloads()
     }
@@ -88,7 +88,7 @@ impl list {
     /// ```
     /// let resp=list.encoders().await.unwrap();
     /// ```
-    pub async fn encoders(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn encoders<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.encoders()
     }
@@ -98,7 +98,7 @@ impl list {
     /// ```
     /// let resp=list.nops().await.unwrap();
     /// ```
-    pub async fn nops(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn nops<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::list::new(self.client.clone());
         list.nops()
     }
@@ -120,7 +120,7 @@ impl list {
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<res::modules::info,MsfError> {
+pub async fn info<T:DOwned>(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<T,E> {
     modules::info(client.clone(),moduletypestr,modulenamestr)
 }
 /// To get the list of compactible payloads and sessions
@@ -154,7 +154,7 @@ impl compactible {
     /// ```
     /// let response=compactible.payloads().await.unwrap();
     /// ```
-    pub async fn payload(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn payload<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::compactible::new(self.name.clone(),self.client.clone());
         list.payload()
     }
@@ -164,7 +164,7 @@ impl compactible {
     /// ```
     /// let response=compactible.target_payloads(1).await.unwrap();
     /// ```
-    pub async fn target_payloads(&self,targetindx:i32) -> Result<Vec<String>,MsfError> {
+    pub async fn target_payloads<T:DOwned>(&self,targetindx:i32) -> Result<T,E> {
         let list=modules::compactible::new(self.name.clone(),self.client.clone());
         list.target_payloads(targetindx)
     }
@@ -174,7 +174,7 @@ impl compactible {
     /// ```
     /// let response=compactible.sessions().await.unwrap();
     /// ```
-    pub async fn sessions(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn sessions<T:DOwned>(&self) -> Result<T,E> {
         let list=modules::compactible::new(self.name.clone(),self.client.clone());
         list.sessions()
     }
@@ -197,7 +197,7 @@ impl compactible {
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<HashMap<String,res::modules::options>,MsfError> {
+pub async fn option<T:DOwned>(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result<T,E> {
     modules::option(client.clone(),moduletypestr,modulenamestr)
 }
 /// To encode a module
@@ -219,7 +219,7 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<String,MsfError> {
+pub async fn encoder<T:DOwned>(client:Client,datastr:&str,encodermodulestr:&str,options:HashMap<String,String>) -> Result<T,E> {
     modules::encoder(client.clone(),datastr,encodermodulestr,options)
 }
 /// To execute a module
@@ -241,6 +241,6 @@ pub async fn encoder(client:Client,datastr:&str,encodermodulestr:&str,options:Ha
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<Value,MsfError> {
+pub async fn execute<T:DOwned>(client:Client,moduletypestr:&str,modulenamestr:&str,options:HashMap<String,String>) -> Result<T,E> {
     modules::execute(client.clone(),moduletypestr,modulenamestr,options)
 }

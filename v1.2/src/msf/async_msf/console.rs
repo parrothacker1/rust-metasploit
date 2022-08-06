@@ -1,9 +1,9 @@
 //! A module to handle msfconsole.
 #![allow(non_snake_case)]
-use crate::error::MsfError;
-use crate::response as res;
+use crate::error::Error as E;
 use crate::client::Client;
 use crate::msf::console;
+use serde::de::DeserializeOwned as DOwned;
 
 /// To Create a new console shell
 ///
@@ -23,9 +23,8 @@ use crate::msf::console;
 ///     Ok(())
 /// }
 /// ```
-pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
-    let test:Result<res::console::create,MsfError>=console::create(client.clone());
-    test
+pub async fn create<T:DOwned>(client:Client) -> Result<T,E> {
+    console::create(client.clone())
 }
 /// To kill the existing specified console
 ///
@@ -43,7 +42,7 @@ pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
 ///     Ok(())
 /// }
 /// ```
-pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn destroy<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     console::destroy(client.clone(),consoleID)
 }
 /// To get the list of all consoles
@@ -64,9 +63,8 @@ pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///     Ok(())
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
-	let test:Result<res::console::list,MsfError>=console::list(client.clone());
-    test
+pub async fn list<T:DOwned>(client:Client) -> Result<T,E> {
+	console::list(client.clone())
 }
 /// To write a command into the shell.
 ///
@@ -85,7 +83,7 @@ pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
 ///     Ok(())
 /// }
 /// ```
-pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
+pub async fn write<T:DOwned>(client:Client,consoleID:&str,command:&str) -> Result<T,E> {
     console::write(client.clone(),consoleID,command)
 }
 /// To read the console
@@ -106,9 +104,8 @@ pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfE
 ///     Ok(())
 /// }
 /// ```
-pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
-    let test:Result<res::console::read,MsfError>=console::read(client.clone(),consoleID);
-    test
+pub async fn read<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
+    console::read(client.clone(),consoleID)
 }
 /// To detach the session
 ///
@@ -126,7 +123,7 @@ pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,Msf
 ///     Ok(())
 /// }
 /// ```
-pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn detach_session<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     console::detach_session(client.clone(),consoleID)
 }
 /// To kill the session
@@ -145,7 +142,7 @@ pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfErro
 ///     Ok(())
 /// }
 /// ```
-pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub async fn kill_session<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     console::kill_session(client.clone(),consoleID)
 }
 /// To list all the possible commands which starts with a specific keyword
@@ -164,6 +161,6 @@ pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError>
 ///     Ok(())
 /// }
 /// ```
-pub async fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+pub async fn tabs<T:DOwned>(client:Client,consoleID:&str,inputlinestr:&str) -> Result<T,E> {
     console::tabs(client.clone(),consoleID,inputlinestr)
 }

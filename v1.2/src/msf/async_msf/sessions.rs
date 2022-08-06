@@ -1,8 +1,8 @@
 //! To handle the sessions in Metasploit RPC
 #![allow(non_camel_case_types)]
 use crate::client::Client;
-use crate::error::MsfError;
-use crate::response as res;
+use crate::error::Error as E;
+use serde::de::DeserializeOwned as DOwned;
 use crate::msf::sessions;
 
 /// To list all sessions
@@ -23,7 +23,7 @@ use crate::msf::sessions;
 ///     Ok(())
 /// }
 /// ```
-pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
+pub async fn list<T:DOwned>(client:Client) -> Result<T,E> {
     sessions::list(client.clone())
 }
 /// To stop a session
@@ -41,7 +41,7 @@ pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
+pub async fn stop<T:DOwned>(client:Client,sessionidstr:&str) -> Result<T,E> {
     sessions::stop(client.clone(),sessionidstr)
 }
 /// To read and write in shell
@@ -65,7 +65,7 @@ impl shell {
     ///     Ok(())
     /// }
     /// ```
-    pub async fn read(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<res::sessions::shell_read,MsfError> {
+    pub async fn read<T:DOwned>(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<T,E> {
         sessions::shell::read(client.clone(),sessionidstr,readpointer)
     }
     /// To write in a shell
@@ -85,7 +85,7 @@ impl shell {
     ///     Ok(())
     /// }
     /// ```
-    pub async fn write(client:Client,sessionidstr:&str,datastr:&str) -> Result<String,MsfError> {
+    pub async fn write<T:DOwned>(client:Client,sessionidstr:&str,datastr:&str) -> Result<T,E> {
         sessions::shell::write(client.clone(),sessionidstr,datastr)
     }
 }
@@ -128,7 +128,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.write("help\n").await.unwrap();
     /// ```
-    pub async fn write(&self,datastr:&str) -> Result<bool,MsfError> {
+    pub async fn write<T:DOwned>(&self,datastr:&str) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.write(datastr)
     }
@@ -138,7 +138,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.read().await.unwrap();
     /// ```
-    pub async fn read(&self) -> Result<String,MsfError> {
+    pub async fn read<T:DOwned>(&self) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.read()
     }
@@ -148,7 +148,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.run_single("help\n").await.unwrap();
     /// ```
-    pub async fn run_single(&self,commandstr:&str) -> Result<bool,MsfError> {
+    pub async fn run_single<T:DOwned>(&self,commandstr:&str) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.run_single(commandstr)
     }
@@ -158,7 +158,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.script("name.rb").await.unwrap();
     /// ```
-    pub async fn script(&self,scriptnamestr:&str) -> Result<bool,MsfError> {
+    pub async fn script<T:DOwned>(&self,scriptnamestr:&str) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.script(scriptnamestr)
     }
@@ -168,7 +168,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.detach_session().await.unwrap();
     /// ```
-    pub async fn detach_session(&self) -> Result<bool,MsfError> {
+    pub async fn detach_session<T:DOwned>(&self) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.detach_session()
     }
@@ -178,7 +178,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.kill_session().await.unwrap();
     /// ```
-    pub async fn kill_session(&self) -> Result<bool,MsfError> {
+    pub async fn kill_session<T:DOwned>(&self) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.kill_session()
     }
@@ -188,7 +188,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.tabs("hel").await.unwrap();
     /// ```
-    pub async fn tabs(&self,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+    pub async fn tabs<T:DOwned>(&self,inputlinestr:&str) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.tabs(inputlinestr)
     }
@@ -198,7 +198,7 @@ impl meterpreter {
     /// ```
     /// let response=meterpreter.compactible_modules().await.unwrap();
     /// ```
-    pub async fn compactible_modules(&self) -> Result<Vec<String>,MsfError> {
+    pub async fn compactible_modules<T:DOwned>(&self) -> Result<T,E> {
         let mtpr=sessions::meterpreter::new(self.client.clone(),&self.sessionid);
         mtpr.compactible_modules()
     }
@@ -219,7 +219,7 @@ impl meterpreter {
 ///     Ok(())
 /// }
 /// ```
-pub async fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<bool,MsfError> {
+pub async fn shell_upgrade<T:DOwned>(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<T,E> {
     sessions::shell_upgrade(client.clone(),sessionidstr,connecthoststr,connectport)
 }
 /// Ring module
@@ -259,7 +259,7 @@ impl ring {
     /// ```
     /// let response=ring.clear().await.unwrap();
     /// ```
-    pub async fn clear(&self) -> Result<bool,MsfError> {
+    pub async fn clear<T:DOwned>(&self) -> Result<T,E> {
         let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.clear()
     }
@@ -269,7 +269,7 @@ impl ring {
     /// ```
     /// let response=ring.last().await.unwrap();
     /// ```
-    pub async fn last(&self) -> Result<i32,MsfError> {
+    pub async fn last<T:DOwned>(&self) -> Result<T,E> {
         let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.last()
     }
@@ -279,7 +279,7 @@ impl ring {
     /// ```
     /// let response=ring.put("data").await.unwrap(); 
     /// ```
-    pub async fn put(&self,datastr:&str) -> Result<i32,MsfError> {
+    pub async fn put<T:DOwned>(&self,datastr:&str) -> Result<T,E> {
         let rng=sessions::ring::new(self.client.clone(),&self.sessionid);
         rng.put(datastr)
     }

@@ -2,13 +2,12 @@
 #![allow(non_snake_case)]
 #[path="../structs/mod.rs"] mod structs;
 #[path="../connect.rs"] mod connect;
-use crate::error::MsfError;
+use crate::error::{MsfError,Error as E};
 use connect::connect;
 use structs::request as req;
-use crate::response as res;
 use crate::client::Client;
-use serde::{Serialize,Deserialize};
-use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
+use serde::{Serialize,de::DeserializeOwned as DOwned};
+use rmp_serde::{Serializer,decode::Error as derror,from_read};
 
 /// To Create a new console shell
 ///
@@ -25,12 +24,7 @@ use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn create(client:Client) -> Result<res::console::create,MsfError> {
-    let mut test:Result<res::console::create,MsfError>=Ok(res::console::create {
-        id:String::new(),
-        prompt:"".to_string(),
-        busy:false,
-    });
+pub fn create<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -39,21 +33,29 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::create,derror>=from_read(new_buf.as_slice());
-			if let Ok(ref val) = de_ret {
-				test=Ok(val.clone());
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To kill the existing specified console
 ///
@@ -68,37 +70,39 @@ pub fn create(client:Client) -> Result<res::console::create,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn destroy<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     let consoleid:String=consoleID.to_string();
-    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::destroy("console.destroy".to_string(),client.token.unwrap(),consoleid);
     byte.serialize(&mut serializer).unwrap();
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     let con=connect(client.url,body,&mut buf);
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::destroy,derror>=Deserialize::deserialize(&mut de);
-			if let Ok(ref val) = de_ret {
-				if val.result=="success".to_string() {
-					test=Ok(true);
-				} else {
-					test=Ok(false);
-				}
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To get the list of all consoles
 ///
@@ -115,10 +119,7 @@ pub fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn list(client:Client) -> Result<res::console::list,MsfError> {
-	let mut test:Result<res::console::list,MsfError>=Ok(res::console::list {
-		consoles:Vec::new(),
-	});
+pub fn list<T:DOwned>(client:Client) -> Result<T,E> {
 	let mut body=Vec::new();
 	let mut buf=vec![];
 	let mut serializer=Serializer::new(&mut body);
@@ -126,24 +127,30 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 	byte.serialize(&mut serializer).unwrap();
 	let con=connect(client.url,body,&mut buf);
 	let new_buf=buf.clone();
-	let mut de=Deserializer::new(new_buf.as_slice());
 	match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::list,derror>=Deserialize::deserialize(&mut de);
-			if let Ok(ref val) = de_ret {
-                let new=val.clone();
-				test=Ok(new);
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Closed connection unexpectedly");
-		},
-	}
-	test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To write a command into the shell.
 ///
@@ -159,10 +166,9 @@ pub fn list(client:Client) -> Result<res::console::list,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> {
+pub fn write<T:DOwned>(client:Client,consoleID:&str,command:&str) -> Result<T,E> {
     let data:String=command.to_string();
     let consoleid:String=consoleID.to_string();
-    let mut test:Result<i32,MsfError>=Ok(1);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -170,23 +176,30 @@ pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> 
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::write,derror>=Deserialize::deserialize(&mut de);
-			if let Ok(ref val) = de_ret {
-				test=Ok(val.wrote);
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To read the console
 ///
@@ -203,13 +216,8 @@ pub fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfError> 
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError> {
+pub fn read<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     let consoleid:String=consoleID.to_string();
-    let mut test:Result<res::console::read,MsfError>=Ok(res::console::read {
-        data:String::new(),
-        prompt:String::new(),
-        busy:true,
-    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -217,23 +225,30 @@ pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError>
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::read,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-			if let Ok(ref val) = de_ret {
-				test=Ok(val.clone());
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To detach the session
 ///
@@ -248,9 +263,8 @@ pub fn read(client:Client,consoleID:&str) -> Result<res::console::read,MsfError>
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn detach_session<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     let consoleid:String=consoleID.to_string();
-    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -258,27 +272,30 @@ pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::session_detach,derror>=Deserialize::deserialize(&mut de);
-			if let Ok(ref val) = de_ret {
-				if val.result=="success".to_string() {
-					test=Ok(true);
-				} else {
-					test=Ok(false);
-				}
-			};
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To kill the session
 ///
@@ -293,9 +310,8 @@ pub fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
+pub fn kill_session<T:DOwned>(client:Client,consoleID:&str) -> Result<T,E> {
     let consoleid:String=consoleID.to_string();
-    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -303,27 +319,30 @@ pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::session_kill,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-			if let Ok(ref val) = de_ret {
-				if val.result=="success".to_string() {
-					test=Ok(true);
-				} else {
-					test=Ok(false);
-				}
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }
 /// To list all the possible commands which starts with a specific keyword
 ///
@@ -338,10 +357,9 @@ pub fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError> {
 ///     auth::logout(client.clone()).unwrap();
 /// }
 /// ```
-pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String>,MsfError> {
+pub fn tabs<T:DOwned>(client:Client,consoleID:&str,inputlinestr:&str) -> Result<T,E> {
     let consoleid:String=consoleID.to_string();
     let inputline:String=inputlinestr.to_string();
-    let mut test:Result<Vec<String>,MsfError>=Ok(Vec::new());
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut serializer=Serializer::new(&mut body);
@@ -349,21 +367,28 @@ pub fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<String
     byte.serialize(&mut serializer).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
-		Ok(_) => {
-			let de_ret:Result<res::console::tabs,derror>=Deserialize::deserialize(&mut de);
-			if let Err(_) = de_ret {
-				let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-				test=Err(de_ret);
-			};
-			if let Ok(ref val) = de_ret {
-				test=Ok(val.tabs.clone());
-			};
-		},
-		Err(_) => {
-			panic!("Connection closed unexpectedly");
-		},
-	}
-    test
+        Ok(_) => {
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
+        },
+        Err(e) => {
+            Err(E::ConnectionError(e))
+        },
+    }
 }

@@ -1,7 +1,8 @@
 //! Module whcih contain all functions for authentication
 use crate::client;
 use crate::msf::auth;
-use crate::error::MsfError;
+use crate::error::Error as E;
+use serde::de::DeserializeOwned as DOwned;
 
 /// To logout from the RPC Server
 ///
@@ -18,7 +19,7 @@ use crate::error::MsfError;
 ///     Ok(())
 /// }
 /// ```
-pub async fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
+pub async fn logout<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     auth::logout(clientdata.clone())
 }
 /// To add a new token to RPC Server
@@ -37,7 +38,7 @@ pub async fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
 ///     Ok(())
 /// }
 /// ```
-pub async fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<bool,MsfError> {
+pub async fn add_token<T:DOwned>(clientdata:client::Client,newtokenstr:&str) -> Result<T,E> {
     auth::add_token(clientdata.clone(),newtokenstr)
 }
 /// To Generate the token
@@ -57,7 +58,7 @@ pub async fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<boo
 ///     Ok(())
 /// }
 /// ```
-pub async fn generate_token(clientdata:client::Client) -> Result<String,MsfError> {
+pub async fn generate_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     auth::generate_token(clientdata.clone())
 }
 /// To list all the tokens registered with RPC Server
@@ -77,7 +78,7 @@ pub async fn generate_token(clientdata:client::Client) -> Result<String,MsfError
 ///     Ok(())
 /// }
 /// ```
-pub async fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfError> {
+pub async fn list_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     auth::list_token(clientdata.clone())
 }
 /// To remove a token from the RPC Server
@@ -96,6 +97,6 @@ pub async fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfErro
 ///     auth::logout(client.clone()).await.unwrap();
 /// }
 /// ```
-pub async fn remove_token(clientdata:client::Client,tokenremove:&str) -> Result<bool,MsfError> {
+pub async fn remove_token<T:DOwned>(clientdata:client::Client,tokenremove:&str) -> Result<T,E> {
     auth::remove_token(clientdata.clone(),tokenremove)
 }
