@@ -1,7 +1,7 @@
 //! A module to handle the jobs in Metasploit
 use crate::client::Client;
 use crate::error::Error as E;
-use crate::msf::jobs;
+#[path="../blocking/jobs.rs"] mod jobs;
 use serde::de::DeserializeOwned as DOwned;
 
 /// To list all the currently running jobs

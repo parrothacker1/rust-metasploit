@@ -2,7 +2,7 @@
 #![allow(non_snake_case)]
 use crate::error::Error as E;
 use crate::client::Client;
-use crate::msf::core;
+#[path="../blocking/core.rs"] mod core;
 use serde::de::DeserializeOwned as DOwned;
 
 /// To add a new module by path

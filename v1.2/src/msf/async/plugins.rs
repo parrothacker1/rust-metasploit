@@ -2,7 +2,7 @@
 use crate::client::Client;
 use std::collections::HashMap;
 use crate::error::Error as E;
-use crate::msf::plugins;
+#[path="../blocking/plugins.rs"] mod plugins;
 use serde::de::DeserializeOwned as DOwned;
 
 /// To load a plugin

@@ -16,16 +16,16 @@ reqwest={ version="0.11.10",features=["blocking","json"] }
 rmp-serde="1.1.0"
 rmpv={ version = "1.0.0" , features=["with-serde"] }
 serde={ version="1.0.137" , features=["derive"] }
-tokio={ version="1.18.2" }
+tokio={ version="1.18.2",optional=true }
 doc-cfg = { version = "0.1" }
 
 [lib]
 name="metasploit"
 
 [features]
-default=[]
-full=["async-msf"]
-async-msf=[]
+default=["blocking"]
+async=["tokio"]
+blocking=[]
 unstable-doc-cfg = []
 
 [package.metadata.docs.rs]

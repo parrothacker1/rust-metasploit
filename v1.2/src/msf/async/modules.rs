@@ -5,7 +5,7 @@ use crate::client::Client;
 use std::collections::HashMap;
 use crate::error::Error as E;
 use serde::de::DeserializeOwned as DOwned;
-use crate::msf::modules;
+#[path="../blocking/modules.rs"] mod modules;
 
 /// To list the compactible payloads and sessions
 pub struct compactible {

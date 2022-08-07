@@ -1,8 +1,7 @@
 //! To handle the sessions in Metasploit RPC
 #![allow(non_camel_case_types)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../error.rs"] mod error;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
 use connect::connect;
 use serde::{Serialize,de::DeserializeOwned as DOwned};
 use rmp_serde::{Serializer,decode::Error as derror,from_read};

@@ -2,7 +2,7 @@
 #![allow(non_snake_case)]
 use crate::error::Error as E;
 use crate::client::Client;
-use crate::msf::console;
+#[path="../blocking/console.rs"] mod console;
 use serde::de::DeserializeOwned as DOwned;
 
 /// To Create a new console shell

@@ -1,6 +1,6 @@
 //! A module to handle the jobs in Metasploit
-#[path="../structs/mod.rs"] mod structs;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
 use crate::error::{MsfError,Error as E};

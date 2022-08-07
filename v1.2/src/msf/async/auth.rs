@@ -1,6 +1,6 @@
 //! Module whcih contain all functions for authentication
 use crate::client;
-use crate::msf::auth;
+#[path="../blocking/auth.rs"] mod auth;
 use crate::error::Error as E;
 use serde::de::DeserializeOwned as DOwned;
 

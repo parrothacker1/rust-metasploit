@@ -3,7 +3,7 @@
 use crate::client::Client;
 use crate::error::Error as E;
 use serde::de::DeserializeOwned as DOwned;
-use crate::msf::sessions;
+#[path="../blocking/sessions.rs"] mod sessions;
 
 /// To list all sessions
 ///

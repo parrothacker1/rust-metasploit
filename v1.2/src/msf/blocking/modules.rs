@@ -1,8 +1,8 @@
 //! A module to handle all the modules in Metasploit RPC
 #![allow(non_camel_case_types)]
 #![allow(unused_assignments)]
-#[path="../structs/mod.rs"] mod structs;
-#[path="../connect.rs"] mod connect;
+#[path="../../structs/mod.rs"] mod structs;
+#[path="../../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
 use std::collections::HashMap;
