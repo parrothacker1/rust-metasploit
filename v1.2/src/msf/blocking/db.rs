@@ -50,3 +50,6 @@ pub fn connect() {}
 pub fn status() {}
 
 pub fn disconnect() {}
+
+fn return<T:DOwned>(body:Vec<u8>) -> Result<T,E> {
+    let con=connect::connect(body,buf);
