@@ -1,0 +1,33 @@
+[package]
+name = "rust-metasploit"
+version = "1.2.0"
+authors = ["h4ck3r@parrot"]
+edition = "2018"
+license-file="LICENSE"
+readme="README.md"
+description="Rust wrapper for metasploit"
+homepage="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
+repository="https://github.com/parrothacker1/rust-metasploit"
+documentation="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
+keywords=["metasploit","hacking","msf","penetration"]
+
+[dependencies]
+reqwest={ version="0.11.10",features=["blocking","json"] }
+rmp-serde="1.1.0"
+rmpv={ version = "1.0.0" , features=["with-serde"] }
+serde={ version="1.0.137" , features=["derive"] }
+tokio={ version="1.18.2",optional=true }
+doc-cfg = { version = "0.1" }
+
+[lib]
+name="metasploit"
+
+[features]
+default=["blocking"]
+async=["tokio"]
+blocking=[]
+unstable-doc-cfg = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
