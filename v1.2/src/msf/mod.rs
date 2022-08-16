@@ -32,3 +32,7 @@ pub mod plugins;
 #[cfg_attr(feature="async",path="async/sessions.rs")]
 #[cfg_attr(feature="blocking",path="blocking/sessions.rs")]
 pub mod sessions;
+
+#[cfg_attr(feature="async",path="async/db.rs")]
+#[cfg_attr(feature="blocking",path="blocking/db.rs")]
+pub mod db;

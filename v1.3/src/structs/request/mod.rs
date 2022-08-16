@@ -5,3 +5,4 @@ pub mod core;
 pub mod jobs;
 pub mod plugins;
 pub mod sessions;
+pub mod db;

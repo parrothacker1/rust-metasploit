@@ -7,13 +7,13 @@ use std::collections::HashMap;
 pub async fn hosts<T:DOwned>(client:Client) -> Result<T,E> {
     db::hosts(client)
 }
-pub async fn get_host<T:DOwned>(client:Client,workspace:Option<str>,host:str) -> Result<T,E> {
+pub async fn get_host<T:DOwned>(client:Client,workspace:Option<String>,host:&str) -> Result<T,E> {
     db::get_host(client,workspace,host)
 }
-pub async fn report_host<T:DOwned>(client:Client,workspace:Option<str>,host:str) -> Result<T,E> {
+pub async fn report_host<T:DOwned>(client:Client,workspace:Option<String>,host:&str) -> Result<T,E> {
     db::report_host(client,workspace,host)
 }
-pub async fn del_host<T:DOwned>(client:Client,workspace:Option<str>,host:str) -> Result<T,E> {
+pub async fn del_host<T:DOwned>(client:Client,workspace:Option<String>,host:&str) -> Result<T,E> {
     db::del_host(client,workspace,host)
 }
 
@@ -49,16 +49,16 @@ pub async fn workspaces<T:DOwned>(client:Client) -> Result<T,E> {
 pub async fn current_workspace<T:DOwned>(client:Client) -> Result<T,E> {
     db::current_workspace(client)
 }
-pub async fn get_workspace<T:DOwned>(client:Client,workspace:str) -> Result<T,E> {
+pub async fn get_workspace<T:DOwned>(client:Client,workspace:&str) -> Result<T,E> {
     db::get_workspace(client,workspace)
 }
-pub async fn set_workspace<T:DOwned>(client:Client,workspace:str) -> Result<T,E> {
+pub async fn set_workspace<T:DOwned>(client:Client,workspace:&str) -> Result<T,E> {
     db::set_workspace(client,workspace)
 }
-pub async fn del_workspace<T:DOwned>(client:Client,workspace:str) -> Result<T,E>  {
+pub async fn del_workspace<T:DOwned>(client:Client,workspace:&str) -> Result<T,E>  {
     db::del_workspace(client,workspace)
 }
-pub async fn add_workspace<T:DOwned>(client:Client,workspace:str) -> Result<T,E>  {
+pub async fn add_workspace<T:DOwned>(client:Client,workspace:&str) -> Result<T,E>  {
     db::add_workspace(client,workspace)
 }
 
@@ -88,7 +88,7 @@ pub async fn report_client<T:DOwned>(client:Client,hash:HashMap<String,String>) 
     db::report_client(client,hash)
 }
 
-pub async fn get_ref<T:DOwned>(client:Client,ref_name:str) -> Result<T,E> {
+pub async fn get_ref<T:DOwned>(client:Client,ref_name:&str) -> Result<T,E> {
     db::get_ref(client,ref_name)
 }
 
@@ -110,22 +110,22 @@ pub async fn creds<T:DOwned>(client:Client,hash:HashMap<String,String>) -> Resul
     db::creds(client,hash)
 }
 
-pub async fn import_data<T:DOwned>(client:Client,data:str) -> Result<T,E> {
+pub async fn import_data<T:DOwned>(client:Client,data:&str) -> Result<T,E> {
     db::import_data(client,data)
 }
 pub async fn import_file<T:DOwned>(client:Client,file:File) -> Result<T,E> {
-    db::import_file(client,data)
+    db::import_file(client,file)
 }
 
-pub async fn set_driver<T:DOwned>(client:Client,driver:str) -> Result<T,E> {
+pub async fn set_driver<T:DOwned>(client:Client,driver:&str) -> Result<T,E> {
     db::set_driver(client,driver)
 }
 pub async fn get_driver<T:DOwned>(client:Client) -> Result<T,E> {
     db::get_driver(client)
 }
 
-pub async fn connect<T:DOwned>(client:Client,driver:str,hash:HashMap<String,String>) -> Result<T,E> {
-    db::connect(client,driver,hash)
+pub async fn dbconnect<T:DOwned>(client:Client,driver:&str,hash:HashMap<String,String>) -> Result<T,E> {
+    db::dbconnect(client,driver,hash)
 }
 
 pub async fn status<T:DOwned>(client:Client) -> Result<T,E> {
