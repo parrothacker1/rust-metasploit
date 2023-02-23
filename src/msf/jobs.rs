@@ -3,7 +3,7 @@
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
 use crate::client::Client;
-use connect::connect;
+use connect::connect_async;
 use error::MsfError;
 use std::collections::HashMap;
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
@@ -34,7 +34,7 @@ pub async fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::jobs::list("job.list".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -91,7 +91,7 @@ pub async fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfErro
     let mut se=Serializer::new(&mut body);
     let byte=req::jobs::info("job.info".to_string(),client.token.unwrap(),jobid);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -134,7 +134,7 @@ pub async fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::jobs::stop("job.stop".to_string(),client.token.unwrap(),jobid);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {

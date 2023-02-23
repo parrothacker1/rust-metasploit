@@ -3,7 +3,7 @@
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
-use connect::connect;
+use connect::connect_async;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use crate::client::Client;
@@ -36,7 +36,7 @@ pub async fn list(client:Client) -> Result<res::sessions::list,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::sessions::list("session.list".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con = connect(client.url,body,&mut buf);
+    let con = connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -79,7 +79,7 @@ pub async fn stop(client:Client,sessionidstr:&str) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::sessions::stop("session.stop".to_string(),client.token.unwrap(),sessionid);
     byte.serialize(&mut se).unwrap();
-    let con = connect(client.url,body,&mut buf);
+    let con = connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -143,7 +143,7 @@ impl shell {
                 byte.serialize(&mut se).unwrap();
             },
         }
-        let con = connect(client.url,body,&mut buf);
+        let con = connect_async(client.url,body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -189,7 +189,7 @@ impl shell {
         let mut se=Serializer::new(&mut body);
         let byte=req::sessions::shell_write("session.shell_write".to_string(),client.token.unwrap(),sessionid,data);
         byte.serialize(&mut se).unwrap();
-        let con = connect(client.url,body,&mut buf);
+        let con = connect_async(client.url,body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -268,7 +268,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_write",Some(data));
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -303,7 +303,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_read",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -335,7 +335,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_run_single",Some(command));
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -371,7 +371,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_script",Some(scriptname));
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -406,7 +406,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_session_detach",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -441,7 +441,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_session_kill",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -477,7 +477,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.meterpreter_tabs",Some(inputline));
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -508,7 +508,7 @@ impl meterpreter {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.compatible_modules",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -554,7 +554,7 @@ pub async fn shell_upgrade(client:Client,sessionidstr:&str,connecthoststr:&str,c
     let mut se=Serializer::new(&mut body);
     let byte=req::sessions::shell_upgrade("session.shell_upgrade".to_string(),client.token.as_ref().unwrap().to_string(),sessionid,connecthost,connectport);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -633,7 +633,7 @@ impl ring {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.ring_clear",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -668,7 +668,7 @@ impl ring {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.ring_last",None);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -700,7 +700,7 @@ impl ring {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize(&mut body,"session.ring_put",Some(data));
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {

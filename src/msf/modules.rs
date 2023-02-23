@@ -5,7 +5,7 @@
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
 use crate::{value::Value,client::Client};
-use connect::connect;
+use connect::connect_async;
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
@@ -76,7 +76,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.exploits",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -99,7 +99,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.auxiliary",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -122,7 +122,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.post",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -145,7 +145,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.payloads",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -168,7 +168,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.encoders",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -191,7 +191,7 @@ impl list {
         let mut body=Vec::new();
         let mut buf=vec![];
         self.serialize("module.nops",&mut body);
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         match con {
             Ok(_) => {
@@ -236,7 +236,7 @@ pub async fn info(client:Client,moduletypestr:&str,modulenamestr:&str) -> Result
     let mut se=Serializer::new(&mut body);
     let byte=req::modules::info("module.info".to_string(),client.token.unwrap(),moduletype,modulename);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -294,7 +294,7 @@ impl compactible {
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible("module.compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
         byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -327,7 +327,7 @@ impl compactible {
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible_tp("module.target_compatible_payloads".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone(),targetindx);
         byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -360,7 +360,7 @@ impl compactible {
         let mut se=Serializer::new(&mut body);
         let byte=req::modules::compactible("module.compatible_sessions".to_string(),self.client.token.as_ref().unwrap().to_string(),self.name.clone());
         byte.serialize(&mut se).unwrap();
-        let con=connect(self.client.url.clone(),body,&mut buf);
+        let con=connect_async(self.client.url.clone(),body,&mut buf).await;
         let new_buf=buf.clone();
         let mut de=Deserializer::new(new_buf.as_slice());
         match con {
@@ -408,7 +408,7 @@ pub async fn option(client:Client,moduletypestr:&str,modulenamestr:&str) -> Resu
     let mut serializer=Serializer::new(&mut body);
     let byte=req::modules::options("module.options".to_string(),client.token.as_ref().unwrap().to_string(),moduletype.clone(),modulename.clone());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url.clone(),body,&mut buf);
+    let con=connect_async(client.url.clone(),body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -456,7 +456,7 @@ let encodermodule:String=encodermodulestr.to_string();
     let mut se=Serializer::new(&mut body);
     let byte=req::modules::encoder("module.encode".to_string(),client.token.unwrap(),data,encodermodule,options);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -504,7 +504,7 @@ pub async fn execute(client:Client,moduletypestr:&str,modulenamestr:&str,options
     let mut se=Serializer::new(&mut body);
     let byte=req::modules::execute("module.execute".to_string(),client.token.unwrap(),moduletype.clone(),modulename,options);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {

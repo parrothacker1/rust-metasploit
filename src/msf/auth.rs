@@ -30,7 +30,7 @@ pub async fn logout(clientdata:client::Client) -> Result<bool,MsfError> {
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::logout("auth.logout".to_string(),clientdata.token.as_ref().unwrap().to_string(),clientdata.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(clientdata.url,body,&mut buf);
+    let con=connect::connect_async(clientdata.url,body,&mut buf).await;
     let new_buf=buf.clone();
     match con {
 		Ok(_) => {
@@ -78,7 +78,7 @@ pub async fn add_token(clientdata:client::Client,newtokenstr:&str) -> Result<boo
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenadd("auth.token_add".to_string(),clientdata.token.as_ref().unwrap().to_string(),new_tok);
     byte.serialize(&mut serializer).unwrap();
-    let conn=connect::connect(clientdata.url,body,&mut buf);
+    let conn=connect::connect_async(clientdata.url,body,&mut buf).await;
     let new_buf=buf.clone();
     match conn {
 		Ok(_) => {
@@ -126,7 +126,7 @@ pub async fn generate_token(clientdata:client::Client) -> Result<String,MsfError
     let byte=req::auth::tokengen("auth.token_generate".to_string(),clientdata.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
     let mut buf=vec![];
-    let conn=connect::connect(clientdata.url,body,&mut buf);
+    let conn=connect::connect_async(clientdata.url,body,&mut buf).await;
     let new_buf=buf.clone();
     match conn {
 		Ok(_) => {
@@ -174,7 +174,7 @@ pub async fn list_token(clientdata:client::Client) -> Result<Vec<String>,MsfErro
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenlist("auth.token_list".to_string(),clientdata.token.unwrap());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(clientdata.url,body,&mut buf);
+    let con=connect::connect_async(clientdata.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -218,7 +218,7 @@ pub async fn remove_token(clientdata:client::Client,tokenremove:&str) -> Result<
     let mut serializer=Serializer::new(&mut body);
     let byte=req::auth::tokenrem("auth.token_remove".to_string(),clientdata.token.unwrap(),token_rem);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect::connect(clientdata.url,body,&mut buf);
+    let con=connect::connect_async(clientdata.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
