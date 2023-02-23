@@ -4,7 +4,7 @@
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
 use error::MsfError;
-use connect::connect;
+use connect::{connect, connect_async};
 use structs::{request as req,response as res};
 use crate::client::Client;
 use serde::{Serialize,Deserialize};
@@ -39,7 +39,7 @@ pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::create("console.create".to_string(),client.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     match con {
 		Ok(_) => {
