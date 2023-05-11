@@ -2,7 +2,7 @@
 #[path="../structs/mod.rs"] mod structs;
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
-use connect::connect;
+use connect::connect_async;
 use std::collections::HashMap;
 use error::MsfError;
 use structs::{request as req,response as res};
@@ -37,7 +37,7 @@ pub async fn load(client:Client,pluginnamestr:&str,options:HashMap<String,String
     let mut se=Serializer::new(&mut body);
     let byte=req::plugins::load("plugin.load".to_string(),client.token.unwrap(),pluginname,options);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -85,7 +85,7 @@ pub async fn unload(client:Client,pluginnamestr:&str) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::plugins::unload("plugin.unload".to_string(),client.token.unwrap(),pluginname);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -133,7 +133,7 @@ pub async fn list(client:Client) -> Result<Vec<String>,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::plugins::loaded("plugin.loaded".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {

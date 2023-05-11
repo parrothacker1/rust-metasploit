@@ -4,7 +4,7 @@
 #[path="../error.rs"] mod error;
 #[path="../connect.rs"] mod connect;
 use error::MsfError;
-use connect::connect;
+use connect::connect_async;
 use structs::{request as req,response as res};
 use crate::client::Client;
 use serde::{Serialize,Deserialize};
@@ -39,7 +39,7 @@ pub async fn create(client:Client) -> Result<res::console::create,MsfError> {
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::create("console.create".to_string(),client.token.as_ref().unwrap().to_string());
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     match con {
 		Ok(_) => {
@@ -84,7 +84,7 @@ pub async fn destroy(client:Client,consoleID:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut serializer).unwrap();
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     match con {
 		Ok(_) => {
 			let de_ret:Result<res::console::destroy,derror>=Deserialize::deserialize(&mut de);
@@ -133,7 +133,7 @@ pub async fn list(client:Client) -> Result<res::console::list,MsfError> {
 	let mut serializer=Serializer::new(&mut body);
 	let byte=req::console::list("console.list".to_string(),client.token.unwrap());
 	byte.serialize(&mut serializer).unwrap();
-	let con=connect(client.url,body,&mut buf);
+	let con=connect_async(client.url,body,&mut buf).await;
 	let new_buf=buf.clone();
 	let mut de=Deserializer::new(new_buf.as_slice());
 	match con {
@@ -180,7 +180,7 @@ pub async fn write(client:Client,consoleID:&str,command:&str) -> Result<i32,MsfE
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::write("console.write".to_string(),client.token.unwrap(),consoleid,data);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -230,7 +230,7 @@ pub async fn read(client:Client,consoleID:&str) -> Result<res::console::read,Msf
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::read("console.read".to_string(),client.token.unwrap(),consoleid);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -274,7 +274,7 @@ pub async fn detach_session(client:Client,consoleID:&str) -> Result<bool,MsfErro
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::session_detach("console.session_detach".to_string(),client.token.unwrap(),consoleid);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -322,7 +322,7 @@ pub async fn kill_session(client:Client,consoleID:&str) -> Result<bool,MsfError>
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::session_kill("console.session_kill".to_string(),client.token.unwrap(),consoleid);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -371,7 +371,7 @@ pub async fn tabs(client:Client,consoleID:&str,inputlinestr:&str) -> Result<Vec<
     let mut serializer=Serializer::new(&mut body);
     let byte=req::console::tabs("console.tabs".to_string(),client.token.unwrap(),consoleid,inputline);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {

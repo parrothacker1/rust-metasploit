@@ -6,7 +6,7 @@
 use error::MsfError;
 use crate::client::Client;
 use std::collections::HashMap;
-use connect::connect;
+use connect::connect_async;
 use serde::{Serialize,Deserialize};
 use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
 use structs::{request as req,response as res};
@@ -44,7 +44,7 @@ pub async fn add_module(client:Client,pathstr:&str) -> Result<res::core::addmodp
     let mut serializer=Serializer::new(&mut body);
     let byte=req::core::addmodpath("core.add_module_path".to_string(),client.token.unwrap(),path);
     byte.serialize(&mut serializer).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -95,7 +95,7 @@ pub async fn module_status(client:Client) -> Result<res::core::modulestat,MsfErr
     let mut se=Serializer::new(&mut body);
     let byte=req::core::modulestat("core.module_stats".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -147,7 +147,7 @@ pub async fn reload_module(client:Client) -> Result<res::core::reloadmod,MsfErro
     let mut se=Serializer::new(&mut body);
     let byte=req::core::reloadmod("core.reload_modules".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -190,7 +190,7 @@ pub async fn save(client:Client) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::core::save("core.save".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -238,7 +238,7 @@ pub async fn setg(client:Client,namestr:&str,valuestr:&str) -> Result<bool,MsfEr
     let mut se=Serializer::new(&mut body);
     let byte=req::core::setg("core.setg".to_string(),client.token.unwrap(),name,value);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -285,7 +285,7 @@ pub async fn unsetg(client:Client,namestr:&str) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::core::unsetg("core.unsetg".to_string(),client.token.unwrap(),name);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -334,7 +334,7 @@ pub async fn list_thread(client:Client) -> Result<HashMap<i32,res::core::threadl
 	let mut se=Serializer::new(&mut body);
 	let byte=req::core::threadlist("core.thread_list".to_string(),client.token.unwrap());
 	byte.serialize(&mut se).unwrap();
-	let con=connect(client.url,body,&mut buf);
+	let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
 	match con {
@@ -376,7 +376,7 @@ pub async fn kill_thread(client:Client,threadID:i32) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::core::threadkill("core.thread_kill".to_string(),client.token.unwrap(),threadID);
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -426,7 +426,7 @@ pub async fn version(client:Client) -> Result<res::core::version,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::core::version("core.version".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
@@ -468,7 +468,7 @@ pub async fn stop(client:Client) -> Result<bool,MsfError> {
     let mut se=Serializer::new(&mut body);
     let byte=req::core::stop("core.stop".to_string(),client.token.unwrap());
     byte.serialize(&mut se).unwrap();
-    let con=connect(client.url,body,&mut buf);
+    let con=connect_async(client.url,body,&mut buf).await;
     let new_buf=buf.clone();
     let mut de=Deserializer::new(new_buf.as_slice());
     match con {
