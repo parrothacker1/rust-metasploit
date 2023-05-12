@@ -1,11 +1,3 @@
-//! This module is to initialize and maintain the connection
-//! ## Example
-//! ```
-//! use metasploit::client::Client;
-//! fn main() {
-//!     let client=Client::new("127.0.0.1",4040,"user","password",true);
-//! }
-//! ```
 #[path="./connect.rs"] mod connect;
 #[path="./structs/mod.rs"] mod structs;
 use structs::request::auth::login;
@@ -17,11 +9,8 @@ struct Reslogin {
     token:String,
 }
 #[derive(Debug,Clone)]
-/// Struct which is used to initialize and maintain connection.
 pub struct Client {
-    /// The url formed from given host and port
     pub url:String,
-    /// The Metasploit auth token which will be taken at the time of connection
     pub token:Option<String>,
 }
 impl Client {
