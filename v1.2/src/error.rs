@@ -4,27 +4,16 @@ use reqwest;
 use std::env::var;
 use serde::Deserialize as des;
 use rmp_serde::decode;
-/// This is to handle connection errors.For more information refer [reqwest::Error](https://docs.rs/reqwest/0.7.2/reqwest/struct.Error.html)
 pub type ConnectionError=reqwest::Error;
 
 pub type DError=decode::Error;
 
-/// Struct to handle RPC error Responses
 #[derive(des,Debug)]
-/// ```
-/// pub struct MsfError {/*... */}
-/// ```
-/// Struct to handle error responses from RPC Server
 pub struct MsfError {
-    /// Boolean value for error
     pub error:bool,
-    /// Class of error
     pub error_class:String,
-    /// Error description
     pub error_string:String,
-    /// Error Message
     pub error_message:String,
-    /// Error Backtrace
     pub error_backtrace:Vec<String>,
 }
 
