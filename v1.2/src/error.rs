@@ -1,4 +1,3 @@
-//! This module is to handle all error responses from RPC Server and to handle Connection Error.
 #![allow(dead_code)]
 use std::fmt::{Result,Display,Formatter,Debug};
 use reqwest;

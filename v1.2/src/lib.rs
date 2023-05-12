@@ -9,7 +9,7 @@
 //! }
 //! ```
 //! The above one is a simple example code where an connection is made with RPC Server and the token is printed
-//!
+//! For more information on the library refer the github wiki page
 pub mod client;
 pub mod msf;
 pub mod error;
