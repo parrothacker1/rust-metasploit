@@ -1,4 +1,3 @@
-//! A module which is used to handle msfcore
 #![allow(non_snake_case)]
 #[path="../../structs/mod.rs"] mod structs;
 #[path="../../connect.rs"] mod connect;
@@ -9,21 +8,6 @@ use serde::{Serialize,de::DeserializeOwned as DOwned};
 use rmp_serde::{Serializer,decode::Error as derror,from_read};
 use structs::request as req;
 
-/// To add a new module by path
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// use metasploit::response::core as resp;
-/// 
-/// fn main() {
-///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::addmodpath=core::add_module(client.clone(),"path").unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn add_module<T:DOwned>(client:Client,pathstr:&str) -> Result<T,E> {
     let path:String=pathstr.to_string();
     let mut body=Vec::new();
@@ -58,21 +42,6 @@ pub fn add_module<T:DOwned>(client:Client,pathstr:&str) -> Result<T,E> {
         },
     }
 }
-/// To get the status of modules loaded
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// use metasploit::response::core as resp;
-///
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::modulestat=core::module_status(client.clone()).unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn module_status<T:DOwned>(client:Client) -> Result<T,E> { 
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -106,21 +75,6 @@ pub fn module_status<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To reload all the modules
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// use metasploit::response::core as resp;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::reloadmod=core::reload_modules(client.clone()).unwrap();
-///     println!("{:?}",response)
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn reload_module<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -154,19 +108,6 @@ pub fn reload_module<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To save in the core
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::save(client.clone()).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn save<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -200,19 +141,6 @@ pub fn save<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To set setg with key value pair
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::setg(client.clone(),"name","value").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn setg<T:DOwned>(client:Client,namestr:&str,valuestr:&str) -> Result<T,E> {
     let name:String=namestr.to_string();
     let value:String=valuestr.to_string();
@@ -248,19 +176,6 @@ pub fn setg<T:DOwned>(client:Client,namestr:&str,valuestr:&str) -> Result<T,E> {
         },
     }
 }
-/// To remove setg with key name
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::unsetg(client.clone(),"name").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn unsetg<T:DOwned>(client:Client,namestr:&str) -> Result<T,E> {
     let name:String=namestr.to_string();
     let mut body=Vec::new();
@@ -295,22 +210,6 @@ pub fn unsetg<T:DOwned>(client:Client,namestr:&str) -> Result<T,E> {
         },
     }
 }
-/// To list all the threads
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// use metasploit::response::core as resp;
-/// use std::collections::HashMap;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:HashMap<i32,resp::threadlist>=core::list_thread(client.clone()).unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn list_thread<T:DOwned>(client:Client) -> Result<T,E> {
 	let mut body=Vec::new();
 	let mut buf=vec![];
@@ -344,19 +243,6 @@ pub fn list_thread<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To kill a thread
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::kill_thread(client.clone(),1).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn kill_thread<T:DOwned>(client:Client,threadID:i32) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -390,19 +276,6 @@ pub fn kill_thread<T:DOwned>(client:Client,threadID:i32) -> Result<T,E> {
         },
     }
 }
-/// To get the version
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,core::version(client.clone()).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn version<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -436,19 +309,6 @@ pub fn version<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To stop the core
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,core};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,,"msf","password",true);
-///     assert_eq!(true,core::stop(client.clone()).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn stop<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
