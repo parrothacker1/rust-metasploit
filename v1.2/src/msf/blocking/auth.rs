@@ -1,4 +1,3 @@
-//! Module whcih contain all functions for authentication
 #[path="../../structs/mod.rs"] mod structs;
 #[path="../../connect.rs"] mod connect;
 use crate::error::{MsfError,Error as E};
@@ -7,18 +6,6 @@ use structs::request as req;
 use serde::{Serialize,de::DeserializeOwned as DOwned};
 use rmp_serde::{Serializer,decode::Error as derror,from_read};
 
-/// To logout from the RPC Server
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::auth;
-/// 
-/// fn main()  {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,auth::logout(client.clone()).unwrap());
-/// }
-/// ```
 pub fn logout<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -52,19 +39,6 @@ pub fn logout<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
 		},
 	}
 }
-/// To add a new token to RPC Server
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::auth;
-/// 
-/// fn main() {
-///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,auth::add_token(client.clone(),"newtoken").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn add_token<T:DOwned>(clientdata:client::Client,newtokenstr:&str) -> Result<T,E> {
     let new_tok:String=newtokenstr.to_string();
     let mut body=Vec::new();
@@ -99,20 +73,6 @@ pub fn add_token<T:DOwned>(clientdata:client::Client,newtokenstr:&str) -> Result
 		},
 	}
 }
-/// To Generate the token
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::auth;
-///
-/// fn main() {
-///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     auth::add_token(client.clone(),"newtoken").unwrap();
-///     assert_eq!("newtoken",auth::generate_token(client.clone()).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn generate_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut serializer=Serializer::new(&mut body);
@@ -146,20 +106,6 @@ pub fn generate_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
 		},
 	}
 }
-/// To list all the tokens registered with RPC Server
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::auth;
-///
-/// fn main() {
-///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     auth::add_token(client.clone(),"newtoken").unwrap();
-///     println!("{:?}",auth::list_token(client.clone()).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn list_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -193,20 +139,6 @@ pub fn list_token<T:DOwned>(clientdata:client::Client) -> Result<T,E> {
 		},
 	}
 }
-/// To remove a token from the RPC Server
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::auth;
-/// 
-/// fn main() {
-///     let client:Client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     auth::add_token(client.clone(),"newtoken").unwrap();
-///     assert_eq!(true,auth::remove_token(client.clone(),"newtoken").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn remove_token<T:DOwned>(clientdata:client::Client,tokenremove:&str) -> Result<T,E> {
     let token_rem:String=tokenremove.to_string();
     let mut body=Vec::new();
