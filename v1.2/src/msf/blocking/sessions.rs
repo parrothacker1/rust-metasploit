@@ -1,4 +1,3 @@
-//! To handle the sessions in Metasploit RPC
 #![allow(non_camel_case_types)]
 #[path="../../structs/mod.rs"] mod structs;
 #[path="../../connect.rs"] mod connect;
@@ -9,21 +8,6 @@ use crate::client::Client;
 use crate::error::{MsfError,Error as E};
 use structs::request as req;
 
-/// To list all sessions
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,sessions};
-/// use metasploit::response::sessions as resp;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::list=sessions::list(client.clone()).unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn list<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
@@ -57,19 +41,6 @@ pub fn list<T:DOwned>(client:Client) -> Result<T,E> {
         },
     }
 }
-/// To stop a session
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,sessions};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,sessions::stop(client.clone(),"1").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn stop<T:DOwned>(client:Client,sessionidstr:&str) -> Result<T,E> {
     let sessionid:String=sessionidstr.to_string();
     let mut body=Vec::new();
@@ -104,25 +75,8 @@ pub fn stop<T:DOwned>(client:Client,sessionidstr:&str) -> Result<T,E> {
         },
     }
 }
-/// To read and write in shell
 pub struct shell;
 impl shell {
-    /// To read a shell
-    /// 
-    /// ## Example
-    /// ```
-    /// use metasploit::client::Client;
-    /// use metasploit::msf::blocking::{auth,sessions};
-    /// use metasploit::response::sessions as resp;
-    ///
-    /// fn main() {
-    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-    ///     let response:resp::shell_read=sessions::shell::read(client.clone(),"1",None).unwrap();
-    ///     println!("{:?}",response);
-    ///     auth::logout(client.clone()).unwrap();
-    ///     Ok(())
-    /// }
-    /// ```
     pub fn read<T:DOwned>(client:Client,sessionidstr:&str,readpointer:Option<i32>) -> Result<T,E> {
         let sessionid:String=sessionidstr.to_string();
         let mut body=Vec::new();
@@ -165,20 +119,6 @@ impl shell {
             },
         }
     }
-    /// To write in a shell
-    ///
-    /// ## Example
-    /// ```
-    /// use metasploit::client::Client;
-    /// use metasploit::msf::blcoking::{auth,sessions};
-    /// 
-    /// fn main() {
-    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-    ///     let response:String=sessions::shell::write(client.clone(),"1","help\n").unwrap();
-    ///     println!("{}",response);
-    ///     auth::logout(client.clone()).unwrap();
-    /// }
-    /// ```
     pub fn write<T:DOwned>(client:Client,sessionidstr:&str,datastr:&str) -> Result<T,E> {
         let sessionid:String=sessionidstr.to_string();
         let data:String=datastr.to_string();
@@ -215,29 +155,11 @@ impl shell {
         }
     }
 }
-/// To handle the meterpreter session.
 pub struct meterpreter {
-    /// Session ID of the meterpreter shell
     pub sessionid:String,
-    /// Get the Client struct
     pub client:Client,
 }
 impl meterpreter {
-    /// To create a new instance and store in a variable
-    ///
-    /// ## Example
-    /// ```
-    /// use metasploit::client::Client;
-    /// use metasploit::msf::blocking::{auth,sessions};
-    /// 
-    /// fn main() {
-    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-    ///     let meterpreter=sessions::meterpreter::new(client.clone(),"1");
-    ///     let response= // Replace the variable with following examples
-    ///     println!("{:?}",response);
-    ///     auth::logout(client.clone()).unwrap();
-    /// }
-    /// ```
     pub fn new(client:Client,sessionidstr:&str) -> Self {
         meterpreter {
             sessionid:sessionidstr.to_string(),
@@ -276,13 +198,6 @@ impl meterpreter {
             }
         }
     }
-    /// To write in a meterpreter shell
-    ///
-    /// It is recommended to add "\n" at the end of the command to execute
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.write("help\n").unwrap();
-    /// ```
     pub fn write<T:DOwned>(&self,datastr:&str) -> Result<T,E> {
         let data:String=datastr.to_string();
         let mut body=Vec::new();
@@ -299,12 +214,6 @@ impl meterpreter {
             },
         }
     }
-    /// To read a meterpreter shell
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.read().unwrap();
-    /// ```
     pub fn read<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -320,12 +229,6 @@ impl meterpreter {
             },
         }
     }
-    /// To run a single command
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.run_single("help\n").unwrap();
-    /// ```
     pub fn run_single<T:DOwned>(&self,commandstr:&str) -> Result<T,E> {
         let command:String=commandstr.to_string();
         let mut body=Vec::new();
@@ -342,12 +245,6 @@ impl meterpreter {
             },
         }
     }
-    /// To execute a given script
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.script("name.rb").unwrap();
-    /// ```
     pub fn script<T:DOwned>(&self,scriptnamestr:&str) -> Result<T,E> {
         let scriptname:String=scriptnamestr.to_string();
         let mut body=Vec::new();
@@ -364,12 +261,6 @@ impl meterpreter {
             },
         }
     }
-    /// To detach the meterpreter session
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.detach_session().unwrap();
-    /// ```
     pub fn detach_session<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -385,12 +276,6 @@ impl meterpreter {
             },
         }
     }
-    /// To kill a meterpreter shell
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.kill_session().unwrap();
-    /// ```
     pub fn kill_session<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -406,12 +291,6 @@ impl meterpreter {
             },
         }
     }
-    /// To get the list of all possible commands with a specific keyword
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.tabs("hel").unwrap();
-    /// ```
     pub fn tabs<T:DOwned>(&self,inputlinestr:&str) -> Result<T,E> {
         let inputline=inputlinestr.to_string();
         let mut body=Vec::new();
@@ -428,12 +307,6 @@ impl meterpreter {
             },
         }
     }
-    /// To list all the compactible modules with the session
-    ///
-    /// ## Example
-    /// ```
-    /// let response=meterpreter.compactible_modules().unwrap();
-    /// ```
     pub fn compactible_modules<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -450,19 +323,6 @@ impl meterpreter {
         }
     }
 }
-/// To make a new meterpreter session from an existing shell
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,sessions};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,sessions::shell_upgrade(client.clone(),"1","127.0.0.1",8008).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn shell_upgrade<T:DOwned>(client:Client,sessionidstr:&str,connecthoststr:&str,connectport:i32) -> Result<T,E> {
     let sessionid:String=sessionidstr.to_string();
     let connecthost:String=connecthoststr.to_string();
@@ -498,29 +358,11 @@ pub fn shell_upgrade<T:DOwned>(client:Client,sessionidstr:&str,connecthoststr:&s
         },
     }
 }
-/// Ring module
 pub struct ring {
-    /// Get the Client
     client:Client,
-    /// SessionID
     sessionid:String,
 }
 impl ring {
-    /// To create a instance and store in the variable
-    ///
-    /// ## Example
-    /// ```
-    /// use metasploit::client::Client;
-    /// use metasploit::msf::blocking::{auth,sessions};
-    /// 
-    /// fn main() {
-    ///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-    ///     let ring=sessions::ring::new(client.clone(),"1");
-    ///     let response= // Replace this variable with following examples
-    ///     println!("{:?}",response);
-    ///     auth::logout(client.clone()).unwrap();
-    /// }
-    /// ```
     pub fn new(client:Client,sessionid:&str) -> Self {
         ring {
             client:client,
@@ -559,12 +401,6 @@ impl ring {
             }
         }
     }
-    /// To clear the ring buffer
-    ///
-    /// ## Example
-    /// ```
-    /// let response=ring.clear().unwrap();
-    /// ```
     pub fn clear<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -580,12 +416,6 @@ impl ring {
             },
         }
     }
-    /// To get the last issued ReadPointer
-    /// 
-    /// ## Example
-    /// ```
-    /// let response=ring.last().unwrap();
-    /// ```
     pub fn last<T:DOwned>(&self) -> Result<T,E> {
         let mut body=Vec::new();
         let mut buf=vec![];
@@ -601,12 +431,6 @@ impl ring {
             },
         }
     }
-    /// To write data into an active shell session
-    ///
-    /// ## Example
-    /// ```
-    /// let response=ring.put("data").unwrap(); 
-    /// ```
     pub fn put<T:DOwned>(&self,datastr:&str) -> Result<T,E> {
         let data:String=datastr.to_string();
         let mut body=Vec::new();
