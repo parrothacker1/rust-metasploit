@@ -1,4 +1,3 @@
-//! A module to handle plugins in Metasploit RPC
 #[path="../../structs/mod.rs"] mod structs;
 #[path="../../connect.rs"] mod connect;
 use connect::connect;
@@ -9,22 +8,6 @@ use crate::client::Client;
 use serde::{Serialize,de::DeserializeOwned as DOwned};
 use rmp_serde::{Serializer,decode::Error as derror,from_read};
 
-/// To load a plugin
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blcoking::{auth,plugins};
-/// use std::collections::HashMap;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let option=HashMap::new();
-///     option.insert("key".to_string(),"value".to_string());
-///     assert_eq!(true,plugins::load(client.clone(),"pluginname",option).unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn load<T:DOwned>(client:Client,pluginnamestr:&str,options:HashMap<String,String>) -> Result<T,E> {
     let pluginname:String=pluginnamestr.to_string();
     let mut body=Vec::new();
@@ -59,19 +42,6 @@ pub fn load<T:DOwned>(client:Client,pluginnamestr:&str,options:HashMap<String,St
         },
     }
 }
-/// To unload a plugin
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,plugins};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,plugins::unload(client.clone(),"pluginname").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn unload<T:DOwned>(client:Client,pluginnamestr:&str) -> Result<T,E> {
     let pluginname:String=pluginnamestr.to_string();
     let mut body=Vec::new();
@@ -106,20 +76,6 @@ pub fn unload<T:DOwned>(client:Client,pluginnamestr:&str) -> Result<T,E> {
         },
     }
 }
-/// To list all the loaded plugins
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,plugins};
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:Vec<String>=plugins::list(client.clone()).unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
 pub fn list<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
