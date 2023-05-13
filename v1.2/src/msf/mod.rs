@@ -1,9 +1,5 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![allow(unused_attributes)]
-//! The module which contain all the necessary async modules to communicate with RPC Server
-
-//#[cfg(all(feature="async",feature="blocking"))]
-//compile_error!("Feature \"async\" and feature \"blocking\" cannot be used at once. Disable default features to use \"async\" feature");
 
 #[cfg_attr(feature="async",path="async/auth.rs")]
 #[cfg_attr(feature="blocking",path="blocking/auth.rs")]
