@@ -1,22 +1,16 @@
-//! This module is to initialize and maintain the connection
-//! ## Example
-//! ```
-//! use metasploit::client::Client;
-//! fn main() {
-//!     let client=Client::new("127.0.0.1",4040,"user","password",true);
-//! }
-//! ```
 #[path="./connect.rs"] mod connect;
 #[path="./structs/mod.rs"] mod structs;
-use structs::{request::auth::login,response::auth::login as reslogin};
+use structs::request::auth::login;
 use rmp_serde::{Serializer,Deserializer,decode::Error};
 use serde::{Serialize,Deserialize};
+#[derive(Deserialize)]
+struct Reslogin {
+    result:String,
+    token:String,
+}
 #[derive(Debug,Clone)]
-/// Struct which is used to initialize and maintain connection.
 pub struct Client {
-    /// The url formed from given host and port
     pub url:String,
-    /// The Metasploit auth token which will be taken at the time of connection
     pub token:Option<String>,
 }
 impl Client {
@@ -39,7 +33,7 @@ impl Client {
         let mut token=String::new();
         match con {
 			Ok(_) => {
-				let de_ret:Result<reslogin,Error>=Deserialize::deserialize(&mut de);
+				let de_ret:Result<Reslogin,Error>=Deserialize::deserialize(&mut de);
 				if let Ok(ref val) = de_ret {
 					if val.result=="success".to_string() {
 						token=val.token.clone();

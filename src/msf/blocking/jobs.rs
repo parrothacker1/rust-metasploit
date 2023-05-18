@@ -1,32 +1,13 @@
-//! A module to handle the jobs in Metasploit
 #[path="../../structs/mod.rs"] mod structs;
-#[path="../../error.rs"] mod error;
 #[path="../../connect.rs"] mod connect;
 use crate::client::Client;
 use connect::connect;
-use error::MsfError;
-use std::collections::HashMap;
-use rmp_serde::{Serializer,Deserializer,decode::{Error as derror,from_read}};
-use serde::{Serialize,Deserialize};
-use structs::{request as req,response as res};
+use crate::error::{MsfError,Error as E};
+use rmp_serde::{Serializer,decode::Error as derror,from_read};
+use serde::{Serialize,de::DeserializeOwned as DOwned};
+use structs::request as req;
 
-/// To list all the currently running jobs
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,job};
-/// use std::collections::HashMap;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:HashMap<String,String>=jobs::list(client.clone()).unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
-pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
-    let mut test:Result<HashMap<String,String>,MsfError>=Ok(HashMap::new());
+pub fn list<T:DOwned>(client:Client) -> Result<T,E> {
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -34,54 +15,33 @@ pub fn list(client:Client) -> Result<HashMap<String,String>,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<HashMap<String,String>,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
-/// To get information about the specified job
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,jobs};
-/// use metasploit::response::jobs as resp;
-/// 
-/// fn main() {
-///     let client=Client::new("127.0.0.1",55552,"msf","password",true);
-///     let response:resp::info=jobs::info(client.clone(),"1").unwrap();
-///     println!("{:?}",response);
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
-pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
+pub fn info<T:DOwned>(client:Client,jobidstr:&str) -> Result<T,E> {
     let jobid:String=jobidstr.to_string();
-    let mut test:Result<res::jobs::info,MsfError>=Ok(res::jobs::info{
-        jid:0,
-        start_time:0,
-        name:String::new(),
-        uripath:String::new(),
-        datastore:res::jobs::Data {
-            EnableContextEncoding:true,
-            DisablePayloadHandler:true,
-            SSL:true,
-            SSLVersion:String::new(),
-            PAYLOAD:String::new(),
-        },
-    });
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -89,40 +49,33 @@ pub fn info(client:Client,jobidstr:&str) -> Result<res::jobs::info,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::jobs::info,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                test=Ok(val.clone());
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
+                }
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }
-/// To stop a specified job
-///
-/// ## Example
-/// ```
-/// use metasploit::client::Client;
-/// use metasploit::msf::blocking::{auth,jobs};
-/// 
-/// fn main() {
-///     let client=Client::mew("127.0.0.1",55552,"msf","password",true);
-///     assert_eq!(true,jobs::stop(client.clone(),"1").unwrap());
-///     auth::logout(client.clone()).unwrap();
-/// }
-/// ```
-pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
+pub fn stop<T:DOwned>(client:Client,jobidstr:&str) -> Result<T,E> {
     let jobid:String=jobidstr.to_string();
-    let mut test:Result<bool,MsfError>=Ok(false);
     let mut body=Vec::new();
     let mut buf=vec![];
     let mut se=Serializer::new(&mut body);
@@ -130,25 +83,28 @@ pub fn stop(client:Client,jobidstr:&str) -> Result<bool,MsfError> {
     byte.serialize(&mut se).unwrap();
     let con=connect(client.url,body,&mut buf);
     let new_buf=buf.clone();
-    let mut de=Deserializer::new(new_buf.as_slice());
     match con {
         Ok(_) => {
-            let de_ret:Result<res::jobs::stop,derror>=Deserialize::deserialize(&mut de);
-            if let Ok(ref val) = de_ret {
-                if val.result=="success".to_string() {
-                    test=Ok(true);
-                } else {
-                    test=Ok(false);
+            let ret:Result<T,derror>=from_read(new_buf.as_slice());
+            match ret {
+                Ok(val) => {
+                    Ok(val)
+                },
+                Err(_) => {
+                    let ret2:Result<MsfError,derror>=from_read(new_buf.as_slice());
+                    match ret2 {
+                        Ok(val) => {
+                            Err(E::MsfError(val))
+                        },
+                        Err(e) => {
+                            Err(E::DError(e))
+                        },
+                    }
                 }
-            };
-            if let Err(_) = de_ret {
-                let de_ret:MsfError=from_read(new_buf.as_slice()).unwrap();
-                test=Err(de_ret);
-            };
+            }
         },
-        Err(_) => {
-            panic!("Connection closed unexpectedly");
+        Err(e) => {
+            Err(E::ConnectionError(e))
         },
     }
-    test
 }

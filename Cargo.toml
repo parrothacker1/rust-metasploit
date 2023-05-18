@@ -1,30 +1,30 @@
 [package]
 name = "rust-metasploit"
-version = "1.1.0"
+version = "1.2.0"
 authors = ["h4ck3r@parrot"]
 edition = "2018"
 license-file="LICENSE"
 readme="README.md"
 description="Rust wrapper for metasploit"
-homepage="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
+homepage="https://docs.rs/rust-metasploit/1.2.0/metasploit/"
 repository="https://github.com/parrothacker1/rust-metasploit"
-documentation="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
+documentation="https://docs.rs/rust-metasploit/1.2.0/metasploit/"
 keywords=["metasploit","hacking","msf","penetration"]
 
 [dependencies]
-reqwest={ version="0.11.6",features=["blocking","json"] }
-rmp-serde="1.0.0-beta.2"
+reqwest={ version="0.11.18",features=["blocking","json"] }
+rmp-serde="1.1.1"
 rmpv={ version = "1.0.0" , features=["with-serde"] }
-serde={ version="1.0.130" , features=["derive"] }
-tokio={ version="1.14.0" }
+serde={ version="1.0.163" , features=["derive"] }
+tokio={ version="1.28.1",optional=true }
 doc-cfg = { version = "0.1" }
 
 [lib]
 name="metasploit"
 
 [features]
-default=[]
-full=["blocking"]
+default=["blocking"]
+async=["tokio"]
 blocking=[]
 unstable-doc-cfg = []
 
