@@ -12,11 +12,11 @@ documentation="https://docs.rs/rust-metasploit/1.1.0/metasploit/"
 keywords=["metasploit","hacking","msf","penetration"]
 
 [dependencies]
-reqwest={ version="0.11.10",features=["blocking","json"] }
-rmp-serde="1.1.0"
+reqwest={ version="0.11.18",features=["blocking","json"] }
+rmp-serde="1.1.1"
 rmpv={ version = "1.0.0" , features=["with-serde"] }
-serde={ version="1.0.137" , features=["derive"] }
-tokio={ version="1.18.2",optional=true }
+serde={ version="1.0.163" , features=["derive"] }
+tokio={ version="1.28.1",optional=true }
 doc-cfg = { version = "0.1" }
 
 [lib]
